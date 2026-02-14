@@ -1,27 +1,31 @@
-import {Component, ElementRef, ViewChild} from '@angular/core';
+import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Product} from "../../../entity/product";
-import {Supplierstatus} from "../../../entity/supplierstatus";
-import {State} from "../../../entity/state";
-import {Materialtype} from "../../../entity/materialtype";
-import {Materialcategory} from "../../../entity/materialcategory";
-import {Suppliermaterialcategory} from "../../../entity/suppliermaterialcategory";
-import {Supplier} from "../../../entity/supplier";
+import {MatSelectionList} from "@angular/material/list";
 import {MatTableDataSource} from "@angular/material/table";
 import {MatPaginator} from "@angular/material/paginator";
 import {UiAssist} from "../../../util/ui/ui.assist";
 import {DatePipe} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
-import {Stateservice} from "../../../service/stateservice";
-import {Supplierstatusservice} from "../../../service/supplierstatusservice";
-import {Materialtypeservice} from "../../../service/materialtypeservice";
-import {Materialcategoryservice} from "../../../service/materialcategoryservice";
-import {Rawmaterialcategoryservice} from "../../../service/rawmaterialcategoryservice";
-import {BreakpointObserver} from "@angular/cdk/layout";
-import {Supplierservice} from "../../../service/supplierservice";
-import {Regexconst} from "../../../util/regexconst";
+
+import {AuthorizationManager} from "../../../service/authorizationmanager";
 import {ConfirmComponent} from "../../../util/dialog/confirm/confirm.component";
 import {MessageComponent} from "../../../util/dialog/message/message.component";
+import {Supplierstatusservice} from "../../../service/supplierstatusservice";
+import {Supplierservice} from "../../../service/supplierservice";
+import {Supplier} from "../../../entity/supplier";
+import {Supplierstatus} from "../../../entity/supplierstatus";
+import {Materialcategory} from "../../../entity/materialcategory";
+import {Rawmaterialcategoryservice} from "../../../service/rawmaterialcategoryservice";
+
+import {State} from "../../../entity/state";
+
+import {Suppliermaterialcategory} from "../../../entity/suppliermaterialcategory";
+import {Stateservice} from "../../../service/stateservice";
+import {Regexconst} from "../../../util/regexconst";
+import {Productrawmaterial} from "../../../entity/productrawmaterial";
+import {Materialtype} from "../../../entity/materialtype";
+import {Materialtypeservice} from "../../../service/materialtypeservice";
+import {BreakpointObserver} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-supplier',
@@ -29,78 +33,87 @@ import {MessageComponent} from "../../../util/dialog/message/message.component";
   styleUrls: ['./supplier.component.css']
 })
 export class SupplierComponent {
+
   @ViewChild('myForm', {static: false}) myForm!: ElementRef;
-  @ViewChild('myInnerForm', {static: false}) myInnerForm!: ElementRef;
 
   public form!: FormGroup;
   public ssearch!: FormGroup;
   public csearch!: FormGroup;
-  public innerform!: FormGroup;
 
-  columns: string[] = ['name', 'state','telephone', 'supplierstatus'];
-  headers: string[] = ['Name', 'State', 'Telephone','Supplier Status'];
-  binders: string[] = ['name', 'state.name','telephone', 'supplierstatus.name'];
+  @Input() materialcategories: Array<Materialcategory> = [];
+  oldmaterialcategories: Array<Materialcategory> = [];
 
-  cscolumns: string[] = ['csname', 'csstate','cstelephone', 'cssupplierstatus'];
-  csprompts: string[] = ['Filter by Name', 'Filter by State','Filter by Telephone', 'Filter by Status'];
+  suppliermaterialcategories: Array<Suppliermaterialcategory> = [];
+  oldsuppliermaterialcategories: Array<Suppliermaterialcategory> = [];
+
+  private countrysubscription: any;
+  newsupplier!: Supplier;
+  oldsupplier!: Supplier;
+
+  @ViewChild('availablelist') availablelist!: MatSelectionList;
+  @ViewChild('selectedlist') selectedlist!: MatSelectionList;
+  @ViewChild('myInnerForm', {static: false}) myInnerForm!: ElementRef;
+
+  columns: string[] = ['name', 'state', 'supplierstatus'];
+  headers: string[] = ['Name', 'State', 'Supplier Status'];
+  binders: string[] = ['name', 'state.name', 'supplierstatus.name'];
+
+  cscolumns: string[] = ['csname', 'csstate', 'cssupplierstatus'];
+  csprompts: string[] = ['Filter by Name', 'Filter by State', 'Filter by Status'];
 
   incolumns: string[] = ['materialcategory', 'remove'];
   inheaders: string[] = ['Material Category', 'Remove'];
   inbinders: string[] = ['materialcategory.name', 'getBtn()'];
 
-  states: Array<State> = [];
-  supplierstatuses:Array<Supplierstatus> = [];
-  materialtypes:Array<Materialtype> =[];
-  materialcategories:Array<Materialcategory> = [];
-  oldmaterialcategories:Array<Materialcategory> = [];
-  suppliermaterialcategories:Array<Suppliermaterialcategory> = [];
-  oldsuppliermaterialcategories : Array<Suppliermaterialcategory> = [];
-  suppliers : Array<Supplier> = [];
-
-  newsupplier!: Supplier;
-  oldsupplier!: Supplier;
-  private supsubscription: any;
-
+  indata!: MatTableDataSource<Suppliermaterialcategory>
+  imageurl: string = '';
+  imageSpUrl: string = 'assets/supplier-default.png'
   materialcategory!: Materialcategory;
   oldsuppliermaterialcategory!: Suppliermaterialcategory;
   suppliermaterialcategory !: Suppliermaterialcategory;
-  rowHeight='1rem'
+  supplierstatuses: Array<Supplierstatus> = [];
+  states: Array<State> = [];
 
+  suppliers: Array<Supplier> = [];
   data !: MatTableDataSource<Supplier>;
-  indata!: MatTableDataSource<Suppliermaterialcategory>
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   private materialCategorySubscription: any;
   private materialTypeSubscription: any;
-
-  imageurl: string = '';
-  uiassist: UiAssist;
   selectedrow: any;
+
+  authorities: string[] = [];
+
+  uiassist: UiAssist;
+  public innerform!: FormGroup;
   regexes: any;
-  enaInnerAdd = false;
-  enaInnerTbl = false;
-  enaInnerUpdate = false;
+  alreadyAvailable = false;
   enaadd: boolean = false;
   enaupd: boolean = false;
   enadel: boolean = false;
+  innerFormLoad: boolean = false;
+  enaInnerAdd = false;
+  enaInnerTbl = false;
+  enaInnerUpdate = false;
   maxDate: Date = new Date();  // Today's date
-  //id = 0;
-  alreadyAvailable = false;
+  rowHeight='1rem'
+
   constructor(
     private fb: FormBuilder,
+    private sss: Supplierstatusservice,
+    private rmcs: Rawmaterialcategoryservice,
+    private ss: Supplierservice,
+    private sts: Stateservice,
     private dp: DatePipe,
     private dg: MatDialog,
-    private ss: Stateservice,
-    private sups: Supplierservice,
-    private sss: Supplierstatusservice,
-    private mts: Materialtypeservice,
-    private mcs: Materialcategoryservice,
-    private rmcs: Rawmaterialcategoryservice,
-    private breakpointObserver: BreakpointObserver) {
-    this.breakpointObserver.observe(
-      ['(max-width: 1366px)',
-        '(min-width: 1367px) and (max-width: 1680px)',
-        '(min-width: 1681px) and (max-width: 1920px)'])
 
+    public authService: AuthorizationManager,
+    private breakpointObserver: BreakpointObserver) {
+    this.breakpointObserver
+      .observe([
+        '(max-width: 1366px)',
+        '(min-width: 1367px) and (max-width: 1680px)',
+        '(min-width: 1681px) and (max-width: 1920px)'
+      ])
       .subscribe(result => {
         if (result.breakpoints['(max-width: 1366px)']) {
           this.rowHeight = '0.85rem'
@@ -120,21 +133,20 @@ export class SupplierComponent {
     this.csearch = this.fb.group({
       "csname": new FormControl(),
       "csstate": new FormControl(),
-      "cstelephone": new FormControl(),
       "cssupplierstatus": new FormControl(),
+      "cscreditlimit": new FormControl(),
 
     });
 
     this.form = this.fb.group({
       "state": new FormControl('', [Validators.required]),
+      "supplierstatus": new FormControl('', [Validators.required]),
       "name": new FormControl('', [Validators.required]),
+      "doregister": new FormControl(new Date(), [Validators.required]),
       "address": new FormControl('', [Validators.required]),
       "telephone": new FormControl('', [Validators.required]),
       "email": new FormControl('', [Validators.required]),
-      "supplierstatus": new FormControl('', [Validators.required]),
-      "description": new FormControl('', [Validators.required]),
-      "doregister": new FormControl(new Date(), [Validators.required])
-
+      "description": new FormControl('', [Validators.required])
     });
 
     this.ssearch = this.fb.group({
@@ -145,16 +157,18 @@ export class SupplierComponent {
     });
 
     this.innerform = this.fb.group({
-      "materialcategory": new FormControl('', Validators.required),
-      "materialtype": new FormControl('', Validators.required)
+      "materialcategory": new FormControl('', Validators.required)
     });
+
   }
 
-  ngOnInit(){
+
+  async ngOnInit(): Promise<void> {
     this.initialize();
   }
 
-  initialize(){
+
+  initialize() {
 
     this.createView();
 
@@ -162,23 +176,23 @@ export class SupplierComponent {
       this.supplierstatuses = supstasuses;
     });
 
-    this.mts.getAllList().then((mts: Materialtype[]) => {
-      this.materialtypes = mts;
-    });
-
-    this.ss.getAllList().then((states: State[]) => {
-      this.states = states;
-    });
 
     this.rmcs.getAllList().then((mtcs: Materialcategory[]) => {
       this.materialcategories = mtcs;
       this.oldmaterialcategories = mtcs;
     });
 
-    this.sups.getAll("").then((regs: Supplier[]) => {
+    this.sts.getAllList().then((states: State[]) => {
+      this.states = states;
+    });
+
+
+    this.ss.getAll("").then((regs: Supplier[]) => {
       this.suppliers = regs;
+      // console.log(this.regexes)
       this.createForm();
     });
+
   }
 
   createView() {
@@ -188,7 +202,7 @@ export class SupplierComponent {
 
   loadTable(query: string): void {
 
-    this.sups.getAll(query)
+    this.ss.getAll(query)
       .then((supplier: Supplier[]) => {
         this.suppliers = supplier;
         this.imageurl = 'assets/fullfilled.png';
@@ -201,20 +215,31 @@ export class SupplierComponent {
         this.data = new MatTableDataSource(this.suppliers);
         this.data.paginator = this.paginator;
       });
+
+  }
+
+  getMaterialCategory(element: Supplier) {
+    let matcats = "";
+    element.suppliermaterialcategories.forEach((e) => {
+      matcats = matcats + e.materialcategory.name + "," + "\n";
+    });
+    return matcats;
+
   }
 
   createForm() {
 
     this.innerform.controls['materialcategory'].setValidators([Validators.required]);
-    this.innerform.controls['materialtype'].setValidators([Validators.required]);
+
     this.form.controls['state'].setValidators([Validators.required]);
+    this.form.controls['supplierstatus'].setValidators([Validators.required]);
     this.form.controls['name'].setValidators([Validators.required, Validators.pattern(Regexconst.supNameRegex)]);
+    this.form.controls['doregister'].setValidators([Validators.required]);
     this.form.controls['address'].setValidators([Validators.required, Validators.pattern(Regexconst.addressRegex)]);
     this.form.controls['telephone'].setValidators([Validators.required, Validators.pattern(Regexconst.phoneNumberRegex)]);
     this.form.controls['email'].setValidators([Validators.required, Validators.pattern(Regexconst.emailRegex)]);
-    this.form.controls['supplierstatus'].setValidators([Validators.required]);
     this.form.controls['description'].setValidators([Validators.required, Validators.pattern(Regexconst.descriptionRegex)]);
-    this.form.controls['doregister'].setValidators([Validators.required]);
+
 
     Object.values(this.form.controls).forEach(control => {
       control.markAsUntouched();
@@ -250,20 +275,6 @@ export class SupplierComponent {
     if (this.materialCategorySubscription) {
       this.materialCategorySubscription.unsubscribe();
     }
-    if (this.materialTypeSubscription) {
-      this.materialTypeSubscription.unsubscribe();
-    }
-
-    this.materialTypeSubscription = this.innerform.get("materialtype")?.valueChanges.subscribe(mt => {
-      if (mt) {
-        this.enaInnerAdd = true;
-        this.enaInnerTbl = true;
-        this.materialcategories = this.oldmaterialcategories.filter((mc: Materialcategory) =>
-          mc.materialtype.id === mt.id
-        )
-      }
-
-    })
 
     this.materialCategorySubscription = this.innerform.get("materialcategory")?.valueChanges.subscribe(m => {
       this.enaInnerAdd = true;
@@ -275,10 +286,6 @@ export class SupplierComponent {
     this.enaadd = add;
     this.enaupd = upd;
     this.enadel = del;
-  }
-
-  compareTwo(r1: any, r2: any): boolean {
-    return r1 && r2 ? r1.id === r2.id : r1 === r2;
   }
 
   deleteRaw(x: any) {
@@ -295,7 +302,58 @@ export class SupplierComponent {
     this.innerform.reset();
   }
 
+  fillInnerForm(smaterialcategory: any) {
+
+    this.enaInnerUpdate = true;
+    this.selectedrow = smaterialcategory;
+    this.suppliermaterialcategory = JSON.parse(JSON.stringify(smaterialcategory));
+    this.oldsuppliermaterialcategory = JSON.parse(JSON.stringify(smaterialcategory));
+
+    // @ts-ignore
+    this.suppliermaterialcategory = this.suppliermaterialcategories.find(p => p.id === this.suppliermaterialcategory.id);
+
+    this.innerform.controls["materialcategory"].setValue(this.suppliermaterialcategory.materialcategory);
+
+
+  }
+
+  fillForm(supplier: Supplier) {
+    this.enaInnerTbl = true;
+    this.selectedrow = supplier;
+    this.newsupplier = JSON.parse(JSON.stringify(supplier));
+    this.oldsupplier = JSON.parse(JSON.stringify(supplier));
+    if (this.countrysubscription) {
+      this.countrysubscription.unsubscribe();
+    }
+    this.enableButtons(false, true, true);
+    this.rmcs.getAllList().then((mtcs: Materialcategory[]) => {
+      this.materialcategories = mtcs;
+    });
+
+    this.suppliermaterialcategories = Array.from(this.newsupplier.suppliermaterialcategories);
+    this.oldsuppliermaterialcategories = Array.from(this.newsupplier.suppliermaterialcategories);
+
+    //@ts-ignore
+    this.newsupplier.state = this.states.find(s => s.id === this.newsupplier.state.id);
+
+    //@ts-ignore
+    this.newsupplier.supplierstatus = this.supplierstatuses.find(ss => ss.id === this.newsupplier.supplierstatus.id);
+
+    this.suppliermaterialcategories = this.newsupplier.suppliermaterialcategories;
+
+    this.updateDataSource();
+    this.form.patchValue(this.newsupplier);
+    this.form.markAsPristine();
+    this.enableButtons(false, true, true);
+
+  }
+
+  compareTwo(r1: any, r2: any): boolean {
+    return r1 && r2 ? r1.id === r2.id : r1 === r2;
+  }
+
   id = 0;
+
   btnaddMc() {
     const innerdata = this.innerform.getRawValue();
 
@@ -321,7 +379,7 @@ export class SupplierComponent {
         // Reset the inner form
         this.innerform.reset();
         this.innerform.controls["materialcategory"].clearValidators();
-        this.innerform.controls["materialtype"].clearValidators();
+
 
         const innerForm = this.myInnerForm.nativeElement as HTMLFormElement;
         innerForm.reset();
@@ -358,18 +416,16 @@ export class SupplierComponent {
 
   }
 
-  fillInnerForm(smaterialcategory: any) {
+  filterTable(): void {
+    const cserchdata = this.csearch.getRawValue();
 
-    this.enaInnerUpdate = true;
-    this.selectedrow = smaterialcategory;
-    this.suppliermaterialcategory = JSON.parse(JSON.stringify(smaterialcategory));
-    this.oldsuppliermaterialcategory = JSON.parse(JSON.stringify(smaterialcategory));
+    this.data.filterPredicate = (supplier: Supplier, filter: string) => {
+      return (cserchdata.csname == null || supplier.name.toLowerCase().includes(cserchdata.csname)) &&
+        (cserchdata.csstate == null || supplier.state.name.toLowerCase().includes(cserchdata.csstate)) &&
+        (cserchdata.cssupplierstatus == null || supplier.supplierstatus.name.toLowerCase().includes(cserchdata.cssupplierstatus))
+    };
 
-    // @ts-ignore
-    this.suppliermaterialcategory = this.suppliermaterialcategories.find(p => p.id === this.suppliermaterialcategory.id);
-
-    this.innerform.controls["materialcategory"].setValue(this.suppliermaterialcategory.materialcategory);
-    this.innerform.controls["materialtype"].setValue(this.suppliermaterialcategory.materialcategory.materialtype);
+    this.data.filter = 'xx';
 
   }
 
@@ -405,51 +461,6 @@ export class SupplierComponent {
         this.loadTable("");
       }
     });
-
-  }
-
-  filterTable(): void {
-    const cserchdata = this.csearch.getRawValue();
-
-    this.data.filterPredicate = (supplier: Supplier, filter: string) => {
-      return (cserchdata.csname == null || supplier.name.toLowerCase().includes(cserchdata.csname)) &&
-        (cserchdata.csstate == null || supplier.state.name.toLowerCase().includes(cserchdata.csstate)) &&
-        (cserchdata.cstelephone == null || supplier.telephone.toLowerCase().includes(cserchdata.cstelephone)) &&
-        (cserchdata.cssupplierstatus == null || supplier.supplierstatus.name.toLowerCase().includes(cserchdata.cssupplierstatus))
-    };
-
-    this.data.filter = 'xx';
-
-  }
-
-  fillForm(supplier: Supplier) {
-    this.enaInnerTbl = true;
-    this.selectedrow = supplier;
-    this.newsupplier = JSON.parse(JSON.stringify(supplier));
-    this.oldsupplier = JSON.parse(JSON.stringify(supplier));
-    if (this.supsubscription) {
-      this.supsubscription.unsubscribe();
-    }
-    this.enableButtons(false, true, true);
-    this.rmcs.getAllList().then((mtcs: Materialcategory[]) => {
-      this.materialcategories = mtcs;
-    });
-
-    this.suppliermaterialcategories = Array.from(this.newsupplier.suppliermaterialcategories);
-    this.oldsuppliermaterialcategories = Array.from(this.newsupplier.suppliermaterialcategories);
-
-    //@ts-ignore
-    this.newsupplier.state = this.states.find(s => s.id === this.newsupplier.state.id);
-
-    //@ts-ignore
-    this.newsupplier.supplierstatus = this.supplierstatuses.find(ss => ss.id === this.newsupplier.supplierstatus.id);
-
-    this.suppliermaterialcategories = this.newsupplier.suppliermaterialcategories;
-
-    this.updateDataSource();
-    this.form.patchValue(this.newsupplier);
-    this.form.markAsPristine();
-    this.enableButtons(false, true, true);
 
   }
 
@@ -530,7 +541,7 @@ export class SupplierComponent {
       confirm.afterClosed().subscribe(async result => {
         if (result) {
 
-          this.sups.add(this.newsupplier).then((responce: [] | undefined) => {
+          this.ss.add(this.newsupplier).then((responce: [] | undefined) => {
             console.log("Res-" + responce);
             if (responce != undefined) { // @ts-ignore
               console.log("Add-" + responce['id'] + "-" + responce['url'] + "-" + (responce['errors'] == ""));
@@ -567,34 +578,6 @@ export class SupplierComponent {
         }
       });
     }
-  }
-
-  resetForm(): void {
-    const form = this.myForm.nativeElement as HTMLFormElement;
-    form.reset();
-    const inform = this.myInnerForm.nativeElement as HTMLFormElement;
-    inform.reset();
-    this.selectedrow = null;
-
-    Object.values(this.form.controls).forEach(control => {
-      control.markAsUntouched();
-      control.markAsPristine();
-    });
-    Object.values(this.innerform.controls).forEach(control => {
-      control.markAsUntouched();
-      control.markAsPristine();
-    });
-    // @ts-ignore
-    this.indata = new MatTableDataSource([]);
-    // @ts-ignore
-    this.oldsupplier = null;
-    //@ts-ignore
-    this.newsupplier = null;
-    this.enaInnerUpdate = false;
-    this.enaInnerAdd = false;
-    this.enaInnerTbl = false;
-    this.loadTable("");
-    this.enableButtons(true, false, false);
   }
 
   update() {
@@ -638,7 +621,7 @@ export class SupplierComponent {
             this.suppliermaterialcategories.forEach((i) => delete i.id);
             this.newsupplier.id = this.oldsupplier.id;
 
-            this.sups.update(this.newsupplier).then((responce: [] | undefined) => {
+            this.ss.update(this.newsupplier).then((responce: [] | undefined) => {
               //console.log("Res-" + responce);
               // console.log("Un-" + responce == undefined);
               if (responce != undefined) { // @ts-ignore
@@ -689,6 +672,36 @@ export class SupplierComponent {
 
       }
     }
+
+  }
+
+  resetForm(): void {
+    const form = this.myForm.nativeElement as HTMLFormElement;
+    form.reset();
+    const inform = this.myInnerForm.nativeElement as HTMLFormElement;
+    inform.reset();
+    this.selectedrow = null;
+
+    Object.values(this.form.controls).forEach(control => {
+      control.markAsUntouched();
+      control.markAsPristine();
+    });
+    Object.values(this.innerform.controls).forEach(control => {
+      control.markAsUntouched();
+      control.markAsPristine();
+    });
+    // @ts-ignore
+    this.indata = new MatTableDataSource([]);
+    this.suppliermaterialcategories=[]
+    // @ts-ignore
+    this.oldsupplier = null;
+    //@ts-ignore
+    this.newsupplier = null;
+    this.enaInnerUpdate = false;
+    this.enaInnerAdd = false;
+    this.enaInnerTbl = false;
+    this.loadTable("");
+    this.enableButtons(true, false, false);
   }
 
   clear(): void {
@@ -723,7 +736,7 @@ export class SupplierComponent {
         let delstatus: boolean = false;
         let delmessage: string = "Server Not Found";
 
-        this.sups.delete(this.newsupplier.id).then((responce: [] | undefined) => {
+        this.ss.delete(this.newsupplier.id).then((responce: [] | undefined) => {
 
           if (responce != undefined) { // @ts-ignore
             delstatus = responce['errors'] == "";
@@ -757,4 +770,6 @@ export class SupplierComponent {
       }
     });
   }
+
+
 }

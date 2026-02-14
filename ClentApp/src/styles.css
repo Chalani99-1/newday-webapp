@@ -409,14 +409,13 @@ mat-card-header {
 }
 
 :root {
-  --color-light: #ffffff;
-  --color-dark: #4663AC;
+  --color-light: #FFFFFF;         /* matches Apple’s white */
+  --color-dark:  #1D1D1F;         /* Apple uses about this for dark text/background :contentReference[oaicite:1]{index=1} */
+  --color-primary: #0066CC;       /* Apple “Science Blue” brand colour from Mobbin list :contentReference[oaicite:2]{index=2} */
+  --color-secondary: #555555;     /* a neutral grey Apple uses :contentReference[oaicite:3]{index=3} */
+  --color-ternary: #F5F5F7;       /* light grey background from Apple palette :contentReference[oaicite:4]{index=4} */
+  --color-accent: #b5dcf6;        /* example accent to pair with Science Blue (you may adjust) */
 
-  --color-primary: #065d8f;
-  --color-secondary: #0093b8;
-
-  --color-ternary: #e3e9f3;
-  --color-accent: #d0ebf5;
 
   --color-close: #2b2f33;
   --color-add: #2eae60;
@@ -431,10 +430,10 @@ mat-card-header {
 
 @media screen and (max-width: 1366px) {
   mat-card-header {
-       padding: 3px 8px !important;
+    padding: 3px 8px !important;
     margin-bottom: 2px !important;
     font-size: 12px !important;
-      font-weight: 500 !important;
+    font-weight: 500 !important;
     letter-spacing: 1px !important;
     line-height: 1.1 !important;
     height: 20px !important;
@@ -475,7 +474,7 @@ mat-card-header {
     width: 50px;
     margin: 2px;
     font-size: 11px;
-     max-height: 25px;
+    max-height: 25px;
   }
 
   #butpanel-clear {
@@ -551,7 +550,7 @@ mat-card-header {
     margin-left: 100px;
     margin-bottom: 4px;
     font-size: 11px;
-        padding: 2px;
+    padding: 2px;
     max-height: 20px;
 
     &:hover {
@@ -562,7 +561,7 @@ mat-card-header {
   }
 
   #clearbutton {
-      width: 120px;
+    width: 120px;
     display: block;
     margin-left: 100px;
     margin-bottom: 2px;
@@ -651,7 +650,7 @@ mat-card-header {
       border-radius: 12px;
       padding: 2px;
       max-height: 25px;
-          &:hover {
+      &:hover {
         cursor: pointer;
       }
     }

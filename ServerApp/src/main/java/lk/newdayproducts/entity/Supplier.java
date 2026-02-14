@@ -25,20 +25,20 @@ public class Supplier {
 
     @Basic
     @Column(name = "address")
-
     private String address;
+
     @Basic
     @Column(name = "telephone")
-
     private String telephone;
+
     @Basic
     @Column(name = "email")
-
     private String email;
+
     @Basic
     @Column(name = "description")
-
     private String description;
+
     @ManyToOne
     @JoinColumn(name = "supplierstatus_id", referencedColumnName = "id", nullable = false)
     private Supplierstatus supplierstatus;

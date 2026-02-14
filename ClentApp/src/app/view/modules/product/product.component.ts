@@ -1,32 +1,37 @@
 import {Component, ElementRef, Input, ViewChild} from '@angular/core';
 import {FormBuilder, FormControl, FormGroup, Validators} from "@angular/forms";
-import {Product} from "../../../entity/product";
-import {Productsize} from "../../../entity/productsize";
-import {Productcategory} from "../../../entity/productcategory";
-import {Charge} from "../../../entity/charge";
-import {Productstatus} from "../../../entity/productstatus";
-import {Employee} from "../../../entity/employee";
 import {MatTableDataSource} from "@angular/material/table";
+import {Product} from "../../../entity/product";
 import {MatPaginator} from "@angular/material/paginator";
-import {Materialcategory} from "../../../entity/materialcategory";
 import {Productrawmaterial} from "../../../entity/productrawmaterial";
+import {Employee} from "../../../entity/employee";
 import {Rawmaterial} from "../../../entity/rawmaterial";
-import {Productservice} from "../../../service/productservice";
-import {Productstatusservice} from "../../../service/productstatusservice";
-import {Chargeservice} from "../../../service/chargeservice";
-import {Productsizeservice} from "../../../service/productsizeservice";
-import {Productcategoryservice} from "../../../service/productcategoryservice";
+import {Materialcategory} from "../../../entity/materialcategory";
+import {UiAssist} from "../../../util/ui/ui.assist";
 import {EmployeeService} from "../../../service/employeeservice";
+import {Rawmaterialservice} from "../../../service/rawmaterialservice";
+
 import {DatePipe} from "@angular/common";
 import {MatDialog} from "@angular/material/dialog";
-import {Rawmaterialservice} from "../../../service/rawmaterialservice";
-import {Rawmaterialcategoryservice} from "../../../service/rawmaterialcategoryservice";
-import {BreakpointObserver} from "@angular/cdk/layout";
-import {UiAssist} from "../../../util/ui/ui.assist";
-import {Regexconst} from "../../../util/regexconst";
 import {ConfirmComponent} from "../../../util/dialog/confirm/confirm.component";
+import {Productstatus} from "../../../entity/productstatus";
+import {Productcategory} from "../../../entity/productcategory";
+// @ts-ignore
+import {Productservice} from "../../../service/productservice";
+import {Productstatusservice} from "../../../service/productstatusservice";
+import {Productcategoryservice} from "../../../service/productcategoryservice";
+import {Rawmaterialcategoryservice} from "../../../service/rawmaterialcategoryservice";
 import {MessageComponent} from "../../../util/dialog/message/message.component";
-import {Producttype} from "../../../entity/producttype";
+
+import {Productsizeservice} from "../../../service/productsizeservice";
+import {Productsize} from "../../../entity/productsize";
+import {Regexconst} from "../../../util/regexconst";
+import {Charge} from "../../../entity/charge";
+import {Chargeservice} from "../../../service/chargeservice";
+
+import {Clientorder} from "../../../entity/clientorder";
+import {Clientorderservice} from "../../../service/clientorderservice";
+import {BreakpointObserver} from "@angular/cdk/layout";
 
 @Component({
   selector: 'app-product',
@@ -34,6 +39,7 @@ import {Producttype} from "../../../entity/producttype";
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent {
+
   @ViewChild('myForm', {static: false}) myForm!: ElementRef;
   @ViewChild('myInnerForm', {static: false}) myInnerForm!: ElementRef;
 
@@ -41,22 +47,10 @@ export class ProductComponent {
   private chargeSubscription: any;
   private productCategorySubscription: any;
 
+  public csearch!: FormGroup;
   public ssearch!: FormGroup;
   public form!: FormGroup;
   public innerform!: FormGroup;
-
-  enaadd: boolean = false;
-  enaupd: boolean = false;
-  enadel: boolean = false;
-
-  enaInnerUpdate: boolean = false;
-  enaInnerAdd: boolean = false;
-  filterFlag = true;
-  scBtnEnable = false;
-  innerFormLoad: boolean = false;
-  scBtnFillForm = false;
-  scBtnFillInnerForm = false;
-  chargeChanged = true;
 
   incolumns: string[] = ['name', 'quantity', 'unitprice', 'linecost', 'remove'];
   inheaders: string[] = ['Name', 'Quantity', 'Unit Price', 'Line Cost', 'Remove'];
@@ -71,36 +65,36 @@ export class ProductComponent {
   indata!: MatTableDataSource<Productrawmaterial>
 
   products: Array<Product> = [];
-  producttypes: Array<Producttype> =[];
-  productsizes: Array<Productsize> = [];
-  @Input() productcategories: Array<Productcategory> = [];
   charges: Array<Charge> = [];
-  productstatuses: Array<Productstatus> = [];
-  employees: Array<Employee> = [];
   materialcategories: Array<Materialcategory> = [];
+  employees: Array<Employee> = [];
+  productstatuses: Array<Productstatus> = [];
+  productsizes: Array<Productsize> = [];
+
   @Input() rawmaterials: Array<Rawmaterial> = [];
+  clientorders: Array<Clientorder> = [];
+
+  @Input() productcategories: Array<Productcategory> = [];
 
   productrawmaterials: Array<Productrawmaterial> = [];
   oldproductrawmaterials: Array<Productrawmaterial> = [];
 
-  isFormVisible: boolean = false;
-  enCopyStyle: boolean = false;
-  styleCopyMsg: boolean = false;
 
-  rowHeight = '0.5rem'
+  grandtotal = 0;
+  linetotal = 0;
+
+  designFileUrl: string = '';
+  selectedFileName: string = '';
 
   imageurl: string = '';
+  maxDate: Date = new Date();  // Today's date
   regexes: any;
   uiassist: UiAssist;
-  maxnumber: String = "0";
 
   product!: Product;
   productrawmaterial!: Productrawmaterial;
   oldproductrawmaterial!: Productrawmaterial;
   oldProduct!: Product;
-
-  grandtotal = 0;
-  linetotal = 0;
 
   innerdata: any;
   oldinnerdata: any;
@@ -108,16 +102,35 @@ export class ProductComponent {
   selectedrow: any;
   selectedinnerrow: any;
 
+  isFormVisible: boolean = false;
+  enCopyStyle: boolean = false;
+  styleCopyMsg: boolean = false;
+
+  enaadd: boolean = false;
+  enaupd: boolean = false;
+  enadel: boolean = false;
+  enaInnerUpdate: boolean = false;
+  enaInnerAdd: boolean = false;
+  filterFlag = true;
+  scBtnEnable = false;
+  innerFormLoad: boolean = false;
+  scBtnFillForm = false;
+  scBtnFillInnerForm = false;
+  chargeChanged = true;
+
+  rowHeight = '0.5rem'
+
   constructor(
     private ps: Productservice,
+    private cos: Clientorderservice,
     private pss: Productstatusservice,
-    private cs: Chargeservice,
-    private pszs: Productsizeservice,
-    private pcs: Productcategoryservice,
-    private rms: Rawmaterialservice,
-    private rmcs: Rawmaterialcategoryservice,
-    private es: EmployeeService,
     private fb: FormBuilder,
+    private es: EmployeeService,
+    private rms: Rawmaterialservice,
+    private pzs: Productsizeservice,
+    private mcs: Rawmaterialcategoryservice,
+    private pcs: Productcategoryservice,
+    private cs: Chargeservice,
     private dp: DatePipe,
     private dg: MatDialog,
     private breakpointObserver: BreakpointObserver) {
@@ -142,25 +155,38 @@ export class ProductComponent {
       });
     this.uiassist = new UiAssist(this);
 
+    // this.csearch = this.fb.group({
+    //   "cscode": new FormControl(),
+    //   "csproductcategory": new FormControl(),
+    //   "cstotalcost": new FormControl(),
+    //   "csproductsize": new FormControl(),
+    //   "csdescription": new FormControl(),
+    //   "csdate": new FormControl()
+    // });
+
     this.ssearch = this.fb.group({
       "sscode": new FormControl(),
       "ssproductcategory": new FormControl(),
+      "ssproducttype": new FormControl(),
       "ssproductsize": new FormControl(),
     });
 
     this.form = this.fb.group({
+      "productcategory": new FormControl('', Validators.required),
+
+      "productsize": new FormControl('', Validators.required),
       "name": new FormControl('', Validators.required),
       "code": new FormControl({value: "", disabled: true}, Validators.required),
-      "productsize": new FormControl('', Validators.required),
-      "productcategory": new FormControl('', Validators.required),
-      "tcbeforecharge": new FormControl({value: "", disabled: true}, Validators.required),
-      "charge": new FormControl('', Validators.required),
       "totalcost": new FormControl({value: "", disabled: true}, Validators.required),
+      "tcbeforecharge": new FormControl({value: "", disabled: true}, Validators.required),
       "designimage": new FormControl('', Validators.required),
       "description": new FormControl('', Validators.required),
       "productstatus": new FormControl('', Validators.required),
+      "charge": new FormControl('', Validators.required),
+
       "employee": new FormControl('', Validators.required)
     });
+
     this.innerform = this.fb.group({
       "rawmaterial": new FormControl('', Validators.required),
       "quantity": new FormControl('', Validators.required)
@@ -173,15 +199,15 @@ export class ProductComponent {
 
   initialize() {
     this.createView();
-    this.rmcs.getAllList().then((mcss: Materialcategory[]) => {
+    this.mcs.getAllList().then((mcss: Materialcategory[]) => {
       this.materialcategories = mcss;
     });
     this.es.getAll('').then((emps: Employee[]) => this.employees = emps);
-    //this.cos.getAll('').then((cos: Clientorder[]) => this.clientorders = cos);
+    this.cos.getAll('').then((cos: Clientorder[]) => this.clientorders = cos);
     this.rms.getAllRMs().then((rmts: Rawmaterial[]) => this.rawmaterials = rmts);
     this.pcs.getAllList().then((pcs: Productcategory[]) => this.productcategories = pcs);
     this.pss.getAllList().then((psss: Productstatus[]) => this.productstatuses = psss);
-    this.pszs.getAllList().then((pszs: Productsize[]) => this.productsizes = pszs);
+    this.pzs.getAllList().then((pszs: Productsize[]) => this.productsizes = pszs);
     this.cs.getAllList().then((chrges: Charge[]) => this.charges = chrges);
 
     this.ps.getAllBy("").then((regs: Product[]) => {
@@ -189,6 +215,7 @@ export class ProductComponent {
       // console.log(this.regexes)
       this.createForm();
     });
+
   }
 
   createView() {
@@ -203,8 +230,6 @@ export class ProductComponent {
     ]);
 
     this.form.controls['productcategory'].setValidators([Validators.required]);
-    //this.form.controls['productsubcategory'].setValidators([Validators.required]);
-    //this.form.controls['producttype'].setValidators([Validators.required]);
     this.form.controls['productsize'].setValidators([Validators.required]);
     this.form.controls['code'].setValidators([Validators.required]);
     this.form.controls['totalcost'].setValidators([Validators.required, Validators.pattern(Regexconst.totalPriceRegex)]);
@@ -213,7 +238,6 @@ export class ProductComponent {
     this.form.controls['description'].setValidators([Validators.required, Validators.pattern(Regexconst.descriptionRegex)]);
     this.form.controls['productstatus'].setValidators([Validators.required]);
     this.form.controls['charge'].setValidators([Validators.required]);
-    //this.form.controls['date'].setValidators([Validators.required]);
     this.form.controls['employee'].setValidators([Validators.required]);
 
 
@@ -231,6 +255,8 @@ export class ProductComponent {
       const control = this.form.controls[controlName];
       control.valueChanges.subscribe(value => {
           // @ts-ignore
+          if (controlName == "date") value = this.dp.transform(new Date(value), 'yyyy-MM-dd');
+          // console.log("Date" +value);
           if (this.oldProduct != undefined && control.valid) {
             // @ts-ignore
             if (value === this.product[controlName]) {
@@ -270,15 +296,6 @@ export class ProductComponent {
 
   }
 
-  getProductImage(product: Product): string {
-    if (product.designimage) {
-      return atob(product.designimage); // Decode base64 if present
-    } else {
-      return this.imageProductUrl; // Use default URL if not
-    }
-  }
-
-
   loadTable(query: string) {
 
     this.ps.getAllBy(query)
@@ -308,10 +325,6 @@ export class ProductComponent {
     this.productCategorySubscription = this.form.get("productcategory")?.valueChanges.subscribe((p: Productcategory) => {
       this.innerFormLoad = true;
 
-      if (p) {
-
-      }
-
       if (!this.product) {
         this.ps.getMaxNumber().then((maxNumber: any) => {
           if (maxNumber !== "") {
@@ -337,7 +350,6 @@ export class ProductComponent {
 
   }
 
-
   btnSearchMc() {
 
     const ssearchdata = this.ssearch.getRawValue();
@@ -346,13 +358,13 @@ export class ProductComponent {
     let productcategoryid = ssearchdata.ssproductcategory;
     let productsizeid = ssearchdata.ssproductsize;
 
+
     let query = "";
 
     if (code != null) query = query + "&code=" + code;
     // console.log(code);
     if (productcategoryid != null) query = query + "&productcategoryid=" + productcategoryid;
     if (productsizeid != null) query = query + "&productsizeid=" + productsizeid;
-
 
     if (query != "") query = query.replace(/^./, "?")
     this.loadTable(query);
@@ -379,6 +391,7 @@ export class ProductComponent {
   }
 
   id = 0;
+
 
   calculateGrandTotal() {
     // Ensure grandtotal is calculated from the correct source
@@ -409,6 +422,7 @@ export class ProductComponent {
     if (index > -1) {
       datasources.splice(index, 1);
     }
+
     this.indata.data = datasources;
     this.productrawmaterials = this.indata.data;
     this.calculateGrandTotal();
@@ -454,6 +468,7 @@ export class ProductComponent {
   compareRawMaterials(r1: any, r2: any): boolean {
     return r1 && r2 ? r1.id === r2.id : r1 === r2;
   }
+
 
   btnaddMc() {
     let errors = "";
@@ -655,6 +670,8 @@ export class ProductComponent {
 
     // Set initial form values
     this.updateFormValues();
+
+
   }
 
   toggleFormVisibility() {
@@ -683,8 +700,6 @@ export class ProductComponent {
     this.product.productcategory = this.productcategories.find(p => p.id === this.product.productcategory.id);
     // @ts-ignore
 
-    // @ts-ignore
-    this.product.producttype = this.producttypes.find(p => p.id === this.product.producttype.id);
     this.form.controls['productcategory'].setValue(this.product.productcategory);
 
 
@@ -775,7 +790,6 @@ export class ProductComponent {
     // @ts-ignore
     this.form.get("code").setValue("");
     // @ts-ignore
-    //this.form.get("date").setValue(new Date());
     this.innerform.get('rawmaterial')?.reset();
     this.innerform.get('quantity')?.reset();
     this.innerFormLoad = false;
@@ -842,7 +856,6 @@ export class ProductComponent {
       this.productrawmaterials.forEach((i) => delete i.id);
 
       // @ts-ignore
-      //this.product.date = this.dp.transform(this.product.date, "yyyy-MM-dd");
 
       let invdata: string = "";
 
@@ -953,7 +966,6 @@ export class ProductComponent {
             this.productrawmaterials.forEach((i) => delete i.id);
 
             // @ts-ignore
-            //this.product.date = this.dp.transform(this.product.date, 'yyyy-MM-dd');
 
             this.product.id = this.oldProduct.id;
 
@@ -1005,6 +1017,7 @@ export class ProductComponent {
       }
     }
 
+
   }
 
   delete(): void {
@@ -1035,12 +1048,12 @@ export class ProductComponent {
           }
         }).finally(() => {
           if (delstatus) {
-            //let existing = this.clientorders.find(co => co.orderproducts.forEach(op => op.product.id === this.product.id))
-            // if (existing) {
-            //   delmessage = "Product Status Set to Discontinued as Used in Client Orders";
-            // } else {
-            //   delmessage = "Product Deleted ";
-            // }
+            let existing = this.clientorders.find(co => co.orderproducts.forEach(op => op.product.id === this.product.id))
+            if (existing) {
+              delmessage = "Product Status Set to Discontinued as Used in Client Orders";
+            } else {
+              delmessage = "Product Deleted ";
+            }
             this.loadTable("");
             this.resetForms();
 
@@ -1067,7 +1080,13 @@ export class ProductComponent {
     }
   }
 
-
+  getProductImage(product: Product): string {
+    if (product.designimage) {
+      return atob(product.designimage); // Decode base64 if present
+    } else {
+      return this.imageProductUrl; // Use default URL if not
+    }
+  }
 
   copyStyle() {
 
@@ -1082,7 +1101,6 @@ export class ProductComponent {
       this.enaupd = false;
       this.enadel = false;
       this.styleCopyMsg = true;
-   //   this.form.get("date")?.setValue(new Date());
       this.form.get("productstatus")?.setValue(null);
       this.form.get("employee")?.setValue(null);
 
@@ -1092,7 +1110,7 @@ export class ProductComponent {
 
     });
 
-  }
 
+  }
 
 }

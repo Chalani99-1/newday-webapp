@@ -1,5 +1,6 @@
 package lk.newdayproducts.controller;
 
+
 import lk.newdayproducts.dao.SupplierDao;
 import lk.newdayproducts.entity.Supplier;
 import lk.newdayproducts.entity.Suppliermaterialcategory;
@@ -19,13 +20,13 @@ import java.util.stream.Stream;
 public class SupplierController {
 
     @Autowired
-    private SupplierDao supplierdao;
-
+    private SupplierDao supplierDao;
 
     @GetMapping(produces = "application/json")
+
     public List<Supplier> get(@RequestParam HashMap<String, String> params) {
 
-        List<Supplier> suppliers = this.supplierdao.findAll();
+        List<Supplier> suppliers = this.supplierDao.findAll();
 
         if (params.isEmpty()) return suppliers;
 
@@ -57,7 +58,6 @@ public class SupplierController {
 
     }
 
-
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public HashMap<String, String> add(@RequestBody Supplier supplier) {
@@ -65,7 +65,7 @@ public class SupplierController {
         HashMap<String, String> responce = new HashMap<>();
         String errors = "";
 
-        if (supplierdao.findByName(supplier.getName()) != null)
+        if (supplierDao.findByName(supplier.getName()) != null)
             errors = errors + "<br> Existing Supplier";
 
         if (errors == "") {
@@ -75,7 +75,7 @@ public class SupplierController {
 //            for (Suppliermaterialcategory smc : supplier.getSuppliermaterialcategories()) {
 //                System.out.println(smc.getMaterialcategory().getName());
 //            }
-            supplierdao.save(supplier);
+            supplierDao.save(supplier);
         } else {
             errors = "Server Validation Errors : <br> " + errors;
         }
@@ -87,7 +87,6 @@ public class SupplierController {
         return responce;
     }
 
-
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
 //    @PreAuthorize("hasAuthority('Employee-Update')")
@@ -96,7 +95,7 @@ public class SupplierController {
         HashMap<String, String> responce = new HashMap<>();
         String errors = "";
 //        System.out.println(supplier.getName());
-        Supplier sup = supplierdao.findByMyId(supplier.getId());
+        Supplier sup = supplierDao.findByMyId(supplier.getId());
 
         if (sup != null) {
             try {
@@ -109,7 +108,7 @@ public class SupplierController {
                 // Update basic user properties
                 BeanUtils.copyProperties(supplier, sup, "id", "suppliermaterialcategories");
 
-                supplierdao.save(sup); // Save the updated extUser object
+                supplierDao.save(sup); // Save the updated extUser object
 
                 responce.put("id", String.valueOf(supplier.getId()));
                 responce.put("url", "/suppliers/" + supplier.getId());
@@ -135,11 +134,11 @@ public class SupplierController {
         HashMap<String, String> responce = new HashMap<>();
         String errors = "";
 
-        Supplier s = supplierdao.findByMyId(id);
+        Supplier rm = supplierDao.findByMyId(id);
 
-        if (s == null) errors = errors + "<br> Supplier Does Not Exist";
+        if (rm == null) errors = errors + "<br> Supplier Does Not Exist";
 
-        if (errors.isEmpty()) supplierdao.delete(s);
+        if (errors == "") supplierDao.delete(rm);
         else errors = "Server Validation Errors : <br> " + errors;
 
         responce.put("id", String.valueOf(id));
@@ -149,4 +148,9 @@ public class SupplierController {
         return responce;
     }
 
+
 }
+
+
+
+

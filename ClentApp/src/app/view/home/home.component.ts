@@ -106,8 +106,7 @@ export class HomeComponent {
     this.us.getAll(qry).then(async (user: User[]) => {
       this.users = user;
       this.user = this.users[0];
-      [this.role] = (this.user.userroles.map(ur => ur.role.name));
-      this.name = (this.user.employee.fullname);
+
       // await this.ns.getMessages();
     });
 
