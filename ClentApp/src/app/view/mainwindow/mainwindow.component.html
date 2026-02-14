@@ -1,0 +1,210 @@
+<div class="container">
+  <mat-toolbar id="toolbar">
+    <mat-toolbar-row style="background: var(--color-dark) !important;">
+      <div class="toolbar-left">
+        <i id="nav-icon" class="fa-solid fa-bars" (click)="opened=!opened"></i>
+        <img src="/assets/logos/main_logo.png" class="img-logo">
+      </div>
+
+
+      <div class="toolbar-right">
+        <div id="notify" (click)="openModal()" matTooltip="Notifications">
+          <i
+            class="fa-solid fa-bell"
+            *ngIf="!isLoading"
+            [matBadge]="bellCount$ | async"
+            matBadgeColor="warn"
+            [matBadgeHidden]="(bellCount$ | async) === 0"
+            matBadgeOverlap="false"
+          ></i>
+
+          <i class="fa-solid fa-spinner" *ngIf="isLoading"></i>
+        </div>
+
+
+        <div id="msg" (click)="openModal2()" matTooltip="Messages">
+          <i
+            class="fa-solid fa-envelope"
+            *ngIf="!isMsgsLoading"
+            [matBadge]="count$ | async"
+            matBadgeColor="warn"
+            [matBadgeHidden]="(count$ | async) === 0"
+            matBadgeOverlap="false"
+          ></i>
+
+          <i class="fa-solid fa-spinner" *ngIf="isMsgsLoading"></i>
+        </div>
+
+
+
+        <label class="lbl-user ">{{ authService.getUsername() }}</label>
+        <img src="assets/user.png" class="img-user"/>
+        <i class="fa-solid fa-arrow-right-from-bracket " id="logout-icon"
+           (click)="logout()" matTooltip="Log Out"
+        ></i>
+      </div>
+
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-sidenav-container>
+
+    <mat-sidenav [(opened)]="opened" mode="side">
+
+      <mat-nav-list>
+        <mat-list-item>
+          <a routerLink="home" style="width: 100%">
+            <i class="fa-solid fa-house"></i>
+            Home</a>
+        </mat-list-item>
+
+        <mat-list-item><a routerLink="dashboard" style="width: 100%">
+          <i class="fa-solid fa-desktop"></i>
+          Dashboard</a></mat-list-item>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Admin')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-user-tie"></i>
+              Admin</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of admMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Utility')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-gear"></i>
+              Utility</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of utilMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Inventory')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-warehouse"></i>
+              Inventory</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of invMenuItems1">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Supply')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-truck-field"></i>
+              Supply</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of supplyMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Clients')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-people-group"></i>
+              Clients</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of clientsMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Production')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-industry"></i>
+              Production</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of productionMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Payments')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-credit-card"></i>
+              Payments</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of paymentMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Communication')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-envelope-circle-check"></i>
+              Communication</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of comMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.name }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel *ngIf="isMenuVisible('Reports')">
+          <mat-expansion-panel-header>
+            <mat-list-item><a>
+              <i class="fa-solid fa-square-poll-vertical"></i>
+              Reports</a></mat-list-item>
+          </mat-expansion-panel-header>
+          <ng-container *ngFor="let menuItem of reportMenuItems">
+            <div *ngIf="menuItem.accessFlag">
+              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
+                <a>{{ menuItem.short }}</a></mat-list-item>
+            </div>
+          </ng-container>
+        </mat-expansion-panel>
+
+        <!--      <mat-expansion-panel>-->
+        <!--        <mat-expansion-panel-header>-->
+        <!--          <mat-list-item><a>-->
+        <!--            <mat-icon>poll</mat-icon>-->
+        <!--            Reports</a></mat-list-item>-->
+        <!--        </mat-expansion-panel-header>-->
+        <!--          <mat-list-item class="item" [routerLink]="menuitem.routerLink" *ngFor="let menuitem of reportsGroup"><a>{{ menuitem.name }}</a></mat-list-item>-->
+
+        <!--      </mat-expansion-panel>-->
+
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+
+</div>

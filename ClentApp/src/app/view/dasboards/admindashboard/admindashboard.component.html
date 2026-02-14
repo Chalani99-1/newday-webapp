@@ -1,0 +1,108 @@
+<mat-grid-list [cols]="20" [rowHeight]="rowHeight">
+  <mat-grid-tile [colspan]="20" [rowspan]="row0">
+    <h2 id="title">Dashboard <i style="margin-left: 30px" class="fa-solid fa-qrcode"></i></h2>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="10" [rowspan]="row1" >
+    <mat-card id="card-1" >
+      <mat-card-header>
+        Total System Users
+      </mat-card-header>
+      <mat-card-content >
+        <div  class="info-card-container">
+          <i  class="fa-solid fa-people-line"></i>
+          {{ totalUsers }}
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="card-2" >
+      <mat-card-header>
+        Total Clients
+      </mat-card-header>
+      <mat-card-content>
+        <div class="info-card-container">
+          <i  class="fa-solid fa-people-arrows"></i>
+          {{ totalClients}}
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="card-2a" >
+      <mat-card-header>
+        Total Client Orders
+      </mat-card-header>
+      <mat-card-content>
+        <div  class="info-card-container">
+          <i  class="fa-solid fa-list-check"></i>
+          {{ totalClientOrders }}
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="card-2b" >
+      <mat-card-header>
+        Total Profit
+      </mat-card-header>
+      <mat-card-content style="overflow-x: hidden">
+        <div  class="info-card-container">
+          <i  class="fa-solid fa-money-bill-1-wave"></i>
+          {{ animatedProfit| currency:'LKR' }}
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <mat-grid-tile [colspan]="10" [rowspan]="row2">
+    <mat-card id="card-4b" style="background-color: white ;">
+      <mat-card-header >
+        Productions and Product Timeline
+        <i style="color: red;font-size: 20px ; margin-left: 20px" class="fa-solid fa-fire-flame-curved"></i>
+      </mat-card-header>
+      <mat-card-content >
+        <canvas style="max-height: 95% " #barchart></canvas>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="10" [rowspan]="row3">
+    <!--*ngIf="role === 'Admin' || role === 'Store Keeper' || role === 'General Manager'"-->
+    <mat-card id="card-4a" style="background-color: white ;margin-top: 25px !important;">
+      <mat-card-header style="font-size: 25px">
+        Sales and Profit Timeline
+        <i style="color: red;font-size: 20px ; margin-left: 20px" class="fa-solid fa-fire-flame-curved"></i>
+      </mat-card-header>
+      <mat-card-content >
+        <canvas  #linechart></canvas>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <mat-grid-tile style="margin-top: 10px" [colspan]="6" [rowspan]="row4">
+    <mat-card id="card-4" style="background-color: white !important;">
+      <mat-card-header style="font-size: 25px">
+        Product Sales Overview
+        <i style="color: red;font-size: 20px ; margin-left: 20px" class="fa-solid fa-fire-flame-curved"></i>
+      </mat-card-header>
+      <mat-card-content >
+        <canvas style="height: 95%; width: 90% " #piechart></canvas>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <mat-grid-tile style="margin-top: 10px" [colspan]="4" [rowspan]="row5">
+    <mat-card id="card-5">
+      <mat-card-header >
+        Client Order Summary
+        <i style="font-size: 20px ; margin-left: 20px" class="fa-solid fa-bars-staggered"></i>
+      </mat-card-header>
+      <mat-card-content id="detail-outer">
+        <div *ngFor="let c of clients" id="detail-container">
+          <div id="detail">Client : {{c.client.name}}</div>
+          <span id="inner-detail">Orders : {{c.count}} </span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

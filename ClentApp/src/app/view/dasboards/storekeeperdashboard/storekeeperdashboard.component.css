@@ -1,0 +1,242 @@
+mat-card {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: auto;
+  margin: 10px 10px 10px 10px;
+  background-color: #e0e9fa;
+
+  /*box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.8);*/
+}
+
+:host {
+  display: block;
+  height: 100%; /* Ensure the component takes the full height of the grid tile */
+}
+
+mat-card-content {
+
+  flex-grow: 1; /* Ensure the content inside the card grows to fill the available space */
+}
+
+#title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  margin: 0 10px;
+  padding: 2px;
+  color: var(--color-light);
+  background-color: var(--color-dark);
+  font-size: 20px;
+  text-align: center;
+  width: 100%;
+}
+
+mat-card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  padding-bottom: 10px;
+  margin-bottom: 5px;
+  font-size: 16px !important;
+  color: white !important;
+  background-color: var(--color-dark) !important;
+  text-align: center;
+  font-weight: normal !important;
+  max-height: 30px !important;
+
+}
+
+#card-1, #card-2 {
+  background-color: #c1dcff !important;
+  width: 450px;
+  overflow: hidden;
+
+  > mat-card-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60%;
+  }
+}
+
+#rm-count-icon, #rm-count-icon2 {
+  width: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 20px;
+
+  > i {
+    font-size: 20px;
+    color: #36A2EB;
+  }
+
+}
+
+#rm-list {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-direction: column;
+  width: 20%;
+  padding: 4px;
+  margin: 2px 0;
+  background-color: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  height: 130px;
+  border-radius: 12px;
+
+  img{
+    width: 70px;
+    height: 70px;
+  }
+}
+
+#rm-list2 {
+  display: flex;
+  justify-content: space-between;
+  width: 93%;
+  padding: 2px;
+  margin-bottom: 3px;
+  background-color: #ffffff;
+  border-radius: 6px;
+}
+
+mat-card-content.usage-content {
+  background-color: #c1dcff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  flex-wrap: wrap;
+  overflow-y: auto; /* Allows scrolling if list grows too long */
+}
+
+.usage-content2 {
+  background-color: #c1dcff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2px;
+
+}
+
+#rm-list:hover, #rm-list2:hover {
+  background-color: #e8f0ff;
+}
+
+.item-name {
+  font-size: 12px !important;
+  text-align: center;
+  font-weight: 300;
+  color: black;
+}
+
+.item-count {
+  color: var(--color-dark);
+  font-weight: bold;
+  font-size: 12px !important;
+}
+
+#chart-div {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+#card-4a2 mat-card-content {
+  max-height: 95%;
+  max-width: 95%;
+}
+
+#card-5 mat-card-content {
+  max-height: 90% !important;
+  max-width: 90% !important;
+}
+
+@media screen and (max-width: 1366px) {
+
+  #rm-list {
+      width: 20%;
+    padding: 2px;
+    margin: 2px 0;
+    background-color: #ffffff;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    height: 120px;
+    border-radius: 12px;
+    img{
+      width: 40px;
+      height: 40px;
+    }
+  }
+  .item-name {
+    font-size: 10px !important;
+    text-align: center;
+    font-weight: 300;
+    color: black;
+  }
+
+  .item-count {
+    color: var(--color-dark);
+    font-weight: bold;
+    font-size: 10px !important;
+  }
+
+  #title {
+    border-radius: 12px;
+    margin: 5px 2px;
+    padding: 1px;
+    font-size: 14px;
+    max-height: 25px;
+  }
+
+  mat-card-header {
+    border-radius: 12px;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
+    font-size: 12px !important;
+    max-height: 30px !important;
+  }
+
+  #rm-list2 {
+    display: flex;
+    justify-content: space-between;
+    width: 93%;
+    padding: 2px;
+    margin: 2px 0;
+    background-color: #ffffff;
+    border-radius: 6px;
+  }
+
+  #card-1,#card-2 {
+    mat-card-content{
+      overflow-y: hidden !important;
+    }
+    mat-card-header {
+       padding-bottom: 1px;
+            font-size: 10px !important;
+      max-height: 20px !important;
+
+    }
+  }
+  #rm-count-icon, #rm-count-icon2 {
+    width: 30px;
+     gap: 5px;
+    font-size: 10px;
+padding-top: 10px;
+
+    > i {
+      font-size: 10px;
+      color: #36A2EB;
+    }
+
+  }
+}

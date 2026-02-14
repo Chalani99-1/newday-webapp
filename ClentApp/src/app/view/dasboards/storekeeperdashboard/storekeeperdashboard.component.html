@@ -1,0 +1,99 @@
+<mat-grid-list [cols]="20" [rowHeight]="rowHeight">
+
+  <mat-grid-tile [colspan]="20" [rowspan]="row0">
+
+    <h2 id="title">Dashboard <i style="margin-left: 30px" class="fa-solid fa-qrcode"></i></h2>
+  </mat-grid-tile>
+
+  <!--Raw mat counts cards-->
+  <mat-grid-tile [colspan]="10" [rowspan]="row01">
+    <mat-card id="card-1" style="background-color: white">
+      <mat-card-header>
+        Total InStock Material Count
+      </mat-card-header>
+      <mat-card-content>
+        <div id="rm-count-icon">
+          <i class="fa-solid fa-chart-simple"></i>
+          {{ totalRmCount }}
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card id="card-2" style="background-color: white">
+      <mat-card-header>
+        Current Stockouts Count
+      </mat-card-header>
+      <mat-card-content>
+        <div id="rm-count-icon2">
+          <i style="color: red" class="fa-solid fa-exclamation"></i>
+          {{ totalOutOfStockCount }}
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--  most used list-->
+  <mat-grid-tile [colspan]="10" [rowspan]="row1">
+    <mat-card id="card-3" style="background-color: white">
+      <mat-card-header style="font-size: 25px">
+        Material Usage Summary
+        <i style="font-size: 20px ; margin-left: 20px" class="fa-solid fa-chart-line"></i>
+      </mat-card-header>
+      <mat-card-content class="usage-content">
+        <div id="rm-list" *ngFor="let rmusage of rmUsages; index as i;">
+          <img  [src]="getRmImage(rmusage)">
+          <span class="item-name">{{ rmusage.rawmaterialname }}</span>
+          <span class="item-count">  {{ rmusage.count }} Units Used</span>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="10" [rowspan]="row2">
+    <mat-card id="card-4a2" style="background-color: white ;margin-top: 30px !important;">
+      <mat-card-header style="font-size: 25px">
+        Inventory Overview
+        <i style="color: red;font-size: 20px ; margin-left: 20px" class="fa-solid fa-chart-bar"></i>
+      </mat-card-header>
+      <mat-card-content>
+        <canvas style="max-height: 97% " baseChart
+                [data]="barChartData"
+                [options]="barChartOptions"
+                [type]="'bar'">
+        </canvas>
+      </mat-card-content>
+    </mat-card>
+
+  </mat-grid-tile>
+
+  <!--  material currently delivering-->
+  <mat-grid-tile style="margin-top: 10px" [colspan]="5" [rowspan]="row3">
+    <mat-card id="card-4" style="background-color: white">
+      <mat-card-header style="font-size: 25px">
+        Expected Shipments
+        <i style="font-size: 20px ; margin-left: 20px" class="fa-solid fa-truck"></i>
+      </mat-card-header>
+      <mat-card-content style="padding: 5px" class="usage-content2">
+        <div id="rm-list2" *ngFor="let porawmat of porawmats; index as i;">
+          <span class="item-name">{{ porawmat.rawmaterial.name }}</span>
+          <span class="item-count">{{ porawmat.count }} units</span>
+
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <!--  material currently delivering chart-->
+  <mat-grid-tile style="margin-top: 10px" [colspan]="5" [rowspan]="row4">
+    <mat-card id="card-5" style="background-color: white">
+      <mat-card-header style="font-size: 25px">
+        Shipments Chart
+        <i style="font-size: 20px ; margin-left: 20px" class="fa-solid fa-chart-bar"></i>
+      </mat-card-header>
+      <mat-card-content>
+        <canvas style="height: 90% ;width: 90% " #piechart></canvas>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

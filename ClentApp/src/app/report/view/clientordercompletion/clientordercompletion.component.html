@@ -1,0 +1,24 @@
+  <mat-card style="margin-top: 10px;" >
+      <mat-card-header>Client Order Completion Overview </mat-card-header>
+      <mat-card-content>
+        <div *ngIf="dataLoading" style="text-align: center">
+          <mat-progress-spinner
+            mode="indeterminate"
+            color="primary"
+            [diameter]="70"
+            style="margin: 30px auto; display: block;">
+          </mat-progress-spinner>
+          <div  class="loading-text">
+            <p>Loading Chart, Please Wait...</p>
+          </div>
+        </div>
+
+        <div #catchart></div>
+       <div id="custom_legend" style="margin-top: 5px">
+      <span style="background-color:#FF6384;width:20px;height:10px;display:inline-block; margin-right: 10px"></span>Prioritize
+      <span style="background-color:#4BC0C0;width:20px;height:10px;display:inline-block; margin-right: 2px"></span> Flexible
+    </div></mat-card-content>
+    </mat-card>
+
+
+

@@ -1,0 +1,15 @@
+<mat-card>
+  <mat-card-header>
+    {{ data.heading }}
+  </mat-card-header>
+  <mat-card-content>
+    <ng-container *ngFor="let line of lines">
+      <span>{{ line }}</span><br/>
+    </ng-container>
+  </mat-card-content>
+  <mat-dialog-actions>
+    <button mat-raised-button id="confirm-yes-btn" [mat-dialog-close]="true">
+      <i class="fa-solid fa-circle-check"></i>
+      OK</button>
+  </mat-dialog-actions>
+</mat-card>

@@ -1,0 +1,703 @@
+/* You can add global styles to this file, and also import other style files */
+@import '../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: url("assets/dairy.jpg");
+  background-size: cover;
+  margin: 0;
+}
+
+mat-form-field {
+  margin: -5px !important;
+  width: 100%;
+}
+
+.mat-mdc-form-field-infix {
+  min-height: 28px !important;
+  padding-top: 4px !important;
+  padding-bottom: 4px !important;
+}
+
+.mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label {
+  padding-bottom: 23px;
+  font-size: 12px !important;
+}
+
+mat-form-field input {
+  font-size: 12px !important;
+}
+
+mat-option, mat-cell, mat-header-cell, mat-select {
+  font-size: 12px !important;
+}
+
+mat-header-cell {
+  background-color: var(--color-ternary) !important;
+  font-weight: bold !important;
+}
+
+.mdc-text-field--invalid:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: darkred !important;
+}
+
+.mdc-text-field--valid:not(.mdc-text-field--disabled) .mdc-floating-label {
+  color: darkgreen !important;
+}
+
+.dark-mode {
+  filter: invert(100%) hue-rotate(180deg);
+}
+
+.component-background {
+  background: var(--color-ternary) !important;
+
+}
+
+mat-card, mat-card-header {
+  border-top-left-radius: 12px !important;
+  border-top-right-radius: 12px !important;
+}
+
+mat-card {
+  border-radius: 12px !important;
+}
+
+mat-card-title {
+  text-align: center;
+}
+
+mat-card:has(mat-table) {
+  /*background-color: lightgrey !important;*/
+}
+
+mat-card-content {
+  border-radius: 12px;
+  overflow-y: auto !important;
+}
+
+mat-sidenav-content {
+  /*background: linear-gradient(to bottom, var(--color-light), var(--color-dark));*/
+  background-color: var(--color-ternary);
+}
+
+/*//common things*/
+#butpanel {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+#butpanel-add {
+  width: 80px;
+  margin: 3px;
+  background-color: #0d6efd;
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  max-height: 30px;
+}
+
+#butpanel-clear {
+  width: 80px;
+  margin: 3px;
+  background-color: #ffe600;
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  max-height: 30px;
+}
+
+#butpanel-update {
+  width: 80px;
+  margin: 3px;
+  background-color: var(--color-add);
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  max-height: 30px;
+}
+
+#butpanel-delete {
+  width: 80px;
+  margin: 3px;
+  background-color: var(--color-delete);
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  max-height: 30px;
+}
+
+mat-card-header {
+  padding-bottom: 10px !important;
+}
+
+#ssearch-btn {
+  max-height: 30px;
+  border-radius: 12px;
+  font-size: 12px;
+  width: 155px;
+  margin-left: 10px;
+  margin-top: 5px;
+  background-color: var(--color-add);
+  color: white;
+
+}
+
+#ssearch-clearbtn {
+  max-height: 30px;
+  border-radius: 12px;
+  font-size: 12px;
+  width: 155px;
+  margin-left: 10px;
+  margin-top: 5px;
+  background-color: var(--color-delete);
+  color: white
+}
+
+.csearch {
+  height: 40px;
+  width: 100%;
+  margin-top: 5px;
+}
+
+#ssearch mat-card-content {
+  padding-top: 25px;
+}
+
+#ssearch mat-form-field {
+  padding-left: 15px;
+  width: 200px;
+}
+
+mat-card-header {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  border-radius: 12px !important;
+  padding: 8px 16px !important;
+  margin-bottom: 8px !important;
+  font-size: 17px !important;
+  color: #ffffff !important;
+  background-color: var(--color-dark) !important;
+  text-align: center !important;
+  font-weight: 500 !important;
+  letter-spacing: 1px !important;
+  line-height: 1.2 !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5) !important;
+}
+
+.selected-row {
+  background-color: var(--color-accent) !important;
+}
+
+.mat-row:hover {
+  background-color: inherit !important;
+}
+
+#imgpanel {
+  height: 90px;
+  margin-bottom: 20px;
+}
+
+#imgpanel img {
+  height: 90px;
+  width: 90px;
+}
+
+#selectbutton {
+  margin-top: -100px;
+  width: 150px;
+  display: block;
+  margin-left: 150px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  border-radius: 12px;
+  padding: 4px;
+  max-height: 30px;
+  background-color: white;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--color-add);
+    color: white;
+    border: #104b30;
+  }
+}
+
+#clearbutton {
+  width: 150px;
+  display: block;
+  margin-left: 150px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  padding: 4px;
+  max-height: 30px;
+  background-color: white;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  border-radius: 12px;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--color-delete);
+    color: white;
+    border: 2px solid rgba(243, 47, 47, 0.8);
+  }
+}
+
+#btnAdd {
+  width: 120px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  border-radius: 12px;
+  padding: 4px;
+  max-height: 30px;
+  background-color: white;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--color-add);
+    color: white;
+    border: #104b30;
+  }
+}
+
+#btnDelete {
+  width: 120px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  padding: 4px;
+  max-height: 30px;
+  background-color: white;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  border-radius: 12px;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--color-delete);
+    color: white;
+    border: 2px solid rgba(243, 47, 47, 0.8);
+  }
+}
+
+#btnUpdate {
+  width: 120px;
+  margin-left: 10px;
+  margin-bottom: 15px;
+  font-size: 12px;
+  padding: 4px;
+  max-height: 30px;
+  background-color: white;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  border-radius: 12px;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--color-update);
+    color: white;
+    border: 2px solid rgb(195, 166, 20);
+  }
+}
+
+#removeBtn {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  padding: 4px;
+  max-height: 30px;
+  background-color: white;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  border-radius: 12px;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--color-delete);
+    color: white;
+    border: 2px solid rgba(243, 47, 47, 0.8);
+  }
+}
+
+#print-button {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+  padding-top: 20px;
+
+  button {
+    width: 120px;
+    margin-left: 10px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    border-radius: 12px;
+    padding: 4px;
+    max-height: 30px;
+    background-color: var(--color-dark);
+    color: white;
+    border: #00338c;
+    text-align: center;
+    align-self: flex-end;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+#confirm-yes-btn {
+  max-height: 30px;
+  border-radius: 12px;
+  font-size: 12px;
+  width: 120px;
+  margin-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  background-color: var(--color-add);
+  color: white;
+
+  i {
+    margin-right: 5px;
+  }
+}
+
+#confirm-no-btn {
+  max-height: 30px;
+  border-radius: 12px;
+  font-size: 12px;
+  width: 120px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  background-color: var(--color-delete);
+  color: white;
+
+  i {
+    margin-right: 5px;
+  }
+}
+
+/* For all scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-light) ;
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-dark);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-primary);
+}
+
+:root {
+  --color-light: #ffffff;
+  --color-dark: #4663AC;
+
+  --color-primary: #065d8f;
+  --color-secondary: #0093b8;
+
+  --color-ternary: #e3e9f3;
+  --color-accent: #d0ebf5;
+
+  --color-close: #2b2f33;
+  --color-add: #2eae60;
+  --color-update: #f4bc00;
+  --color-clear: #6e7e87;
+  --color-delete: #e02b42;
+}
+/*//report cards*/
+.first-card{
+  width: 55% !important;
+}
+
+@media screen and (max-width: 1366px) {
+  mat-card-header {
+       padding: 3px 8px !important;
+    margin-bottom: 2px !important;
+    font-size: 12px !important;
+      font-weight: 500 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.1 !important;
+    height: 20px !important;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  .mat-mdc-form-field-infix {
+    min-height: 20px !important;
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+  }
+
+  .mat-mdc-form-field .mat-mdc-floating-label.mdc-floating-label {
+    padding-bottom: 25px;
+    font-size: 11px !important;
+  }
+
+  mat-form-field input {
+    font-size: 11px !important;
+  }
+
+  mat-option, mat-cell, mat-header-cell, mat-select {
+    font-size: 11px !important;
+  }
+
+  mat-header-cell {
+    background-color: var(--color-ternary) !important;
+    font-weight: bold !important;
+  }
+
+  /*//common things*/
+  #butpanel {
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  #butpanel-add {
+    width: 50px;
+    margin: 2px;
+    font-size: 11px;
+     max-height: 25px;
+  }
+
+  #butpanel-clear {
+    width: 50px;
+    margin: 2px;
+    font-size: 11px;
+    max-height: 25px;
+  }
+
+  #butpanel-update {
+    width: 50px;
+    margin: 2px;
+    font-size: 11px;
+    max-height: 25px;
+  }
+
+  #butpanel-delete {
+    width: 50px;
+    margin: 2px;
+    font-size: 11px;
+    max-height: 25px;
+  }
+
+  mat-card-header {
+    padding-bottom: 5px !important;
+  }
+
+  #ssearch-btn {
+    max-height: 25px;
+    font-size: 11px;
+    width: 120px;
+    margin-left: 5px;
+    margin-top: 3px;
+  }
+
+  #ssearch-clearbtn {
+    max-height: 25px;
+    font-size: 11px;
+    width: 130px;
+    margin-left: 5px;
+    margin-top: 3px;
+  }
+
+  .csearch {
+    height: 20px;
+    width: 100%;
+    margin-top: 2px;
+  }
+
+  #ssearch mat-card-content {
+    padding-top: 10px;
+  }
+
+  #ssearch mat-form-field {
+    padding-left: 15px;
+    width: 150px;
+  }
+
+  #imgpanel {
+    height: 70px;
+    margin-bottom: 30px;
+  }
+
+  #imgpanel img {
+    height: 70px;
+    width: 70px;
+  }
+
+  #selectbutton {
+    margin-top: -70px;
+    width: 120px;
+    display: block;
+    margin-left: 100px;
+    margin-bottom: 4px;
+    font-size: 11px;
+        padding: 2px;
+    max-height: 20px;
+
+    &:hover {
+      background-color: var(--color-add);
+      color: white;
+      border: #104b30;
+    }
+  }
+
+  #clearbutton {
+      width: 120px;
+    display: block;
+    margin-left: 100px;
+    margin-bottom: 2px;
+    font-size: 11px;
+    padding: 2px;
+    max-height: 20px;
+
+    &:hover {
+      background-color: var(--color-delete);
+      color: white;
+      border: 2px solid rgba(243, 47, 47, 0.8);
+    }
+  }
+
+  #btnAdd {
+    width: 120px;
+    margin-left: 5px;
+    margin-bottom: 15px;
+    font-size: 11px;
+    padding: 2px;
+    max-height: 20px;
+
+
+    &:hover {
+      background-color: var(--color-add);
+      color: white;
+      border: #104b30;
+    }
+  }
+
+  #btnDelete {
+    width: 120px;
+    margin-left: 5px;
+    margin-bottom: 15px;
+    font-size: 11px;
+    padding: 2px;
+    max-height: 20px;
+
+    &:hover {
+      background-color: var(--color-delete);
+      color: white;
+      border: 2px solid rgba(243, 47, 47, 0.8);
+    }
+  }
+
+  #btnUpdate {
+    width: 120px;
+    margin-left: 5px;
+    margin-bottom: 15px;
+    font-size: 11px;
+    padding: 2px;
+    max-height: 20px;
+
+    &:hover {
+      background-color: var(--color-update);
+      color: white;
+      border: 2px solid rgb(195, 166, 20);
+    }
+  }
+
+  #removeBtn {
+    display: block;
+    margin-bottom: 2px;
+    font-size: 11px;
+    padding: 2px;
+    max-height: 23px;
+
+    &:hover {
+      background-color: var(--color-delete);
+      color: white;
+      border: 2px solid rgba(243, 47, 47, 0.8);
+    }
+  }
+
+  #print-button {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 10px;
+    padding-top: 15px;
+
+    button {
+      width: 120px;
+      margin-left: 10px;
+      margin-bottom: 10px;
+      font-size: 11px;
+      border-radius: 12px;
+      padding: 2px;
+      max-height: 25px;
+          &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  #confirm-yes-btn {
+    max-height: 20px;
+    border-radius: 12px;
+    font-size: 11px;
+    width: 120px;
+    margin-left: 10px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+
+    i {
+      margin-right: 5px;
+    }
+  }
+
+  #confirm-no-btn {
+    max-height: 20px;
+    border-radius: 12px;
+    font-size: 11px;
+    width: 120px;
+    margin-left: 10px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+
+    i {
+      margin-right: 5px;
+    }
+  }
+  .first-card{
+    width: 40%;
+  }
+}
+
+@media screen and (min-width: 1380px) and (max-width: 1680px) {
+  mat-card-header {
+    padding: 2px 8px !important;
+    margin-bottom: 2px !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.1 !important;
+    height: 20px !important;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5) !important;
+  }
+}

@@ -1,0 +1,154 @@
+<mat-grid-list gutterSize="7" [cols]="6" [rowHeight]="rowHeight">
+
+  <mat-grid-tile [colspan]="6" [rowspan]="row0">
+    <div id="group">
+      <div id="title">Welcome Back {{ name }}</div>
+      <div id="title-image"><img id="headImg" src="assets/logos/home_title_banner.png"
+                                 style="height: 40px; margin-left: 10px;"/>
+      </div>
+    </div>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="6" [rowspan]="row1" id="quicklinks">
+
+    <a routerLink="supplier" *ngIf="role === 'Admin' || role === 'General Manager'">
+      <mat-card>
+        <mat-card-content><img src="assets/supplier.png"></mat-card-content>
+        <mat-card-footer>Supplier</mat-card-footer>
+      </mat-card>
+    </a>
+
+    <a routerLink="rawmaterial" *ngIf="role === 'Admin' || role === 'General Manager' || role === 'Store Keeper'">
+      <mat-card>
+        <mat-card-content><img src="assets/material.png"></mat-card-content>
+        <mat-card-footer>Raw Material</mat-card-footer>
+      </mat-card>
+    </a>
+
+    <a routerLink="production"
+       *ngIf="role === 'Admin' || role === 'Production Supervisor' || role === 'General Manager'">
+      <mat-card>
+        <mat-card-content><img src="assets/production.png"></mat-card-content>
+        <mat-card-footer>Production</mat-card-footer>
+      </mat-card>
+    </a>
+
+    <a routerLink="productionorder"
+       *ngIf="role === 'Admin' ||  role === 'Production Supervisor' || role === 'General Manager'">
+      <mat-card>
+        <mat-card-content><img src="assets/production-order.png"></mat-card-content>
+        <mat-card-footer>Production Order</mat-card-footer>
+      </mat-card>
+    </a>
+
+    <a routerLink="product" *ngIf="role === 'Admin' || role === 'Store Keeper' || role === 'General Manager'">
+      <mat-card>
+        <mat-card-content><img src="assets/inventory.png"></mat-card-content>
+        <mat-card-footer>Product</mat-card-footer>
+      </mat-card>
+    </a>
+
+    <a routerLink="client" *ngIf="role === 'Admin' || role === 'General Manager'">
+      <mat-card>
+        <mat-card-content><img src="assets/customer.png"></mat-card-content>
+        <mat-card-footer>Client</mat-card-footer>
+      </mat-card>
+    </a>
+
+    <a routerLink="purchaseorder" *ngIf="role === 'Admin' || role === 'General Manager'|| role === 'Store Keeper'">
+      <mat-card>
+        <mat-card-content><img src="assets/payments.png"></mat-card-content>
+        <mat-card-footer>Purchase Order</mat-card-footer>
+      </mat-card>
+    </a>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="3" [rowspan]="row2">
+    <mat-card id="hpContainer">
+      <mat-card-header>
+        <i class="fa-solid fa-clipboard-list" style="margin-right: 20px"></i>
+        <span> User's High Priority Tasks </span>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-progress-spinner
+            *ngIf="taskLoading"
+            mode="indeterminate"
+            color="primary"
+            [diameter]="70"
+            style="margin: 30px auto; display: block;">
+          </mat-progress-spinner>
+          <div *ngIf="taskLoading" class="loading-text">
+            <p>Loading Tasks, Please Wait...</p>
+          </div>
+
+          <mat-list-item style="padding-top: 5px" id="listbox" *ngFor="let message of userspecmessages$ | async">
+            <img matListItemIcon [src]="'assets/task.png'" alt="task gif"
+                 style="width: 20px; height: 20px;"/>
+            <div matListItemTitle class="mat-list-item-title"
+                 [ngStyle]="{ 'color': message.name.startsWith('No New Messages') ? '#1f9b5c' : '#0077EDFF' }">
+              {{ message.name }}
+            </div>
+            <div class="task" *ngFor="let md of message.detail; let index = index" matListItemLine>
+              {{ md.name }}
+            </div>
+            <div matListItemMeta>{{ message.updated | date }}</div>
+            <button *ngIf="!message.name.startsWith('No New Messages')" id="checkButton" mat-button
+                    (click)="redirectToComponent(message.name)">Go to Module
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <mat-grid-tile [colspan]="3" [rowspan]="row3">
+    <mat-card id="hpContainer2">
+      <mat-card-header>
+        <i class="fa-solid fa-envelope" style="margin-right:20px"></i>
+        <span>Messages</span>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list>
+          <mat-progress-spinner
+            *ngIf="msgLoading"
+            mode="indeterminate"
+            color="primary"
+            [diameter]="70"
+            style="margin: 30px auto; display: block;">Loading Messages
+          </mat-progress-spinner>
+          <div *ngIf="msgLoading" class="loading-text">
+            <p>Loading Messages, Please Wait...</p>
+          </div>
+
+          <mat-list-item id="listbox2" *ngFor="let message of usermessages$ | async ; ">
+            <img matListItemIcon [src]="'assets/message.png'" alt="message gif"
+                 style="width: 20px; height: 20px;"/>
+            <div matListItemTitle class="mat-list-item-title"
+                 [ngStyle]="{ 'color': message.name.startsWith('No New Messages') ? '1f9b5c' : '#0077EDFF' }">
+              {{ message.name }}
+            </div>
+            <div class="msg" *ngFor="let md of message.detail; let index = index" matListItemLine
+                 [ngStyle]="{ 'color': md.isread ? 'gray' : 'black' }">
+
+              <i class="fa-solid fa-message"
+                 (click)="toggleRead(md)"
+                 style=" margin-top: 2px;
+                cursor: pointer"
+                 [ngStyle]="{ color: md.isread ? 'rgba(0,119,237,0.58)' : '#f13c58' }"
+                 matTooltip="{{ md.isread ? 'Mark as Unread' : 'Mark as Read' }}">
+              </i>
+              {{ md.message.content }}
+              <div>({{ md.message.date | date: 'yyyy-MM-dd'}})</div>
+            </div>
+
+          </mat-list-item>
+
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

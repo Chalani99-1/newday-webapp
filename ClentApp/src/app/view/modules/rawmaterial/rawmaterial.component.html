@@ -1,0 +1,192 @@
+<mat-grid-list class="component-background" [cols]="20" [rowHeight]="rowHeight" gutterSize="5px">
+  <button id="toggle-form-btn" (click)="isFormVisible = !isFormVisible"
+          [style.background-color]="!isFormVisible ? 'var(--color-add)' : 'var(--color-delete)'"
+  >
+    {{ isFormVisible ? 'Hide' : 'New' }}
+
+    <i class="fa-solid fa-plus" *ngIf="!isFormVisible"></i>
+    <i class="fa-solid fa-xmark" *ngIf="isFormVisible"></i>
+  </button>
+
+  <mat-grid-tile [colspan]="isFormVisible ? 14 : 20" [rowspan]="65">
+    <mat-card>
+      <mat-card-header>
+        Raw Materials
+      </mat-card-header>
+
+      <div id="ssearch">
+        <mat-card-content id="formgroup">
+          <form [formGroup]="ssearch">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Search By Name</mat-label>
+              <input matInput formControlName="ssname">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Search By Status</mat-label>
+              <mat-select formControlName="ssrmstatus"><
+                <mat-option [value]="null">Not Selected</mat-option>
+                <mat-option *ngFor="let materialstatus of materialstatuses"
+                            [value]="materialstatus.id">{{ materialstatus.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Search By Category</mat-label>
+              <mat-select formControlName="ssrmcategory"><
+                <mat-option [value]="null">Not Selected</mat-option>
+                <mat-option *ngFor="let materialcategory of materialcategories"
+                            [value]="materialcategory.id">{{ materialcategory.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Search By Type</mat-label>
+              <mat-select formControlName="ssrmtype"><
+                <mat-option [value]="null">Not Selected</mat-option>
+                <mat-option *ngFor="let materialtype of materialtypes"
+                            [value]="materialtype.id">{{ materialtype.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          </form>
+
+          <div id="search-form-btns">
+            <button id="ssearch-btn" mat-raised-button (click)="btnSearchMc()">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              Search
+            </button>
+            <button id="ssearch-clearbtn" mat-raised-button (click)="btnSearchClearMc()">
+              <i class="fa-solid fa-xmark"></i>
+              Clear
+            </button>
+          </div>
+
+        </mat-card-content>
+      </div>
+
+      <mat-card-content>
+
+        <div class="rawmat-grid-container">
+          <mat-card class="rawmat-card" *ngFor="let rawmaterial of rawmaterials" (click)="fillForm(rawmaterial)"
+                    [matTooltip]="'Click to View Detail'"
+                    [ngClass]="{ 'status-not-1': rawmaterial.qoh > 1 && rawmaterial.qoh<=rawmaterial.rop ,
+                               'status-out-1':rawmaterial.qoh <= 1 }"
+          >
+
+            <img id="p-img" [src]="getRawMatImage(rawmaterial)" alt="Rawmat Image">
+
+            <mat-card-content id="descrp">
+              <p id="descrp-title">{{ rawmaterial.name }}</p>
+              <p>QOH :<span style="font-weight: bold">{{ rawmaterial.qoh }} units</span></p>
+              <p>ROP :<span style="font-weight: bold">{{ rawmaterial.rop }} units</span></p>
+              <p>Status :<span style="font-weight: bold ;"
+                               [ngClass]="{ 'status-not': rawmaterial.qoh > 1 && rawmaterial.qoh<=rawmaterial.rop ,
+                               'status-out':rawmaterial.qoh <= 1 }"
+
+              > {{ rawmaterial.materialstatus.name }}</span></p>
+              <p>Price :<span style="font-weight: bold ;color: red"
+              > {{ rawmaterial.unitprice | currency:'LKR ' }}</span></p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="isFormVisible ? 6 : 0" [rowspan]="65 ">
+    <mat-card>
+      <mat-card-header>
+        Raw Material
+      </mat-card-header>
+
+      <mat-card-content id="rawmaterialform">
+        <form #myForm [formGroup]="form">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select Type</mat-label>
+            <mat-select formControlName="materialtype"><
+              <mat-option [value]="null">Not Selected</mat-option>
+              <mat-option *ngFor="let materialtype of materialtypes" [value]="materialtype">{{ materialtype.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select Category</mat-label>
+            <mat-select formControlName="materialcategory"><
+              <mat-option [value]="null">Not Selected</mat-option>
+              <mat-option *ngFor="let materialcategory of materialcategories"
+                          [value]="materialcategory">{{ materialcategory.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Raw Material Code</mat-label>
+            <input matInput formControlName="code" >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Raw Material Name</mat-label>
+            <input matInput formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Unit Price</mat-label>
+            <input matInput formControlName="unitprice">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Quantity On Hand</mat-label>
+            <input matInput formControlName="qoh">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Re Order Point</mat-label>
+            <input matInput formControlName="rop">
+          </mat-form-field>
+
+          <div id="imgpanel">
+            <img [src]="imageRMUrl">
+            <input id="userImage" hidden="hidden" (change)="selectImage($event)" Select type="file"
+                   accept="image/*" formControlName="photo">
+            <label for="userImage" id="selectbutton">Select Image</label>
+            <label id="clearbutton" (click)="clearImage()">Clear</label>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select A Status</mat-label>
+            <mat-select formControlName="materialstatus"><
+              <mat-option [value]="null">Not Selected</mat-option>
+              <mat-option *ngFor="let materialstatus of materialstatuses"
+                          [value]="materialstatus">{{ materialstatus.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Employee</mat-label>
+            <mat-select formControlName="employee"><
+              <mat-option [value]="null">Not Selected</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div id="butpanel">
+            <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>
+            <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>
+            <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>
+            <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

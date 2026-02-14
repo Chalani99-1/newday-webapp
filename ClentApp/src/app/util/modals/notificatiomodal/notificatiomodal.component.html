@@ -1,0 +1,27 @@
+<mat-card>
+  <mat-card-header>
+    Priority Tasks
+    <i style="margin-left: 20px" class="fa-solid fa-clipboard-list"></i>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item id="listbox" *ngFor="let message of data.userspecmessages">
+        <img matListItemIcon [src]="'assets/task.png'" alt="message gif"
+             style="width: 20px; height: 20px;"/>
+        <div id="restocklist" matListItemTitle
+             [ngStyle]="{ 'color': message.name.startsWith('No New Messages') ? 'green' : '#0d9edf' }">
+          {{ message.name }}
+        </div>
+        <div *ngFor="let md of message.detail; let index = index" matListItemLine
+             style=" font-size: 12px !important; color: black">
+          {{ md.name }}
+        </div>
+        <div matListItemMeta>{{ message.updated | date }}</div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button id="btn1" mat-dialog-close="true">
+      <i class="fa-solid fa-xmark" style="margin-right: 8px"></i>Close</button>
+  </mat-card-actions>
+</mat-card>

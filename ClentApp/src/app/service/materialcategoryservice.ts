@@ -1,0 +1,40 @@
+ import {Injectable} from "@angular/core";
+import {HttpClient} from "@angular/common/http";
+import {Productcategory} from "../entity/productcategory";
+import {Materialcategory} from "../entity/materialcategory";
+
+@Injectable({
+  providedIn: 'root'
+})
+
+export class Materialcategoryservice {
+
+  constructor(private http: HttpClient) {
+  }
+
+  async getAllList(): Promise<Array<Materialcategory>> {
+    const mcs = await this.http.get<Array<Materialcategory>>('http://localhost:8080/materialcategories/list').toPromise();
+    if (mcs == undefined) {
+      return [];
+    }
+    return mcs;
+  }
+  async add(mc: Materialcategory): Promise<[]|undefined>{
+    // console.log(JSON.stringify(mc));
+    return this.http.post<[]>('http://localhost:8080/materialcategories', mc).toPromise();
+  }
+  async update(mc: Materialcategory): Promise<[]|undefined>{
+    return this.http.put<[]>('http://localhost:8080/materialcategories', mc).toPromise();
+  }
+
+  async delete(id: number): Promise<[]|undefined>{
+    // @ts-ignore
+    return this.http.delete('http://localhost:8080/materialcategories/' + id).toPromise();
+  }
+
+
+
+
+}
+
+

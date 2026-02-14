@@ -1,0 +1,34 @@
+<mat-card>
+  <mat-card-header>
+       Messages
+       <i class="fa-solid fa-envelope" style="margin-left: 20px"></i>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      <mat-list-item id="listbox" *ngFor="let message of data.usernewmessages">
+        <img matListItemIcon [src]="'assets/message.png'" alt="message gif" style="width: 20px; height: 20px;"/>
+        <div id="restocklist" matListItemTitle
+             [ngStyle]="{ 'color': message.name.startsWith('No New Messages') ? 'green' : '#0d9edf' }">
+          {{ message.name }}
+        </div>
+        <div  id="msg" *ngFor="let md of message.detail; let index = index"
+             matListItemLine style=" font-size: 13px !important;"
+             [ngStyle]="{ 'color': md.isread ? 'gray' : 'black' }"
+        >
+          <i class="fa-solid fa-message"
+             (click)="toggleRead(md)"
+             style="cursor: pointer"
+             [ngStyle]="{ color: md.isread ? 'rgba(0,119,237,0.58)' : '#d51639' }"
+             matTooltip="{{ md.isread ? 'Mark as Unread' : 'Mark as Read' }}"></i>
+          {{ md.message.content }}
+                  <div>({{ md.message.date | date: 'yyyy-MM-dd'}})</div>
+        </div>
+        <div matListItemMeta>{{ message.updated | date }}</div>
+      </mat-list-item>
+    </mat-list>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-button id="btn1" mat-dialog-close="true" >
+      <i class="fa-solid fa-xmark" style="margin-right: 8px"></i>Close</button>
+  </mat-card-actions>
+</mat-card>

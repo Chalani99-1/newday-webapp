@@ -1,0 +1,44 @@
+<mat-dialog-content id="dialog">
+  <mat-card-header >Resource Availability For Order</mat-card-header>
+
+  <mat-table id="tbl" [dataSource]="data.tableData">
+    <!-- Define the columns and rows -->
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef> Raw Material Id </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.id}} </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Raw Material Name </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="needed">
+      <mat-header-cell *matHeaderCellDef> Amount Needed </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.needed.toFixed(2)}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="available">
+      <mat-header-cell *matHeaderCellDef>Amount Available </mat-header-cell>
+      <mat-cell *matCellDef="let element"
+                [ngStyle]="{ 'color': data.flag && data.oosElements.includes(element.id) ? 'red' : '' }">
+        {{element.available}}
+      </mat-cell>
+    </ng-container>
+
+    <!-- Table Header -->
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <!-- Table Data Rows -->
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+  <p *ngIf="data.flag" style="color:red ; margin: 20px ;font-size: 13px">
+      <i class="fa-solid fa-circle-exclamation" style="color: red"></i>
+    Some Material Are Low On Quantity / Out Of Stock. Please Adjust Order or Contact Manager
+  </p>
+  <p *ngIf="!data.flag" style="color:var(--color-add) ; margin: 20px;font-size: 13px">
+    <i class="fa-solid fa-thumbs-up" style="color: var(--color-add);"></i>
+    Material Are Sufficient for Order. You Can Proceed
+  </p>
+</mat-dialog-content>
+<div id="btndiv" mat-dialog-actions>
+  <button id="confirm-no-btn" mat-button mat-dialog-close>Close</button>
+</div>

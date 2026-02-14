@@ -1,0 +1,35 @@
+mat-card {
+  width: 100%;
+  height: 100%;
+  margin: 10px 10px -10px 10px;
+}
+
+mat-card-content {
+  overflow: auto;
+  height: 100%;
+}
+
+#table {
+  margin-top: 20px;
+}
+
+#supplierform {
+  padding-top: 20px;
+  /*padding-bottom:20px ;*/
+}
+
+#supplierform mat-form-field .ng-dirty {
+  background-color: #abfecc !important;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+#supplierform mat-form-field .ng-valid,
+.ng-valid.required {
+  background-color: var(--color-accent)FF;
+}
+
+
+

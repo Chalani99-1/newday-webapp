@@ -1,0 +1,17 @@
+
+mat-card {  width: 100%;  height:100%;  margin: 10px 10px -10px 10px ; }
+mat-card-content { overflow: auto; height: 100%; }
+#userform { padding-top: 20px; }
+
+#userform mat-form-field .ng-dirty{
+  background-color: #fefeab !important;
+}
+#userform mat-form-field .ng-valid,
+.ng-valid.required {
+  background-color: var(--color-accent)FF;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+

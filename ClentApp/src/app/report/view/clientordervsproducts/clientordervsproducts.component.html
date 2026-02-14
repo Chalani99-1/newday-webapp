@@ -1,0 +1,83 @@
+<div id="printSection">
+  <mat-grid-list [cols]="5" class="component-background" [rowHeight]="rowHeight">
+
+    <mat-grid-tile [colspan]="2" [rowspan]="34">
+      <mat-card class="first-card">
+        <mat-card-header>
+          Product Sale Amounts
+        </mat-card-header>
+        <mat-card-content id="printSection1">
+          <canvas  baseChart
+                  [data]="pieChartData"
+                  [options]="pieChartOptions"
+                  [type]="'pie'">
+          </canvas>
+        </mat-card-content>
+      </mat-card>
+    </mat-grid-tile>
+
+    <mat-grid-tile [colspan]="3" [rowspan]="34">
+      <mat-card>
+        <mat-card-header>
+          Client Order vs Product Amounts
+        </mat-card-header>
+        <mat-card-content id="printSection2">
+
+          <form [formGroup]="ssearch" style="margin-top: 20px">
+
+            <mat-form-field appearance="outline" style="width: 300px">
+              <mat-label>Search By Percentage</mat-label>
+              <input matInput formControlName="sspercentage">
+            </mat-form-field>
+
+
+            <div>
+              <button mat-raised-button id="ssearch-btn" (click)="btnSearchMc()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Search
+              </button>
+              <button mat-raised-button id="ssearch-clearbtn"(click)="btnSearchClearMc()">
+                <i class="fa-solid fa-xmark"></i>
+                Clear Search
+              </button>
+            </div>
+
+          </form>
+
+          <mat-table [dataSource]="codata">
+            <!-- Define Columns -->
+            <ng-container *ngFor="let column of cocolumns; let i = index;" [matColumnDef]="column">
+              <mat-header-cell id="headercell" *matHeaderCellDef>
+                {{ coheaders[i] }}
+                <!-- Add search field in header cell -->
+                <form [formGroup]="cocsearch" class="csearch hide-on-print">
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Search {{ coheaders[i] }}</mat-label>
+                    <input matInput [formControlName]="getFormControlName(column)" (keyup)="filterTable()">
+                  </mat-form-field>
+
+                </form>
+              </mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{ element[cobinders[i]] }}</mat-cell>
+            </ng-container>
+
+            <!-- Header and Row Definitions -->
+            <mat-header-row *matHeaderRowDef="cocolumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: cocolumns;"></mat-row>
+          </mat-table>
+
+        </mat-card-content>
+      </mat-card>
+
+    </mat-grid-tile>
+
+  </mat-grid-list>
+
+</div>
+
+<div id="print-button">
+  <button mat-raised-button  (click)="printReport()">Print Report</button>
+</div>
+
+

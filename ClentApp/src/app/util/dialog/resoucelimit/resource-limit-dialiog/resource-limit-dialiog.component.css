@@ -1,0 +1,33 @@
+#dialog{
+  width: 800px;
+  height: 360px;
+}
+#btndiv{
+  display: flex;
+  justify-content: flex-end;
+  padding-right:30px ;
+  padding-bottom:30px ;
+}
+#btn1{
+  width: 82px;
+  margin:3px;
+  background-color: #212121;
+  color: white;
+}
+
+@media screen and (max-width: 1366px) {
+  #btn1{
+    height: 20px;
+  }
+
+  mat-card-header {
+    padding: 5px 8px !important;
+    margin-bottom: 4px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    letter-spacing: 1px !important;
+    line-height: 1.1 !important;
+    height: 23px !important;
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5) !important;
+  }
+}

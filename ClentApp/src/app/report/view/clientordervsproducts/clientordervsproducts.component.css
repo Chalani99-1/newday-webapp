@@ -1,0 +1,41 @@
+mat-card {  width: 100%;  height:100%;  margin: 10px 10px -10px 10px ; }
+
+mat-card-content { overflow: auto; height: 100%; }
+
+.first-card{
+  width: 150% !important;
+}
+
+.csearch{   height: 40px;   width: 100%;  margin-top: 5px;    }
+
+#headercell{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  padding: 8px;
+}
+/* Hide search fields on print */
+/* This will hide the search fields only when printing */
+@media print {
+  .hide-on-print {
+    display: none !important;
+  }
+}
+canvas {
+  height: 95% !important;   /* override default */
+  width: auto !important;
+  padding:10px;
+}
+
+@media screen and (max-width: 1366px) {
+  canvas {
+    max-width: 400px;
+    height: 600px;
+    width: 100% !important;   /* override default */
+  }
+
+  .first-card{
+       width: 200% !important;
+  }
+}

@@ -1,0 +1,102 @@
+mat-card-header, mat-card {
+  border-radius: 20px !important;
+  border-top: 2px white solid;
+  border-left: 2px white solid;
+  border-right: 2px white solid;
+}
+
+#btn1 {
+  padding: 1px 20px 1px 20px !important;
+  background-color: var(--color-dark) !important;
+  color: white !important;
+  border: 2px var(--color-dark) solid !important;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 14px;
+  max-height: 30px;
+}
+
+#btn1:hover {
+  cursor: pointer;
+  background-color: white !important;
+  color: var(--color-dark) !important;
+  border: 2px var(--color-dark) solid !important;
+}
+
+
+mat-list-item {
+  background-color: var(--color-accent);
+  border-radius: 12px !important;
+  margin-bottom: 3px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+}
+
+mat-card-content {
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+#msg {
+  margin: 2px;
+  padding: 3px;
+  background-color: var(--color-accent);
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+mat-card{
+  max-height: 80vh;
+}
+#restocklist{
+  font-size: 14px !important;
+}
+
+
+/*responsiveness*/
+@media screen and (max-width: 1366px) {
+
+  #btn1 {
+    padding: 1px 10px 1px 10px !important;
+    border: 1px var(--color-dark) solid !important;
+    font-size: 12px;
+    max-height: 22px !important;
+  }
+
+  #btn1:hover {
+    cursor: pointer;
+    background-color: white !important;
+    color: var(--color-dark) !important;
+    border: 1px var(--color-dark) solid !important;
+  }
+
+  mat-list-item {
+    background-color: var(--color-accent);
+    border-radius: 12px !important;
+    margin-bottom: 2px;
+    padding-top: 2px;
+    padding-bottom: 5px;
+  }
+
+  #msg {
+    margin: 2px;
+    padding: 2px;
+    background-color: var(--color-accent);
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+  }
+
+  mat-card{
+    max-height: 70vh;
+    }
+
+  mat-card-content {
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+  }
+  #restocklist{
+    font-size: 12px !important;
+  }
+}

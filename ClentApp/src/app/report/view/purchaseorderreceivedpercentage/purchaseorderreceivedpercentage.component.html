@@ -1,0 +1,29 @@
+<mat-card >
+  <mat-card-header>
+    Purchase Order Overview
+  </mat-card-header>
+  <mat-card-content>
+
+    <div *ngIf="dataLoading" style="text-align: center">
+      <mat-progress-spinner
+        mode="indeterminate"
+        color="primary"
+        [diameter]="70"
+        style="margin: 30px auto; display: block;">
+      </mat-progress-spinner>
+      <div class="loading-text">
+        <p>Loading Chart, Please Wait...</p>
+      </div>
+    </div>
+
+    <canvas id="barchart-cnvs" baseChart
+            [data]="barChartData"
+            [options]="barChartOptions"
+            [type]="'bar'">
+    </canvas>
+
+  </mat-card-content>
+</mat-card>
+
+
+

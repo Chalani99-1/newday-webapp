@@ -1,0 +1,41 @@
+<div id="printSection">
+  <mat-grid-list [cols]="1" class="component-background" [rowHeight]="rowHeight">
+
+    <mat-grid-tile [colspan]="1" [rowspan]="34">
+      <mat-card>
+        <mat-card-header>
+          Client Count By State Table
+        </mat-card-header>
+        <mat-card-content>
+          <mat-table id="printSection1" [dataSource]="data">
+            <ng-container *ngFor="let column of columns; let i = index;" [matColumnDef]="column">
+              <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+              <mat-cell *matCellDef="let element"> {{ element[binders[i]] }}</mat-cell>
+            </ng-container>
+            <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+          </mat-table>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-header>
+          Pie Chat View
+        </mat-card-header>
+        <mat-card-content id="printSection2">
+          <canvas baseChart
+                  [data]="pieChartData"
+                  [options]="pieChartOptions"
+                  [type]="'pie'">
+          </canvas>
+        </mat-card-content>
+      </mat-card>
+
+    </mat-grid-tile>
+
+
+  </mat-grid-list>
+</div>
+
+<div id="print-button">
+  <button mat-raised-button  (click)="printReport()">Print Report</button>
+</div>

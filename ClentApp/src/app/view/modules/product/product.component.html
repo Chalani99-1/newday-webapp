@@ -1,0 +1,233 @@
+<mat-grid-list class="component-background" [cols]="20" [rowHeight]="rowHeight" gutterSize="5px">
+  <button id="toggle-form-btn" (click)="isFormVisible = !isFormVisible"
+          [style.background-color]="!isFormVisible ? 'var(--color-add)' : 'var(--color-delete)'">
+
+    {{ isFormVisible ? 'Hide' : 'New' }}
+
+    <i class="fa-solid fa-plus" *ngIf="!isFormVisible"></i>
+    <i class="fa-solid fa-xmark" *ngIf="isFormVisible"></i>
+  </button>
+
+  <mat-grid-tile [colspan]="isFormVisible ? 13 : 20" [rowspan]="65">
+    <mat-card>
+      <mat-card-header>
+        Products
+      </mat-card-header>
+
+      <div id="ssearch">
+        <mat-card-content>
+          <mat-form [formGroup]="ssearch">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Search By Product Code</mat-label>
+              <input matInput formControlName="sscode">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="ssfield">
+              <mat-label>Search By Product Category</mat-label>
+              <mat-select formControlName="ssproductcategory">
+                <mat-option [value]="null" selected>Not Selected</mat-option>
+                <mat-option *ngFor="let pcs of productcategories" [value]="pcs.id">{{ pcs.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="ssfield">
+              <mat-label>Search By Product Size</mat-label>
+              <mat-select formControlName="ssproductsize">
+                <mat-option [value]="null" selected>Not Selected</mat-option>
+                <mat-option *ngFor="let ps of productsizes" [value]="ps.id">{{ ps.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <div>
+              <button id="ssearch-btn" mat-raised-button (click)="btnSearchMc()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Search
+              </button>
+              <button id="ssearch-clearbtn" mat-raised-button (click)="btnSearchClearMc()">
+                <i class="fa-solid fa-xmark"></i>
+                Clear
+              </button>
+            </div>
+
+          </mat-form>
+        </mat-card-content>
+      </div>
+
+      <mat-card-content>
+        <div class="product-grid-container">
+
+          <mat-card class="product-card" *ngFor="let product of products" (click)="fillForm(product)"
+                    [matTooltip]="'Click to View Detail'"
+          >
+
+            <img id="p-img" [src]="getProductImage(product)" alt="Product Image">
+
+            <mat-card-content id="descrp">
+              <p id="descrp-title">{{ product.name }}</p>
+              <p>Code :<span style="font-weight: bold">{{ product.code }}</span></p>
+              <p>Size :<span style="font-weight: bold"> {{ product.productsize.name }}</span></p>
+              <p>Cost :<span style="font-weight: bold ;color: red">
+                {{ product.totalcost | currency:'LKR ' }}</span></p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+      </mat-card-content>
+
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile *ngIf="isFormVisible" [colspan]="isFormVisible ? 7 : 0" [rowspan]="65">
+
+    <mat-card>
+      <mat-card-header>
+        Product Form
+      </mat-card-header>
+
+      <mat-card-content id="productform">
+
+        <form #myForm [formGroup]="form">
+
+          <button *ngIf="enCopyStyle" mat-raised-button id="copy-style-btn" (click)="copyStyle()"> Copy Style</button>
+          <p id="styleCopyMsg" *ngIf="styleCopyMsg">Styles Copied.You can Edit them Now</p>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Product Category</mat-label>
+            <mat-select formControlName="productcategory">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let pc of productcategories" [value]="pc">{{ pc.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Size</mat-label>
+            <mat-select formControlName="productsize">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let ps of productsizes" [value]="ps">{{ ps.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Product Name</mat-label>
+            <input matInput formControlName="name">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Product Code</mat-label>
+            <input matInput formControlName="code">
+          </mat-form-field>
+
+
+          <div *ngIf="innerFormLoad" id="innertable">
+
+            <form #myInnerForm [formGroup]="innerform">
+
+              <mat-form-field appearance="outline">
+                <mat-label>Raw Material</mat-label>
+                <mat-select formControlName="rawmaterial" [compareWith]="compareRawMaterials">
+                  <mat-option [value]="null" selected>Not Selected</mat-option>
+                  <mat-option *ngFor="let rawmaterial of rawmaterials" [value]="rawmaterial">{{ rawmaterial.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Quantity</mat-label>
+                <input matInput formControlName="quantity">
+              </mat-form-field>
+
+              <button mat-raised-button id="btnAdd" (click)="btnaddMc()" [disabled]="!enaInnerAdd">Add</button>
+              <button mat-raised-button id="btnUpdate" (click)="btnupdateMc()" [disabled]="!enaInnerUpdate">Update
+              </button>
+              <button mat-raised-button id="btnDelete" (click)="btndeleteMc()" [disabled]="!enaInnerUpdate">Clear
+              </button>
+            </form>
+
+            <mat-table id="tableInner" [dataSource]="indata">
+              <ng-container *ngFor="let column of incolumns;let i = index;" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef> {{ inheaders[i] }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  <div *ngIf="i<inbinders.length-1" [innerHTML]="uiassist.getProperty(element, inbinders[i])"></div>
+                  <div *ngIf="i>=inbinders.length-1">
+                    <button mat-raised-button id="removeBtn" (click)="deleteRaw(element)">Remove</button>
+                  </div>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="incolumns"></mat-header-row>
+              <mat-row *matRowDef="let row; columns: incolumns;" (click)="fillInnerForm(row)"
+                       [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+            </mat-table>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Total Cost Before Charges</mat-label>
+            <input matInput formControlName="tcbeforecharge">
+          </mat-form-field>
+          <p *ngIf="scBtnFillInnerForm" style="color: #0d6efd">Total Cost After Charges Updated</p>
+          <mat-form-field appearance="outline">
+            <mat-label>Service Charge Percentage</mat-label>
+            <mat-select formControlName="charge">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let c of charges" [value]="c">{{ c.percentage }}%</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <button *ngIf="scBtnEnable" id="scbutton" (click)="calculateCostAfterCharge()">
+            <span *ngIf="scBtnFillForm">Re-</span>Calculate Cost After Service Charge
+          </button>
+
+
+          <mat-form-field appearance="outline">
+            <mat-label>Total Cost After Charges</mat-label>
+            <input matInput formControlName="totalcost">
+          </mat-form-field>
+
+          <div id="imgpanel">
+            <img [src]="imageProductUrl">
+            <input id="userImage" hidden="hidden" (change)="selectImage($event)" Select type="file"
+                   accept="image/*" formControlName="designimage">
+            <label for="userImage" id="selectbutton">Select Design Image</label>
+            <label id="clearbutton" (click)="clearImage()">Clear</label>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Product Status</mat-label>
+            <mat-select formControlName="productstatus">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let pss of productstatuses" [value]="pss">{{ pss.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Employee</mat-label>
+            <mat-select formControlName="employee">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <div id="butpanel">
+            <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>
+            <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>
+            <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>
+            <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>
+          </div>
+
+        </form>
+      </mat-card-content>
+
+    </mat-card>
+
+  </mat-grid-tile>
+</mat-grid-list>
