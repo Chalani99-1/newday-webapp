@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 8.0.36, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.38, for Win64 (x86_64)
 --
 -- Host: localhost    Database: newdayproducts
 -- ------------------------------------------------------
--- Server version	8.0.36
+-- Server version	8.0.38
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -836,7 +836,7 @@ CREATE TABLE `product` (
   CONSTRAINT `fk_product_productcategory1` FOREIGN KEY (`productcategory_id`) REFERENCES `productcategory` (`id`),
   CONSTRAINT `fk_product_productsize1` FOREIGN KEY (`productsize_id`) REFERENCES `productsize` (`id`),
   CONSTRAINT `fk_product_productstatus1` FOREIGN KEY (`productstatus_id`) REFERENCES `productstatus` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -980,7 +980,7 @@ CREATE TABLE `productrawmaterial` (
   KEY `fk_product_has_rawmaterial_product1_idx` (`product_id`),
   CONSTRAINT `fk_product_has_rawmaterial_product1` FOREIGN KEY (`product_id`) REFERENCES `product` (`id`),
   CONSTRAINT `fk_product_has_rawmaterial_rawmaterial1` FOREIGN KEY (`rawmaterial_id`) REFERENCES `rawmaterial` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1195,7 +1195,7 @@ CREATE TABLE `supplier` (
   KEY `fk_supplier_state1_idx` (`state_id`),
   CONSTRAINT `fk_supplier_state1` FOREIGN KEY (`state_id`) REFERENCES `state` (`id`),
   CONSTRAINT `fk_supplier_supplierstatus1` FOREIGN KEY (`supplierstatus_id`) REFERENCES `supplierstatus` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1204,7 +1204,7 @@ CREATE TABLE `supplier` (
 
 LOCK TABLES `supplier` WRITE;
 /*!40000 ALTER TABLE `supplier` DISABLE KEYS */;
-INSERT INTO `supplier` VALUES (1,5,'Saman Perera','12/1,Kadawatha','0717886754','saman@gmail.com',1,'sample','2026-02-05'),(2,2,'Nimal Silva','A1,Kadawathe','071-7889898','bandara@gmail.com',1,'sample','2026-02-06'),(7,7,'Sarath Perera','A1','071-8997676','sarath@gmail.com',1,'sample','2026-02-07'),(8,11,'Kumara Perera','A1,Kandy','071-9765654','kumara@gmail.com',1,'sample','2026-02-07'),(9,3,'Anil Kumara','A12,Badulla','011-2344545','Anil@gmail.com',1,'sample','2026-02-07'),(10,7,'Gamunu Perera','A3,Veyangoda','072-9887676','Gamunu@gmail.com',1,'Sample','2026-02-09'),(11,2,'Kamal Silva','A12,Anuradhapura','071-8998787','Kamal@gmail.com',1,'sample','2026-02-13');
+INSERT INTO `supplier` VALUES (1,5,'Saman Perera','Kadawatha','071-7886754','saman@gmail.com',1,'sample','2026-02-05'),(2,2,'Nimal Silva','Kadawathe','071-7889898','bandara@gmail.com',1,'sample','2026-02-06'),(7,7,'Sarath Perera','A1','071-8997676','sarath@gmail.com',1,'sample','2026-02-07'),(8,11,'Kumara Perera','A1,Kandy','071-9765654','kumara@gmail.com',1,'sampleytjtrh','2026-02-07'),(9,3,'Anil Kumara','A12,Badulla','011-2344545','Anil@gmail.com',1,'sample','2026-02-07'),(10,7,'Gamunu Perera','A3,Veyangoda','072-9887676','Gamunu@gmail.com',1,'Sample','2026-02-09'),(11,2,'Kamal Silva','A12,Anuradhapura','071-8998787','Kamal@gmail.com',1,'sample','2026-02-13'),(12,1,'Datest','Test','077-6765544','tset@gmail.com',1,'tsests','2026-02-14'),(13,12,'Malinga','Test','078-6666574','malinga@gmail.com',1,'lasith','2026-02-13');
 /*!40000 ALTER TABLE `supplier` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1224,7 +1224,7 @@ CREATE TABLE `suppliermaterialcategory` (
   KEY `fk_supplier_has_materialcategory_supplier1_idx` (`supplier_id`),
   CONSTRAINT `fk_supplier_has_materialcategory_materialcategory1` FOREIGN KEY (`materialcategory_id`) REFERENCES `materialcategory` (`id`),
   CONSTRAINT `fk_supplier_has_materialcategory_supplier1` FOREIGN KEY (`supplier_id`) REFERENCES `supplier` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1233,7 +1233,7 @@ CREATE TABLE `suppliermaterialcategory` (
 
 LOCK TABLES `suppliermaterialcategory` WRITE;
 /*!40000 ALTER TABLE `suppliermaterialcategory` DISABLE KEYS */;
-INSERT INTO `suppliermaterialcategory` VALUES (1,7,13),(2,8,14),(3,9,4),(4,10,1),(5,11,4),(6,11,5);
+INSERT INTO `suppliermaterialcategory` VALUES (1,7,13),(3,9,4),(4,10,1),(5,11,4),(6,11,5),(7,12,1),(8,8,14),(9,1,1),(10,2,4),(11,13,2);
 /*!40000 ALTER TABLE `suppliermaterialcategory` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1348,7 +1348,7 @@ CREATE TABLE `user` (
   CONSTRAINT `fk_user_employee1` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`id`),
   CONSTRAINT `fk_user_usestatus1` FOREIGN KEY (`usestatus_id`) REFERENCES `usestatus` (`id`),
   CONSTRAINT `fk_user_usetype1` FOREIGN KEY (`usetype_id`) REFERENCES `usetype` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1377,7 +1377,7 @@ CREATE TABLE `userrole` (
   KEY `fk_user_has_role_user1_idx` (`user_id`),
   CONSTRAINT `fk_user_has_role_role1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
   CONSTRAINT `fk_user_has_role_user1` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb3;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb3;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1447,4 +1447,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-13 23:32:55
+-- Dump completed on 2026-02-14 16:39:39
