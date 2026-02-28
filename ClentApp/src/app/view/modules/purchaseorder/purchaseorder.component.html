@@ -1,0 +1,244 @@
+<mat-grid-list [cols]="12" class="component-background" [rowHeight]="rowHeight" gutterSize="5px">
+  <mat-grid-tile [colspan]="4" [rowspan]="30">
+
+    <mat-card>
+      <mat-card-header>
+        Purchase Order Form
+      </mat-card-header>
+      <mat-card-content id="purchaseorderform">
+
+        <form #myForm [formGroup]="form">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Supplier</mat-label>
+            <mat-select formControlName="supplier">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let supplier of suppliers" [value]="supplier">{{ supplier.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Purchase Order Number</mat-label>
+            <input matInput formControlName="number">
+          </mat-form-field>
+
+          <div id="innertable">
+            <form #myInnerForm [formGroup]="innerform">
+
+              <mat-form-field appearance="outline">
+                <mat-label>Raw Material</mat-label>
+                <mat-select formControlName="rawmaterial" [compareWith]="compareRawMaterials">
+                  <mat-option [value]="null" selected>Not Selected</mat-option>
+                  <mat-option *ngFor="let rawmaterial of rawmaterials" [value]="rawmaterial">{{ rawmaterial.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+<!--              <mat-form-field appearance="outline">-->
+<!--                <mat-label>Raw Material</mat-label>-->
+<!--                <mat-select formControlName="rawmaterial">-->
+<!--                  <mat-option [value]="null" selected>Not Selected</mat-option>-->
+<!--                  <mat-option *ngFor="let rawmaterial of rawmaterials" [value]="rawmaterial">{{ rawmaterial.name }}</mat-option>-->
+<!--                </mat-select>-->
+<!--              </mat-form-field>-->
+
+              <mat-form-field appearance="outline">
+                <mat-label>Quantity</mat-label>
+                <input matInput formControlName="quentity">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Received Amount</mat-label>
+                <input matInput formControlName="receivedamount">
+              </mat-form-field>
+
+              <button mat-raised-button id="btnAdd" (click)="btnaddMc()" [disabled]="!enaInnerAdd">Add</button>
+              <button mat-raised-button id="btnUpdate" (click)="btnupdateMc()" [disabled]="!enaInnerUpdate">Update
+              </button>
+              <button mat-raised-button id="btnDelete" (click)="btndeleteMc()" [disabled]="!enaInnerUpdate">Clear
+              </button>
+
+            </form>
+
+            <mat-table *ngIf="innerTableLoad" id="tableInner" [dataSource]="indata">
+              <ng-container *ngFor="let column of incolumns;let i = index;" [matColumnDef]="column">
+                <mat-header-cell *matHeaderCellDef> {{ inheaders[i] }}</mat-header-cell>
+                <mat-cell *matCellDef="let element">
+                  <div *ngIf="i<inbinders.length-1" [innerHTML]="uiassist.getProperty(element, inbinders[i])"></div>
+                  <div *ngIf="i>=inbinders.length-1">
+                    <button mat-raised-button id="removeBtn" (click)="deleteRaw(element)">Remove</button>
+                  </div>
+                </mat-cell>
+              </ng-container>
+
+              <mat-header-row *matHeaderRowDef="incolumns"></mat-header-row>
+              <!--              <mat-row *matRowDef="let row; columns: incolumns"></mat-row>-->
+              <mat-row *matRowDef="let row; columns: incolumns;" (click)="fillInnerForm(row)"
+                       [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+            </mat-table>
+
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Expected Total</mat-label>
+            <input matInput formControlName="expectedtotal">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Advanced Payment</mat-label>
+            <input matInput formControlName="advancedpay">
+          </mat-form-field>
+
+          <div id="imgpanel">
+            <img [src]="imageReceiptUrl">
+            <input id="userImage" hidden="hidden" (change)="selectImage($event)" Select type="file"
+                   accept="image/*" formControlName="receipt">
+            <label for="userImage" id="selectbutton">Select Advanced Receipt</label>
+            <label id="clearbutton" (click)="clearImage()">Clear</label>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Placed Date</mat-label>
+            <input matInput [matDatepicker]="doplcd" formControlName="doplaced" [max]="maxDate">
+            <mat-datepicker-toggle matIconSuffix [for]="doplcd"></mat-datepicker-toggle>
+            <mat-datepicker #doplcd></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Requested Date</mat-label>
+            <input matInput [matDatepicker]="dorqstd" formControlName="dorequested" [min]="minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="dorqstd"></mat-datepicker-toggle>
+            <mat-datepicker #dorqstd></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Received Percentage</mat-label>
+            <input matInput formControlName="receivedpercentage">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description">
+          </mat-form-field>
+
+
+          <mat-form-field appearance="outline">
+            <mat-label>Purchase Order Status</mat-label>
+            <mat-select formControlName="postatus">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let postatus of postatuses" [value]="postatus">{{ postatus.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Employee</mat-label>
+            <mat-select formControlName="employee">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div id="butpanel">
+            <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>
+            <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>
+            <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>
+            <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>
+          </div>
+
+        </form>
+
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="8" [rowspan]="13">
+    <mat-card>
+      <mat-card-header>
+        Out Of Stock Raw Materials
+      </mat-card-header>
+      <mat-card-content>
+        <p *ngIf="oosRMtable" style="background-color: #c2ffbf; font-size: large;
+padding: 5px">No Out Of Stock Raw Materials </p>
+        <mat-table [dataSource]="rmdata">
+
+          <ng-container *ngFor="let column of rmcolumns;let i = index;" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef> {{ rmheaders[i] }}</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, rmbinders[i]) }}</mat-cell>
+          </ng-container>
+
+          <ng-container *ngFor="let cscolumn of rmcscolumns;let i = index;" [matColumnDef]="cscolumn">
+
+            <mat-header-cell *matHeaderCellDef>
+              <mat-form [formGroup]="rmcsearch" class="csearch">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ rmcsprompts[i] }}</mat-label>
+                  <input matInput [formControlName]="cscolumn" (keyup)="filterTable2()">
+                </mat-form-field>
+              </mat-form>
+            </mat-header-cell>
+
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="rmcolumns"></mat-header-row>
+          <mat-header-row *matHeaderRowDef="rmcscolumns"></mat-header-row>
+          <mat-row  matTooltip="Click to see suppliers list "
+                    *matRowDef="let row; columns: rmcolumns;"
+                    [ngStyle]="row.materialstatus.id !== 2 ? {'background-color': '#f8c5a4'} :
+             {'background-color': '#f66b6b'}"
+                    [ngClass]="{'selected-row': row === selectedrow}" (click)="seeSuppliers(row)">  </mat-row>
+
+        </mat-table>
+        <mat-paginator #paginator2 [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+
+  <mat-grid-tile [colspan]="8" [rowspan]="17">
+    <mat-card>
+      <mat-card-header>
+        Purchase Order Table
+
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-table [dataSource]="data">
+
+          <ng-container *ngFor="let column of columns;let i = index;" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, binders[i]) }}</mat-cell>
+          </ng-container>
+
+          <ng-container *ngFor="let cscolumn of cscolumns;let i = index;" [matColumnDef]="cscolumn">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-form [formGroup]="csearch" class="csearch">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ csprompts[i] }}</mat-label>
+                  <input matInput [formControlName]="cscolumn" (keyup)="filterTable()">
+                </mat-form-field>
+              </mat-form>
+            </mat-header-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-header-row *matHeaderRowDef="cscolumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columns;" (click)="fillForm(row)"
+                   [ngStyle]="row.postatus.name !== 'Completed' ? {'background-color': '#fad8d8'} :
+             {'background-color': '#c2ffbf'}"
+                   [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+        </mat-table>
+
+        <mat-paginator #paginator1 class="mat-paginator-sticky" showFirstLastButtons [length]="20" [pageSize]="5"
+                       [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+
+      </mat-card-content>
+
+    </mat-card>
+  </mat-grid-tile>
+
+
+</mat-grid-list>

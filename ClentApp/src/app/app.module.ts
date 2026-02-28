@@ -90,6 +90,8 @@ import { MaterialcategoryComponent } from './view/modules/materialcategory/mater
 import { RawmaterialComponent } from './view/modules/rawmaterial/rawmaterial.component';
 import { ProductComponent } from './view/modules/product/product.component';
 import { SupplierComponent } from './view/modules/supplier/supplier.component';
+import { ClientComponent } from './view/modules/client/client.component';
+import { PurchaseorderComponent } from './view/modules/purchaseorder/purchaseorder.component';
 
 
 @NgModule({
@@ -138,6 +140,8 @@ MaterialcategoryComponent,
 RawmaterialComponent,
 ProductComponent,
 SupplierComponent,
+ClientComponent,
+PurchaseorderComponent,
 
 
 

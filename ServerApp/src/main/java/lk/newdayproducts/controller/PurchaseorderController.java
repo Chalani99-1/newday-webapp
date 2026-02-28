@@ -1,14 +1,21 @@
 package lk.newdayproducts.controller;
 
+import lk.newdayproducts.dao.PurchaseorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
+import lk.newdayproducts.entity.Poitem;
+import lk.newdayproducts.entity.Purchaseorder;
 import lk.newdayproducts.entity.Rawmaterial;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin
 @RestController
@@ -18,102 +25,114 @@ public class PurchaseorderController {
     @Autowired
     private RawmaterialDao rawmaterialdao;
 
+    @Autowired
+    private PurchaseorderDao purchaseorderdao;
 
+    @GetMapping(path = "/number", produces = "application/json")
+    public ResponseEntity<Map<String, String>> get() {
+        int maxid = this.purchaseorderdao.findMaxNumber();
+        if (maxid == 0) maxid = 1;
+        Map<String, String> response = new HashMap<>();
+        response.put("number", ""+maxid);
+        return ResponseEntity.ok().body(response);
+    }
     @GetMapping(produces = "application/json")
-    public List<Rawmaterial> get() {
+    public List<Purchaseorder> get(@RequestParam HashMap<String, String> params){
 
-        List<Rawmaterial> rawmaterials = this.rawmaterialdao.findAll();
+        String supplierid = params.get("supplierid");
+        String doplaced = params.get("doplaced");
 
-        rawmaterials = rawmaterials  .stream().map(
-                rawmaterial -> {
-                    Rawmaterial r = new Rawmaterial();
-                    r.setId(rawmaterial.getId());
-                    r.setMaterialtype(rawmaterial.getMaterialtype());
-                    r.setMaterialcategory(rawmaterial.getMaterialcategory());
-                    r.setCode(rawmaterial.getCode());
-                    r.setName(rawmaterial.getName());
-                    r.setPhoto(rawmaterial.getPhoto());
-                    r.setUnitprice(rawmaterial.getUnitprice());
-                    r.setQoh(rawmaterial.getQoh());
-                    r.setResourcelimit(rawmaterial.getResourcelimit());
-                    r.setRop(rawmaterial.getRop());
-                    r.setMaterialstatus(rawmaterial.getMaterialstatus());
-                    r.setEmployee(rawmaterial.getEmployee());
-                    return r;
-                }
-        ).collect(Collectors.toList());
-//        materialcategories.forEach(materialcategory -> {
-//            System.out.println(materialcategory.toString());
-//
-//        });
-        return rawmaterials;
+
+        List<Purchaseorder> porders = this.purchaseorderdao.findAll();
+
+        if (params.isEmpty()) return porders;
+
+        Stream<Purchaseorder> postream = porders.stream();
+
+        if (supplierid!=null) postream = postream.filter(o -> o.getSupplier().getId() ==Integer.parseInt(supplierid)) ;
+        if (doplaced!=null) postream = postream.filter (o -> o.getDoplaced().toString().contains(doplaced));
+
+        return postream.collect(Collectors.toList());
+
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public HashMap<String, String> add(@RequestBody Rawmaterial rawmaterial) {
-
-        HashMap<String, String> responce = new HashMap<>();
+    public HashMap<String, String> add(@RequestBody Purchaseorder order) {
+        HashMap<String, String> response = new HashMap<>();
         String errors = "";
+        for (Poitem po : order.getPoitems()) po.setPurchaseorder(order);
+        //find if already existed
+        if (purchaseorderdao.findbyNumber(order.getNumber()) != null)
+            errors = errors + "<br> Existing Order";
+        //save order if no errors
+        if (errors == "") {purchaseorderdao.save(order);}
+        else { errors = "Server Validation Errors : <br> " + errors;}
 
-        if (rawmaterialdao.findByCode(rawmaterial.getCode()) != null)
-            errors = errors + "<br> Existing Raw Material";
+        response.put("id", String.valueOf(order.getId()));
+        response.put("url", "/purchaseorders/" + order.getId());
+        response.put("errors", errors);
+        return response;
 
-        if (errors == "")
-            rawmaterialdao.save(rawmaterial);
-        else errors = "Server Validation Errors : <br> " + errors;
-
-        responce.put("id", String.valueOf(rawmaterial.getId()));
-        responce.put("url", "/rawmaterials/" + rawmaterial.getId());
-        responce.put("errors", errors);
-
-        return responce;
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
+    public HashMap<String, String> update(@RequestBody Purchaseorder order) {
 
-    public HashMap<String, String> update(@RequestBody Rawmaterial rawmaterial) {
-
-        HashMap<String, String> responce = new HashMap<>();
+        HashMap<String, String> response = new HashMap<>();
         String errors = "";
+        Purchaseorder extPOrder = purchaseorderdao.findByMyId(order.getId());
+        if (extPOrder == null) errors = errors + "<br> Order Does Not Exist";
 
-        Rawmaterial rm = rawmaterialdao.findByMyId(rawmaterial.getId());
+        if (extPOrder != null) {
+            try {
+                extPOrder.getPoitems().clear();
+                order.getPoitems().forEach(newpoitem -> {
+                    newpoitem.setPurchaseorder(extPOrder);
+                    extPOrder.getPoitems().add(newpoitem);
+                    newpoitem.setPurchaseorder(extPOrder);
+                });
 
-        if (rm != null && !(rawmaterial.getId().equals(rm.getId())))
-            errors = errors + "<br> Not existing";
+                BeanUtils.copyProperties(order, extPOrder, "id","poitems","qty");
 
+                if (errors == "") {
+                    purchaseorderdao.save(extPOrder);
+                } else {
+                    errors = "Server Validation Errors : <br> " + errors;
+                }
 
-        if (errors == "") rawmaterialdao.save(rawmaterial);
-        else errors = "Server Validation Errors : <br> " + errors;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-        responce.put("id", String.valueOf(rawmaterial.getId()));
-        responce.put("url", "/rawmaterials/" + rawmaterial.getId());
-        responce.put("errors", errors);
+        response.put("id", String.valueOf(order.getId()));
+        response.put("url", "/purchaseorders/" + order.getId());
+        response.put("errors", errors);
 
-        return responce;
+        return response;
     }
 
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public HashMap<String, String> delete(@PathVariable Integer id) {
+    public HashMap<String,String> delete(@PathVariable Integer id){
 
-        // System.out.println(id);
+        HashMap<String,String> responce = new HashMap<>();
+        String errors="";
 
-        HashMap<String, String> responce = new HashMap<>();
-        String errors = "";
+        Purchaseorder ord = purchaseorderdao.findByMyId(id);
 
-        Rawmaterial rm = rawmaterialdao.findByMyId(id);
+        if(ord==null)
+            errors = errors+"<br> Purchase Order Does Not Exists";
 
-        if (rm == null) errors = errors + "<br> Raw Material Does Not Exist";
+        if(errors=="") purchaseorderdao.delete(ord);
+        else errors = "Server Validation Errors : <br> "+errors;
 
-        if (errors.isEmpty()) rawmaterialdao.delete(rm);
-        else errors = "Server Validation Errors : <br> " + errors;
-
-        responce.put("id", String.valueOf(id));
-        responce.put("url", "/rawmaterials/" + id);
-        responce.put("errors", errors);
+        responce.put("code",String.valueOf(id));
+        responce.put("url","/id/"+id);
+        responce.put("errors",errors);
 
         return responce;
     }

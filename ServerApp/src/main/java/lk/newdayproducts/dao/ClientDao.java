@@ -9,5 +9,8 @@ public interface ClientDao extends JpaRepository<Client,Integer> {
 
     @Query("select c from Client c where c.id = :id")
     Client findByMyId(@Param("id") Integer id);
+
+    @Query("select c from Client c where c.name=:name")
+    Client findByName(@Param("name")String name);
 }
 

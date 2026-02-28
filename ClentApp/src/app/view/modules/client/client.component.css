@@ -9,16 +9,12 @@ mat-card-content {
   height: 100%;
 }
 
-#table {
-  margin-top: 20px;
-}
-
-#supplierform {
+#clientform {
   padding-top: 20px;
   /*padding-bottom:20px ;*/
 }
 
-#supplierform mat-form-field .ng-dirty {
+#clientform mat-form-field .ng-dirty {
   background-color: #abfecc !important;
 }
 
@@ -26,7 +22,7 @@ button:disabled {
   opacity: 0.5;
 }
 
-#supplierform mat-form-field .ng-valid,
+#clientform mat-form-field .ng-valid,
 .ng-valid.required {
   background-color: var(--color-accent)FF;
 }

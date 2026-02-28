@@ -36,8 +36,8 @@ public class Client {
     private Clientstatus clientstatus;
 
     @ManyToOne
-    @JoinColumn(name = "employee_entered_id", referencedColumnName = "id", nullable = false)
-    private Employee employeeEntered;
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
+    private Employee employee;
     @JsonIgnore
     @OneToMany(mappedBy = "client")
     private Collection<Clientorder> clientorders;
@@ -136,12 +136,12 @@ public class Client {
         this.clientstatus = clientstatus;
     }
 
-    public Employee getEmployeeEntered() {
-        return employeeEntered;
+    public Employee getEmployee() {
+        return employee;
     }
 
-    public void setEmployeeEntered(Employee employeeEntered) {
-        this.employeeEntered = employeeEntered;
+    public void setEmployee(Employee employee) {
+        this.employee = employee;
     }
 
     public Collection<Clientorder> getClientorders() {

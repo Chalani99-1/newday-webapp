@@ -1,0 +1,84 @@
+/* Desktop styles */
+@media screen and (min-width: 768px) {
+  /* Add your desktop-specific styles here */
+}
+
+/* Tablet styles */
+@media screen and (min-width: 481px) and (max-width: 767px) {
+  /* Add your tablet-specific styles here */
+}
+
+/* Mobile styles */
+@media screen and (max-width: 480px) {
+  /* Add your mobile-specific styles here */
+}
+
+/*mat-grid-list{*/
+/*  height: 100%;*/
+/*}*/
+
+mat-card {
+  width: 170%;
+  height: 100%;
+  margin: 10px 10px -5px 10px !important;
+  overflow: hidden;
+}
+
+mat-card-content {
+  overflow: auto;
+  height: 100%;
+}
+
+mat-grid-tile {
+  overflow: visible;
+  margin-bottom: 20px; /* Adjust the margin size as needed */
+}
+
+.mat-table {
+  display: block;
+  width: 100%;
+  overflow: auto;
+}
+
+.mat-paginator-sticky {
+  position: sticky;
+  bottom: 1px;
+}
+
+/* Highlight rows on hover */
+.mat-row:hover {
+  cursor: pointer;
+}
+
+/* Order Form */
+#orderform {
+  padding-top: 20px;
+}
+
+.mat-form-field .ng-dirty {
+  background-color: #abfecc !important;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+#orderform mat-form-field .ng-dirty {
+  background-color: var(--color-accent)FF !important;
+}
+
+#tableInner{
+  margin-bottom: 20px;
+}
+.rmcsearch {
+  height: 40px;
+  width: 100%;
+  margin-top: 15px;
+}
+#headercell{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: flex-start;
+  padding: 5px;
+}

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin
 @RestController
@@ -20,30 +21,21 @@ public class ClientController {
 
 
     @GetMapping(produces = "application/json")
-    public List<Client> get() {
+    public List<Client> get(@RequestParam HashMap<String, String> params) {
 
-        List<Client> clients = this.clientdao.findAll();
+        List<Client> clientList = this.clientdao.findAll();
+        if (params.isEmpty()) return clientList;
 
-        clients = clients  .stream().map(
-                client -> {
-                    Client c = new Client();
-                    c.setId(client.getId());
-                    c.setState(client.getState());
-                    c.setName(client.getName());
-                    c.setAddress(client.getAddress());
-                    c.setTelephone(client.getTelephone());
-                    c.setEmail(client.getEmail());
-                    c.setClientstatus(client.getClientstatus());
-                    c.setDoregister(client.getDoregister());
-                    c.setEmployeeEntered(client.getEmployeeEntered());
-                    return c;
-                }
-        ).collect(Collectors.toList());
-//        materialcategories.forEach(materialcategory -> {
-//            System.out.println(materialcategory.toString());
-//
-//        });
-        return clients;
+        String clientname = params.get("name");
+        String statusId = params.get("statusId");
+        String stateid = params.get("stateid");
+
+        Stream<Client> stream = clientList.stream();
+        if (clientname != null) stream = stream.filter(s -> s.getName().toLowerCase().contains(clientname));
+        if (statusId != null) stream = stream.filter(s -> s.getClientstatus().getId()== Integer.parseInt(statusId));
+        if (stateid != null) stream = stream.filter(s -> s.getState().getId()==Integer.parseInt(stateid));
+
+        return stream.collect(Collectors.toList());
     }
 
     @PostMapping
@@ -53,12 +45,13 @@ public class ClientController {
         HashMap<String, String> responce = new HashMap<>();
         String errors = "";
 
-//        if (clientdao.findByCode(rawmaterial.getCode()) != null)
-//            errors = errors + "<br> Existing Raw Material";
-//
-//        if (errors == "")
-//            rawmaterialdao.save(rawmaterial);
-//        else errors = "Server Validation Errors : <br> " + errors;
+        if(clientdao.findByName(client.getName())!=null)
+            errors = errors+"<br> Existing Name";
+
+        if(errors=="")
+            clientdao.save(client);
+        else errors = "Server Validation Errors : <br> "+errors;
+
 
         responce.put("id", String.valueOf(client.getId()));
         responce.put("url", "/clients/" + client.getId());

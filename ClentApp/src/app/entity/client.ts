@@ -14,8 +14,8 @@ export class Client {
   public contactperson !: string;
   public contactmobile !: string;
   public clientstatus !: Clientstatus;
-    public doregister !: string;
-  public employeeEntered !: Employee;
+  public doregister !: string;
+  public employee!: Employee;
 
 
   constructor() {

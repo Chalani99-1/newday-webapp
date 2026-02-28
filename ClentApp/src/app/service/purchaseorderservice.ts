@@ -31,7 +31,7 @@ export class Purchaseorderservice {
 
   async getMaxNumber(): Promise<String> {
     const number1 = await this.http.get<String>('http://localhost:8080/purchaseorders/number').toPromise();
-        if (number1 == undefined) {
+    if (number1 == undefined) {
       return "";
     }
     return number1;

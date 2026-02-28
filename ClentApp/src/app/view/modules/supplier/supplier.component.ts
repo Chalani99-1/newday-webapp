@@ -751,9 +751,7 @@ export class SupplierComponent {
           if (delstatus) {
             delmessage = "Successfully Deleted";
             this.resetForm();
-            Object.values(this.form.controls).forEach(control => {
-              control.markAsTouched();
-            });
+
             this.loadTable("");
           }
           const stsmsg = this.dg.open(MessageComponent, {

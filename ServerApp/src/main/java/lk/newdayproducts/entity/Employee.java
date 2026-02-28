@@ -86,7 +86,7 @@ public class Employee {
     private Collection<Purchaseorder> purchaseorders;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "employeeEntered")
+    @OneToMany(mappedBy = "employee")
     private Collection<Client> clientsById_0;
     @JsonIgnore
     @OneToMany(mappedBy = "employee")

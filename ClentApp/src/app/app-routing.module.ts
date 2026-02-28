@@ -46,6 +46,8 @@ import {Rawmaterial} from "./entity/rawmaterial";
 import {RawmaterialComponent} from "./view/modules/rawmaterial/rawmaterial.component";
 import {ProductComponent} from "./view/modules/product/product.component";
 import {SupplierComponent} from "./view/modules/supplier/supplier.component";
+import {ClientComponent} from "./view/modules/client/client.component";
+import {PurchaseorderComponent} from "./view/modules/purchaseorder/purchaseorder.component";
 
 
 const routes: Routes = [
@@ -66,6 +68,8 @@ const routes: Routes = [
       {path: "rawmaterial", component: RawmaterialComponent},
       {path: "product", component: ProductComponent},
       {path: "supplier", component: SupplierComponent},
+      {path: "client", component: ClientComponent},
+      {path: "purchaseorder", component: PurchaseorderComponent},
 
       {path: "report/countbydesignation", component: CountByDesignationComponent},
       {path: "report/profitbyorder", component: ProfitbyorderComponent},
