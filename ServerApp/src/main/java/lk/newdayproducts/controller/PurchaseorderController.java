@@ -29,13 +29,13 @@ public class PurchaseorderController {
     private PurchaseorderDao purchaseorderdao;
 
     @GetMapping(path = "/number", produces = "application/json")
-    public ResponseEntity<Map<String, String>> get() {
+    public ResponseEntity<Integer> get() {
         int maxid = this.purchaseorderdao.findMaxNumber();
         if (maxid == 0) maxid = 1;
-        Map<String, String> response = new HashMap<>();
-        response.put("number", ""+maxid);
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok().body(maxid);
     }
+
+
     @GetMapping(produces = "application/json")
     public List<Purchaseorder> get(@RequestParam HashMap<String, String> params){
 

@@ -347,13 +347,13 @@ export class PurchaseorderComponent {
 
     this.supplierSubscription = this.form.get("supplier")?.valueChanges.subscribe((s: Supplier) => {
       if (!this.purchaseorder) {
-        this.pos.getMaxNumber().then(maxNumber => {
-
-          let s1 = JSON.stringify(maxNumber).toString().replace('PO-', '');
-          let maxNumberObj = JSON.parse(s1);
-          let numberValue = maxNumberObj.number;
-          this.form.get("number")?.setValue("PO-" + ++numberValue);
+        this.pos.getMaxNumber().then((maxNumber: any) => {
+          if (maxNumber.number !== "") {
+            let maxNumberObj = Number(maxNumber.number);
+            this.form.get("number")?.setValue("PO-" + ++maxNumberObj);
+          }
         });
+
       }
 
       this.materialcategories = [];
@@ -745,6 +745,7 @@ export class PurchaseorderComponent {
       }
     }
     for (const controlName in this.innerform.controls) {
+      console.log("in");
       const control = this.innerform.controls[controlName];
       if (control.dirty) {
         updates = updates + "<br>" + controlName.charAt(0).toUpperCase() + controlName.slice(1) + " Changed";
@@ -756,6 +757,8 @@ export class PurchaseorderComponent {
     return updates;
 
   }
+
+
 
   areaHiddenFix() {
     if (document.activeElement instanceof HTMLElement) {
