@@ -2,8 +2,10 @@ package lk.newdayproducts.dao;
 
 import lk.newdayproducts.entity.Purchaseorder;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface PurchaseorderDao extends JpaRepository<Purchaseorder,Integer> {
 
@@ -15,5 +17,10 @@ public interface PurchaseorderDao extends JpaRepository<Purchaseorder,Integer> {
 
     @Query("select i from Purchaseorder i where i.number=:number")
     Purchaseorder findbyNumber(@Param("number") String number);
+
+    @Transactional
+    @Modifying
+    @Query("update Purchaseorder p set p.paid=:paid where p.id=:poid")
+    void updatePaid(@Param("paid") int i, @Param("poid") Integer poid);
 }
 

@@ -1,0 +1,134 @@
+<mat-grid-list [cols]="12" class="component-background"  [rowHeight]="rowHeight" gutterSize="5px">
+
+  <mat-grid-tile [colspan]="4" [rowspan]="30">
+    <mat-card>
+      <mat-card-header>
+        GRN Form
+      </mat-card-header>
+
+      <mat-card-content id="productionorderform">
+
+        <form #myForm [formGroup]="form">
+          <mat-form-field appearance="outline">
+            <mat-label>Purchase Order</mat-label>
+            <mat-select formControlName="purchaseorder">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let purchaseorder of purchaseorders" [value]="purchaseorder">{{ purchaseorder.number }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+
+        <mat-form-field appearance="outline">
+          <mat-label>GRN Number</mat-label>
+          <input matInput formControlName="number">
+        </mat-form-field>
+
+        <div id="innertable">
+          <form #myInnerForm [formGroup]="innerform">
+
+            <mat-form-field appearance="outline">
+              <mat-label>Raw Material</mat-label>
+              <mat-select formControlName="rawmaterial" [compareWith]="compareRawMaterials">
+                <mat-option [value]="null" selected>Not Selected</mat-option>
+                <mat-option *ngFor="let rawmaterial of rawmaterials" [value]="rawmaterial">{{ rawmaterial.name }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" id="last">
+              <mat-label>Quantity</mat-label>
+              <input
+                [min]="dynamicMin"
+                [max]="dynamicMax"
+                type="number"
+                matInput formControlName="quantity">
+              <mat-error *ngIf="innerform.get('quantity')?.hasError('required')">
+                Quantity is required
+              </mat-error>
+              <mat-error *ngIf="innerform.get('quantity')?.hasError('min')">
+                Quantity must be greater than to {{ dynamicMin }}
+              </mat-error>
+              <mat-error *ngIf="innerform.get('quantity')?.hasError('max')">
+                Quantity must be less than or equal to {{ dynamicMax }}
+              </mat-error>
+            </mat-form-field>
+
+            <button mat-raised-button id="btnAdd" (click)="btnaddMc()" [disabled]="!enaInnerAdd">Add</button>
+
+          </form>
+
+          <mat-table *ngIf="tableInnerLoad" id="tableInner" [dataSource]="indata">
+            <ng-container *ngFor="let column of incolumns;let i = index;" [matColumnDef]="column">
+              <mat-header-cell *matHeaderCellDef> {{ inheaders[i] }}</mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <div *ngIf="i<inbinders.length-1" [innerHTML]="uiassist.getProperty(element, inbinders[i])"></div>
+                <div *ngIf="i>=inbinders.length-1">
+                  <button mat-raised-button id="removeBtn" (click)="deleteRaw(element)">Remove</button>
+                </div>
+              </mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="incolumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: incolumns;" (click)="fillInnerForm(row)"
+                     [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+          </mat-table>
+
+        </div>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Grand Total</mat-label>
+          <input matInput formControlName="grandtotal">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Do Received</mat-label>
+          <input matInput [matDatepicker]="doplcd" formControlName="doreceived" [max]="maxDate">
+          <mat-datepicker-toggle matIconSuffix [for]="doplcd"></mat-datepicker-toggle>
+          <mat-datepicker #doplcd></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>GRN Status</mat-label>
+          <mat-select formControlName="grnstatus">
+            <mat-option [value]="null" selected>Not Selected</mat-option>
+            <mat-option *ngFor="let grnstatus of grnstatuses" [value]="grnstatus">{{ grnstatus.name }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Employee</mat-label>
+          <mat-select formControlName="employee">
+            <mat-option [value]="null" selected>Not Selected</mat-option>
+            <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+<!--        <div id="butpanel">-->
+<!--          <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>-->
+<!--          <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>-->
+<!--          <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>-->
+<!--          <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>-->
+<!--        </div>-->
+
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="8" [rowspan]="14">
+    <mat-card>
+      <mat-card-header>
+        Incomplete Purchase Order Details
+      </mat-card-header>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="8" [rowspan]="16">
+    <mat-card>
+      <mat-card-header>
+        GRN Table
+      </mat-card-header>
+    </mat-card>
+  </mat-grid-tile>
+
+</mat-grid-list>

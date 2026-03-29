@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +30,7 @@ public class ProductController {
         if (maxid == 0) maxid = 1;
         return ResponseEntity.ok().body(maxid);
     }
+
 
     @GetMapping(produces = "application/json")
     public List<Product> get(@RequestParam HashMap<String, String> params) {
@@ -81,8 +83,8 @@ public class ProductController {
 
         HashMap<String, String> response = new HashMap<>();
         String errors = "";
-
         Product extProduct = productDao.findByMyId(product.getId());
+
         if (product.getProductrawmaterials() != null) {
             for (Productrawmaterial prm : product.getProductrawmaterials()) {
                 prm.setProduct(product);

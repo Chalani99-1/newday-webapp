@@ -1,16 +1,21 @@
 package lk.newdayproducts.controller;
 
+import lk.newdayproducts.dao.PurchaseorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
 import lk.newdayproducts.dao.SupplierpaymentDao;
+import lk.newdayproducts.entity.Purchaseorder;
 import lk.newdayproducts.entity.Rawmaterial;
 import lk.newdayproducts.entity.Supplierpayment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin
 @RestController
@@ -20,55 +25,76 @@ public class SupplierpaymentController {
     @Autowired
     private SupplierpaymentDao supplierpaymentdao;
 
+    @Autowired
+    private PurchaseorderDao purchaseorderDao;
 
+//    @GetMapping(path = "/number", produces = "application/json")
+//    public ResponseEntity<Integer> get() {
+//        int maxid = this.supplierpaymentdao.findMaxNumber();
+//        if (maxid == 0) maxid = 1;
+//        return ResponseEntity.ok().body(maxid);
+//    }
+
+    @GetMapping(path = "/number", produces = "application/json")
+    public ResponseEntity<Map<String, String>> get() {
+        int maxid = this.supplierpaymentdao.findMaxNumber();
+        if (maxid == 0) maxid = 1;
+        Map<String, String> response = new HashMap<>();
+        response.put("number", "" + maxid);
+        return ResponseEntity.ok().body(response);
+    }
     @GetMapping(produces = "application/json")
-    public List<Supplierpayment> get() {
+    public List<Supplierpayment> get(@RequestParam HashMap<String, String> params) {
+
+        String poid = params.get("poid");
+        String employeeid = params.get("employeeid");
+        String paytypeid = params.get("paytypeid");
 
         List<Supplierpayment> supplierpayments = this.supplierpaymentdao.findAll();
 
-        supplierpayments = supplierpayments  .stream().map(supplierpayment -> {
-                    Supplierpayment s = new Supplierpayment();
-                    s.setId(supplierpayment.getId());
-                    s.setNumber(supplierpayment.getNumber());
-                    s.setAmount(supplierpayment.getAmount());
-                    s.setDate(supplierpayment.getDate());
-                    s.setSupplierpaystatus(supplierpayment.getSupplierpaystatus());
-                    s.setPaytype(supplierpayment.getPaytype());
-                    s.setPaymentref(supplierpayment.getPaymentref());
-                    s.setReceipt(supplierpayment.getReceipt());
-                    s.setEmployee(supplierpayment.getEmployee());
-                    s.setPurchaseorder(supplierpayment.getPurchaseorder());
-                    return s;
-                }
-        ).collect(Collectors.toList());
-//        materialcategories.forEach(materialcategory -> {
-//            System.out.println(materialcategory.toString());
-//
-//        });
-        return supplierpayments;
+        if (params.isEmpty()) return supplierpayments;
+
+        Stream<Supplierpayment> postream = supplierpayments.stream();
+
+        if (poid != null) postream = postream.filter(o -> o.getPurchaseorder().getId() == Integer.parseInt(poid));
+        if (paytypeid != null)
+            postream = postream.filter(o -> o.getSupplierpaystatus().getId() == Integer.parseInt(paytypeid));
+        if (employeeid != null) postream = postream.filter(o -> o.getEmployee().toString().contains(employeeid));
+
+        return postream.collect(Collectors.toList());
+
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public HashMap<String, String> add(@RequestBody Supplierpayment supplierpayment) {
+    public HashMap<String, String> add(@RequestBody Supplierpayment sp) {
+        HashMap<String, String> response = new HashMap<>();
 
-        HashMap<String, String> responce = new HashMap<>();
         String errors = "";
 
-//        if (s.findByCode(rawmaterial.getCode()) != null)
-//            errors = errors + "<br> Existing Raw Material";
-//
-//        if (errors == "")
-//            rawmaterialdao.save(rawmaterial);
-//        else errors = "Server Validation Errors : <br> " + errors;
+        if (supplierpaymentdao.findbyNumber(sp.getNumber()) != null)
+            errors = errors + "<br> Existing Supplier Payment Number";
 
-        responce.put("id", String.valueOf(supplierpayment.getId()));
-        responce.put("url", "/supplierpayments/" + supplierpayment.getId());
-        responce.put("errors", errors);
+        if (errors == "") {
+            Purchaseorder existingPO = purchaseorderDao.findByMyId(sp.getPurchaseorder().getId());
+            //po updates
+            if (sp.getSupplierpaystatus().getId() == 1) {
+                //when status completed
+                Integer poid = sp.getPurchaseorder().getId();
+                purchaseorderDao.updatePaid(1, poid);
+            }
+            supplierpaymentdao.save(sp);
+        } else {
+            errors = "Server Validation Errors : <br> " + errors;
+        }
 
-        return responce;
+        response.put("id", String.valueOf(sp.getId()));
+        response.put("url", "/supplierpayments/" + sp.getId());
+        response.put("errors", errors);
+
+        return response;
+
     }
-
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
 

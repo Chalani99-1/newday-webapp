@@ -2,15 +2,18 @@ package lk.newdayproducts.controller;
 
 import lk.newdayproducts.dao.ClientorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
-import lk.newdayproducts.entity.Clientorder;
-import lk.newdayproducts.entity.Rawmaterial;
+import lk.newdayproducts.entity.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin
 @RestController
@@ -20,58 +23,65 @@ public class ClientorderController {
     @Autowired
     private ClientorderDao clientorderdao;
 
+    @GetMapping(path = "/number", produces = "application/json")
+    public ResponseEntity<Map<String, String>> get() {
+        int maxid = this.clientorderdao.findMaxNumber();
+        if (maxid == 0) maxid = 1;
+        Map<String, String> response = new HashMap<>();
+        response.put("number", "" + maxid);
+        return ResponseEntity.ok().body(response);
+    }
+
+//    @GetMapping(path = "/number", produces = "application/json")
+//    public ResponseEntity<Integer> get() {
+//        int maxid = this.clientorderdao.findMaxNumber();
+//        if (maxid == 0) maxid = 1;
+//        return ResponseEntity.ok().body(maxid);
+//    }
 
     @GetMapping(produces = "application/json")
-    public List<Clientorder> get() {
+    public List<Clientorder> get(@RequestParam HashMap<String, String> params) {
+        String clientid = params.get("clientid");
+        String employeeid = params.get("employeeid");
+        String doexpected = params.get("doexpected");
 
-        List<Clientorder> clientorders = this.clientorderdao.findAll();
+        List<Clientorder> corders = this.clientorderdao.findAll();
 
-        clientorders = clientorders  .stream().map(clientorder -> {
-                    Clientorder c = new Clientorder();
-                    c.setId(clientorder.getId());
-                    c.setClient(clientorder.getClient());
-                    c.setNumber(clientorder.getNumber());
-                    c.setDoexpected(clientorder.getDoexpected());
-                    c.setExpectedtotal(clientorder.getExpectedtotal());
-                    c.setClientorderstatus(clientorder.getClientorderstatus());
-                    c.setDescription(clientorder.getDescription());
-                    c.setAdvancedpay(clientorder.getAdvancedpay());
-                    c.setReceipt(clientorder.getReceipt());
-                    c.setEmployee(clientorder.getEmployee());
-                    c.setDoplaced(clientorder.getDoplaced());
-                    c.setCompletepercentage(clientorder.getCompletepercentage());
-                    c.setPaidstatus(clientorder.getPaidstatus());
-                    return c;
-                }
-        ).collect(Collectors.toList());
-//        materialcategories.forEach(materialcategory -> {
-//            System.out.println(materialcategory.toString());
-//
-//        });
-        return clientorders;
+        if (params.isEmpty()) return corders;
+        Stream<Clientorder> postream = corders.stream();
+        if (clientid != null) postream = postream.filter(o -> o.getClient().getId() == Integer.parseInt(clientid));
+        if (employeeid != null)
+            postream = postream.filter(o -> o.getEmployee().getId() == Integer.parseInt(employeeid));
+        if (doexpected != null) postream = postream.filter(o -> o.getDoexpected().toString().contains(doexpected));
+
+        return postream.collect(Collectors.toList());
+
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public HashMap<String, String> add(@RequestBody Clientorder clientorder) {
-
-        HashMap<String, String> responce = new HashMap<>();
+        HashMap<String, String> response = new HashMap<>();
         String errors = "";
 
-//        if (rawmaterialdao.findByCode(rawmaterial.getCode()) != null)
-//            errors = errors + "<br> Existing Raw Material";
-//
-//        if (errors == "")
-//            rawmaterialdao.save(rawmaterial);
-//        else errors = "Server Validation Errors : <br> " + errors;
+        for (Orderproduct po : clientorder.getOrderproducts()) po.setClientorder(clientorder);
 
-        responce.put("id", String.valueOf(clientorder.getId()));
-        responce.put("url", "/clientorders/" + clientorder.getId());
-        responce.put("errors", errors);
+        if (clientorderdao.findbyNumber(clientorder.getNumber()) != null)
+            errors = errors + "<br> Existing Order";
 
-        return responce;
+        if (errors == "") {
+            clientorderdao.save(clientorder);
+        } else {
+            errors = "Server Validation Errors : <br> " + errors;
+        }
+
+        response.put("id", String.valueOf(clientorder.getId()));
+        response.put("url", "/clientorder/" + clientorder.getId());
+        response.put("errors", errors);
+
+        return response;
+
     }
-
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
 
@@ -79,15 +89,16 @@ public class ClientorderController {
 
         HashMap<String, String> responce = new HashMap<>();
         String errors = "";
-
         Clientorder c = clientorderdao.findByMyId(clientorder.getId());
 
         if (c != null && !(clientorder.getId().equals(c.getId())))
             errors = errors + "<br> Not existing";
 
-
-        if (errors == "") clientorderdao.save(clientorder);
-        else errors = "Server Validation Errors : <br> " + errors;
+        if (c != null) {
+            clientorderdao.save(clientorder);
+        } else {
+            errors = "Server Validation Errors : <br> " + errors;
+        }
 
         responce.put("id", String.valueOf(clientorder.getId()));
         responce.put("url", "/clientorders/" + clientorder.getId());
@@ -95,6 +106,49 @@ public class ClientorderController {
 
         return responce;
     }
+
+//    @PutMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//    public HashMap<String, String> update(@RequestBody Clientorder clientorder) {
+//
+//        HashMap<String, String> response = new HashMap<>();
+//        String errors = "";
+//        Clientorder extOrder = clientorderdao.findByMyId(clientorder.getId());
+//
+//        if (extOrder != null && !(clientorder.getNumber().equals(extOrder.getNumber()))) {
+//            errors = errors + "<br> Not existing";
+//        }
+//
+//        if (extOrder != null) {
+//            try {
+//                extOrder.getOrderproducts().clear();
+//
+//                clientorder.getOrderproducts().forEach(newOP -> {
+//                    newOP.setClientorder(extOrder);
+//                    extOrder.getOrderproducts().add(newOP);
+//
+//                });
+//
+//                BeanUtils.copyProperties(clientorder, extOrder, "id", "orderproducts", "amount");
+//
+//                if (errors == "") {
+//                    System.out.println("update");
+//                    clientorderdao.save(extOrder);
+//                } else {
+//                    errors = "Server Validation Errors : <br> " + errors;
+//                }
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        response.put("id", String.valueOf(clientorder.getId()));
+//        response.put("url", "/clientorder/" + clientorder.getId());
+//        response.put("errors", errors);
+//
+//        return response;
+//    }
 
 
     @DeleteMapping("/{id}")

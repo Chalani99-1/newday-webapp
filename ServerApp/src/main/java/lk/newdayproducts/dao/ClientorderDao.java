@@ -10,5 +10,12 @@ public interface ClientorderDao extends JpaRepository<Clientorder,Integer> {
 
     @Query("select co from Clientorder co where co.id = :id")
     Clientorder findByMyId(@Param("id") Integer id);
+
+    @Query("select co from Clientorder co where co.number=:number")
+    Clientorder findbyNumber(@Param("number") String number);
+
+    @Query("SELECT max(p.id) FROM Clientorder  p")
+    int findMaxNumber();
 }
+
 

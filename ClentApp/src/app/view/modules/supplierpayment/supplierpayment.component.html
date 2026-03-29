@@ -1,0 +1,187 @@
+<mat-grid-list [cols]="12" class="component-background"  [rowHeight]="rowHeight" gutterSize="5px">
+  <mat-grid-tile [colspan]="4" [rowspan]="30">
+
+    <mat-card>
+      <mat-card-header>
+        Supplier Payment Form
+      </mat-card-header>
+
+      <mat-card-content id="suppaymentform">
+        <form #myForm [formGroup]="form">
+
+          <mat-form-field appearance="outline">
+            <mat-label>Purchase Order</mat-label>
+            <mat-select formControlName="purchaseorder">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let po of purchaseorders" [value]="po">{{ po.number }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Payment Number</mat-label>
+            <input matInput formControlName="number">
+          </mat-form-field>
+
+          <div *ngIf="showAdvancedUsedMsg"> <!--notrmally false-->
+            <p  style="margin-bottom: 15px ;color: #098e00 ;font-weight: bold ;font-size: 12px;">
+              <span >Advanced Payment reduced from Purchase Order and Amount Updated.Please Proceed </span>
+            </p>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Final Amount</mat-label>
+            <input matInput formControlName="amount">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Placed Date</mat-label>
+            <input matInput [matDatepicker]="dt" formControlName="date" [max]="maxDate">
+            <mat-datepicker-toggle matIconSuffix [for]="dt"></mat-datepicker-toggle>
+            <mat-datepicker #dt></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Payment Type</mat-label>
+            <mat-select formControlName="paytype">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let paytype of paytypes" [value]="paytype">{{ paytype.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" [hidden]="hide">
+            <mat-label>Paymentref</mat-label>
+            <input matInput formControlName="paymentref">
+          </mat-form-field>
+
+          <div id="imgpanel">
+            <img [src]="imageReceiptUrl">
+            <input id="userImage" hidden="hidden" (change)="selectImage($event)" Select type="file"
+                   accept="image/*" formControlName="receipt">
+            <label for="userImage" id="selectbutton">Select Image</label>
+            <label id="clearbutton" (click)="clearImage()">Clear</label>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Supplier Payment Status</mat-label>
+            <mat-select formControlName="supplierpaystatus">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let supplierpaystatus of supplierpaystatuses"
+                          [value]="supplierpaystatus">{{ supplierpaystatus.name }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Employee</mat-label>
+            <mat-select formControlName="employee">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+                    <div id="butpanel">
+                      <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>
+                      <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>
+                      <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>
+                      <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>
+                    </div>
+
+<!--          <div id="butpanel">-->
+<!--            <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>-->
+<!--            <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>-->
+<!--            <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>-->
+<!--            <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>-->
+<!--          </div>-->
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+          <mat-grid-tile [colspan]="8" [rowspan]="15">
+            <mat-card>
+              <mat-card-header>
+                Payment Incomplete Purchase Orders
+              </mat-card-header>
+
+              <mat-card-content>
+
+                <mat-table style="cursor: not-allowed" [dataSource]="data2">
+
+                  <ng-container *ngFor="let column of columns2;let i = index;" [matColumnDef]="column">
+                    <mat-header-cell *matHeaderCellDef> {{ headers2[i] }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, binders2[i]) }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container *ngFor="let cscolumn of cscolumns2;let i = index;" [matColumnDef]="cscolumn">
+                    <mat-header-cell *matHeaderCellDef>
+                      <mat-form [formGroup]="csearch2" class="csearch">
+                        <mat-form-field appearance="outline">
+                          <mat-label>{{ csprompts2[i] }}</mat-label>
+                          <input matInput [formControlName]="cscolumn" (keyup)="filterTable2()">
+                        </mat-form-field>
+                      </mat-form>
+                    </mat-header-cell>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="columns2"></mat-header-row>
+                  <mat-header-row *matHeaderRowDef="cscolumns2"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: columns2;"
+                           [ngStyle]="row.postatus.name !== 'Completed' ? {'background-color': '#fad8d8'} :
+             {'background-color': '#c2ffbf'}"></mat-row>
+
+                </mat-table>
+
+                <mat-paginator #paginator2 class="mat-paginator-sticky" showFirstLastButtons [length]="20" [pageSize]="5"
+                               [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+
+              </mat-card-content>
+            </mat-card>
+          </mat-grid-tile>
+
+          <mat-grid-tile [colspan]="8" [rowspan]="15">
+            <mat-card>
+              <mat-card-header>
+                Supplier Payment Table
+              </mat-card-header>
+
+              <mat-card-content>
+
+                <mat-table [dataSource]="data">
+
+                  <ng-container *ngFor="let column of columns;let i = index;" [matColumnDef]="column">
+                    <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+                    <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, binders[i]) }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container *ngFor="let cscolumn of cscolumns;let i = index;" [matColumnDef]="cscolumn">
+                    <mat-header-cell *matHeaderCellDef>
+                      <mat-form [formGroup]="csearch" class="csearch">
+                        <mat-form-field appearance="outline">
+                          <mat-label>{{ csprompts[i] }}</mat-label>
+                          <input matInput [formControlName]="cscolumn" (keyup)="filterTable()">
+                        </mat-form-field>
+                      </mat-form>
+                    </mat-header-cell>
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+                  <mat-header-row *matHeaderRowDef="cscolumns"></mat-header-row>
+                  <mat-row *matRowDef="let row; columns: columns;" (click)="fillForm(row)"
+                           [ngStyle]="row.supplierpaystatus.name !== 'Completed' ? {'background-color': '#fad8d8'} :
+             {'background-color': '#c2ffbf'}"
+                           [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+                </mat-table>
+
+                <mat-paginator #paginator1 class="mat-paginator-sticky" showFirstLastButtons [length]="20" [pageSize]="5"
+                               [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+
+              </mat-card-content>
+
+            </mat-card>
+          </mat-grid-tile>
+
+
+
+</mat-grid-list>

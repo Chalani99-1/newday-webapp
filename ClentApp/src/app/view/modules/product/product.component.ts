@@ -173,7 +173,6 @@ export class ProductComponent {
 
     this.form = this.fb.group({
       "productcategory": new FormControl('', Validators.required),
-
       "productsize": new FormControl('', Validators.required),
       "name": new FormControl('', Validators.required),
       "code": new FormControl({value: "", disabled: true}, Validators.required),
@@ -232,6 +231,7 @@ export class ProductComponent {
     this.form.controls['productcategory'].setValidators([Validators.required]);
     this.form.controls['productsize'].setValidators([Validators.required]);
     this.form.controls['code'].setValidators([Validators.required]);
+    this.form.controls['name'].setValidators([Validators.required]);
     this.form.controls['totalcost'].setValidators([Validators.required, Validators.pattern(Regexconst.totalPriceRegex)]);
     this.form.controls['tcbeforecharge'].setValidators([Validators.required, Validators.pattern(Regexconst.totalPriceRegex)]);
     this.form.controls['designimage'].setValidators([Validators.required]);

@@ -92,6 +92,11 @@ import { ProductComponent } from './view/modules/product/product.component';
 import { SupplierComponent } from './view/modules/supplier/supplier.component';
 import { ClientComponent } from './view/modules/client/client.component';
 import { PurchaseorderComponent } from './view/modules/purchaseorder/purchaseorder.component';
+import { GrnComponent } from './view/modules/grn/grn.component';
+import { ClientorderComponent } from './view/modules/clientorder/clientorder.component';
+import { ProductionorderComponent } from './view/modules/productionorder/productionorder.component';
+import { SupplierpaymentComponent } from './view/modules/supplierpayment/supplierpayment.component';
+import { InvoiceComponent } from './view/modules/invoice/invoice.component';
 
 
 @NgModule({
@@ -142,6 +147,11 @@ ProductComponent,
 SupplierComponent,
 ClientComponent,
 PurchaseorderComponent,
+GrnComponent,
+ClientorderComponent,
+ProductionorderComponent,
+SupplierpaymentComponent,
+InvoiceComponent,
 
 
 

@@ -60,23 +60,7 @@
 
             </form>
 
-            <mat-table *ngIf="innerTableLoad" id="tableInner" [dataSource]="indata">
-              <ng-container *ngFor="let column of incolumns;let i = index;" [matColumnDef]="column">
-                <mat-header-cell *matHeaderCellDef> {{ inheaders[i] }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                  <div *ngIf="i<inbinders.length-1" [innerHTML]="uiassist.getProperty(element, inbinders[i])"></div>
-                  <div *ngIf="i>=inbinders.length-1">
-                    <button mat-raised-button id="removeBtn" (click)="deleteRaw(element)">Remove</button>
-                  </div>
-                </mat-cell>
-              </ng-container>
 
-              <mat-header-row *matHeaderRowDef="incolumns"></mat-header-row>
-              <!--              <mat-row *matRowDef="let row; columns: incolumns"></mat-row>-->
-              <mat-row *matRowDef="let row; columns: incolumns;" (click)="fillInnerForm(row)"
-                       [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
-
-            </mat-table>
 
           </div>
 

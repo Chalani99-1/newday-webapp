@@ -1,0 +1,240 @@
+<mat-grid-list class="component-background"  [cols]="12" [rowHeight]="rowHeight" gutterSize="5px">
+  <mat-grid-tile [colspan]="4" [rowspan]="30">
+
+    <mat-card>
+      <mat-card-header>
+        Client Order Form
+      </mat-card-header>
+      <mat-card-content id="orderform">
+
+        <form #myForm [formGroup]="form">
+          <mat-form-field appearance="outline">
+            <mat-label>Client</mat-label>
+            <mat-select formControlName="client">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let client of clients" [value]="client">{{ client.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Client Order Number</mat-label>
+            <input matInput formControlName="number">
+          </mat-form-field>
+
+          <div id="innertable">
+
+            <form #myInnerForm [formGroup]="innerform">
+              <mat-form-field appearance="outline">
+                <mat-label>Product</mat-label>
+                <mat-select formControlName="product" [compareWith]="compareProducts">
+                  <mat-option [value]="null" selected>Not Selected</mat-option>
+                  <mat-option *ngFor="let product of products"
+                              [value]="product">{{ product.code + "( " + product.name + " )" }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Amount</mat-label>
+                <input matInput formControlName="amount">
+              </mat-form-field>
+
+              <button mat-raised-button id="btnAdd" (click)="btnaddMc()" [disabled]="!enaInnerAdd">Add</button>
+              <button mat-raised-button id="btnUpdate" (click)="btnupdateMc()" [disabled]="!enaInnerUpdate">Update
+              </button>
+              <button mat-raised-button id="btnDelete" (click)="btndeleteMc()" [disabled]="!enaInnerUpdate">Clear
+              </button>
+            </form>
+
+              <mat-table *ngIf="tableInnerLoad" id="tableInner" [dataSource]="indata">
+                <ng-container *ngFor="let column of incolumns;let i = index;" [matColumnDef]="column">
+                  <mat-header-cell *matHeaderCellDef> {{ inheaders[i] }}</mat-header-cell>
+                  <mat-cell *matCellDef="let element">
+                    <div *ngIf="i<inbinders.length-1" [innerHTML]="uiassist.getProperty(element, inbinders[i])"></div>
+                    <div *ngIf="i>=inbinders.length-1">
+                      <button mat-raised-button id="removeBtn" (click)="deleteRaw(element)">Remove</button>
+                    </div>
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="incolumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: incolumns;" (click)="fillInnerForm(row)"
+                         [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+              </mat-table>
+          </div>
+              <mat-form-field appearance="outline">
+                <mat-label>Expected Total</mat-label>
+                <input matInput formControlName="expectedtotal">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Do Placed</mat-label>
+                <input matInput [matDatepicker]="doplcd" formControlName="doplaced" [max]="maxDate">
+                <mat-datepicker-toggle matIconSuffix [for]="doplcd"></mat-datepicker-toggle>
+                <mat-datepicker #doplcd></mat-datepicker>
+              </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Do Expected</mat-label>
+            <input matInput [matDatepicker]="doexpctd" formControlName="doexpected" [min]="minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="doexpctd"></mat-datepicker-toggle>
+            <mat-datepicker #doexpctd></mat-datepicker>
+          </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Ongoing Production Percentage</mat-label>
+                <input matInput formControlName="completepercentage">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Description</mat-label>
+                <input matInput formControlName="description">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Client Order Status</mat-label>
+                <mat-select formControlName="clientorderstatus">
+                  <mat-option [value]="null" selected>Not Selected</mat-option>
+                  <mat-option *ngFor="let costatus of clientorderstatuses" [value]="costatus">{{ costatus.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Paid Status</mat-label>
+                <mat-select formControlName="paidstatus">
+                  <mat-option [value]="null" selected>Not Selected</mat-option>
+                  <mat-option *ngFor="let paidstatus of clientorderstatuses" [value]="paidstatus">{{ paidstatus.name }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Employee</mat-label>
+                <mat-select formControlName="employee">
+                  <mat-option [value]="null" selected>Not Selected</mat-option>
+                  <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Advance pay</mat-label>
+                <input matInput formControlName="advancedpay">
+              </mat-form-field>
+
+              <div id="imgpanel">
+                  <img [src]="imageReceiptUrl">
+                  <input id="userImage" hidden="hidden" (change)="selectImage($event)" Select type="file"
+                         accept="image/*" formControlName="receipt">
+                  <label for="userImage" id="selectbutton">Select Receipt</label>
+                  <label id="clearbutton" (click)="clearImage()">Clear</label>
+                </div>
+
+
+                <div id="butpanel">
+                  <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>
+                  <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>
+                  <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>
+                  <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>
+                </div>
+
+            </form>
+      </mat-card-content>
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="8" [rowspan]="20">
+    <mat-card>
+      <mat-card-header>
+        Client Order Table
+      </mat-card-header>
+      <mat-card-content>
+
+        <mat-table [dataSource]="data">
+
+          <ng-container *ngFor="let column of columns;let i = index;" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, binders[i]) }}</mat-cell>
+          </ng-container>
+
+          <ng-container *ngFor="let cscolumn of cscolumns;let i = index;" [matColumnDef]="cscolumn">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-form [formGroup]="csearch" class="csearch">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ csprompts[i] }}</mat-label>
+                  <input matInput [formControlName]="cscolumn" (keyup)="filterTable()">
+                </mat-form-field>
+              </mat-form>
+            </mat-header-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-header-row *matHeaderRowDef="cscolumns"></mat-header-row>
+          <mat-row
+            *matRowDef="let row; columns: columns;" (click)="fillForm(row)"
+            [ngStyle]="row.clientorderstatus.name !== 'Completed' ? {'background-color': '#fad8d8'} :
+             {'background-color': '#c2ffbf'}"
+            [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+        </mat-table>
+
+        <mat-paginator class="mat-paginator-sticky" showFirstLastButtons [length]="20" [pageSize]="5"
+                       [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+
+      </mat-card-content>
+
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="8" [rowspan]="10">
+    <mat-card id="ssearch">
+      <mat-card-header>
+        Client Order Search
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-form [formGroup]="ssearch">
+
+          <mat-form-field appearance="outline" class="ssfield">
+            <mat-label>Search By Client</mat-label>
+            <mat-select formControlName="ssclient">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let client of clients" [value]="client.id">{{ client.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="ssfield">
+            <mat-label>Search By Employee</mat-label>
+            <mat-select formControlName="ssemployee">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee.id">{{ employee.callingname }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Search By Do Placed</mat-label>
+            <input matInput [matDatepicker]="doexpcted" formControlName="ssdoexpected">
+            <mat-datepicker-toggle matIconSuffix [for]="doexpcted"></mat-datepicker-toggle>
+            <mat-datepicker #doexpcted></mat-datepicker>
+          </mat-form-field>
+
+          <div>
+            <button id="ssearch-btn" mat-raised-button (click)="btnSearchMc()">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              Search
+            </button>
+            <button id="ssearch-clearbtn" mat-raised-button (click)="btnSearchClearMc()">
+              <i class="fa-solid fa-xmark"></i>
+              Clear Search
+            </button>
+          </div>
+
+        </mat-form>
+
+
+      </mat-card-content>
+
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>

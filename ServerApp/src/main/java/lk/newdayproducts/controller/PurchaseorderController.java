@@ -28,13 +28,21 @@ public class PurchaseorderController {
     @Autowired
     private PurchaseorderDao purchaseorderdao;
 
+//    @GetMapping(path = "/number", produces = "application/json")
+//    public ResponseEntity<Integer> get() {
+//        int maxid = this.purchaseorderdao.findMaxNumber();
+//        if (maxid == 0) maxid = 1;
+//        return ResponseEntity.ok().body(maxid);
+//    }
+
     @GetMapping(path = "/number", produces = "application/json")
-    public ResponseEntity<Integer> get() {
+    public ResponseEntity<Map<String, String>> get() {
         int maxid = this.purchaseorderdao.findMaxNumber();
         if (maxid == 0) maxid = 1;
-        return ResponseEntity.ok().body(maxid);
+        Map<String, String> response = new HashMap<>();
+        response.put("number", ""+maxid);
+        return ResponseEntity.ok().body(response);
     }
-
 
     @GetMapping(produces = "application/json")
     public List<Purchaseorder> get(@RequestParam HashMap<String, String> params){

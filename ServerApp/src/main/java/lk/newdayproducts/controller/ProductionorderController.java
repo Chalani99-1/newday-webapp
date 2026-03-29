@@ -1,16 +1,21 @@
 package lk.newdayproducts.controller;
 
+import lk.newdayproducts.dao.ProductDao;
 import lk.newdayproducts.dao.ProductionorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
 import lk.newdayproducts.entity.Productionorder;
+import lk.newdayproducts.entity.Productionorderproduct;
 import lk.newdayproducts.entity.Rawmaterial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @CrossOrigin
 @RestController
@@ -20,76 +25,104 @@ public class ProductionorderController {
     @Autowired
     private ProductionorderDao productionorderdao;
 
+    @Autowired
+    private RawmaterialDao rawmaterialDao;
 
+    @Autowired
+    private ProductDao productDao;
+
+
+//    @GetMapping(path = "/ number", produces = "application/json")
+//    public ResponseEntity<Integer> get() {
+//        int maxid = this.productionorderdao.findMaxNumber();
+//        if (maxid == 0) maxid = 1;
+//        return ResponseEntity.ok().body(maxid);
+//    }
+
+    @GetMapping(path = "/number", produces = "application/json")
+    public ResponseEntity<Map<String, String>> get() {
+        int maxid = this.productionorderdao.findMaxNumber();
+        if (maxid == 0) maxid = 1;
+        Map<String, String> response = new HashMap<>();
+        response.put("number", "" + maxid);
+        return ResponseEntity.ok().body(response);
+    }
     @GetMapping(produces = "application/json")
-    public List<Productionorder> get() {
+    public List<Productionorder> get(@RequestParam HashMap<String, String> params) {
+
 
         List<Productionorder> productionorders = this.productionorderdao.findAll();
 
-        productionorders = productionorders  .stream().map(productionorder -> {
-                    Productionorder p = new Productionorder();
-                    p.setId(productionorder.getId());
-                    p.setOrdernumber(productionorder.getOrdernumber());
-                    p.setDorequired(productionorder.getDorequired());
-                    p.setCompletepercentage(productionorder.getCompletepercentage());
-                    p.setDescription(productionorder.getDescription());
-                    p.setProductionorderstatus(productionorder.getProductionorderstatus());
-                    p.setDoplaced(productionorder.getDoplaced());
-                    p.setEmployee(productionorder.getEmployee());
-                    p.setClientorder(productionorder.getClientorder());
-                    return p;
-                }
-        ).collect(Collectors.toList());
-//        materialcategories.forEach(materialcategory -> {
-//            System.out.println(materialcategory.toString());
-//
-//        });
-        return productionorders;
+        String employeeid = params.get("employeeid");
+        String doplaced = params.get("doplaced");
+        String dorequired = params.get("dorequired");
+        String ordernumber = params.get("ordernumber");
+
+
+        List<Productionorder> porders = this.productionorderdao.findAll();
+
+        if (params.isEmpty()) return porders;
+
+        Stream<Productionorder> postream = porders.stream();
+
+        if (employeeid != null)
+            postream = postream.filter(o -> o.getEmployee().getId() == Integer.parseInt(employeeid));
+        if (doplaced != null) postream = postream.filter(o -> o.getDoplaced().toString().contains(doplaced));
+        if (dorequired != null) postream = postream.filter(o -> o.getDorequired().toString().contains(dorequired));
+        if (ordernumber != null) postream = postream.filter(o -> o.getOrdernumber().contains(ordernumber));
+
+        return postream.collect(Collectors.toList());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public HashMap<String, String> add(@RequestBody Productionorder productionorder) {
+    public HashMap<String, String> add(@RequestBody Productionorder order) {
+        HashMap<String, String> response = new HashMap<>();
 
-        HashMap<String, String> responce = new HashMap<>();
         String errors = "";
 
-//        if (rawmaterialdao.findByCode(rawmaterial.getCode()) != null)
-//            errors = errors + "<br> Existing Raw Material";
-//
-//        if (errors == "")
-//            rawmaterialdao.save(rawmaterial);
-//        else errors = "Server Validation Errors : <br> " + errors;
+        for (Productionorderproduct po : order.getProductionorderproducts()) po.setProductionorder(order);
 
-        responce.put("id", String.valueOf(productionorder.getId()));
-        responce.put("url", "/productionorders/" + productionorder.getId());
-        responce.put("errors", errors);
+        if (productionorderdao.findbyNumber(order.getOrdernumber()) != null)
+            errors = errors + "<br> Existing Order";
 
-        return responce;
+        if (errors == "") {
+            productionorderdao.save(order);
+
+        } else {
+            errors = "Server Validation Errors : <br> " + errors;
+        }
+
+        response.put("id", String.valueOf(order.getId()));
+        response.put("url", "/productionorders/" + order.getId());
+        response.put("errors", errors);
+
+        return response;
+
     }
 
-    @PutMapping
+      @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
+    public HashMap<String, String> update(@RequestBody Productionorder order) {
 
-    public HashMap<String, String> update(@RequestBody Productionorder productionorder) {
-
-        HashMap<String, String> responce = new HashMap<>();
+        HashMap<String, String> response = new HashMap<>();
         String errors = "";
 
-        Productionorder p = productionorderdao.findByMyId(productionorder.getId());
+        Productionorder extPOrder = productionorderdao.findByMyId(order.getId());
+        if (extPOrder == null) errors = errors + "<br> Production Order Does Not Exist";
 
-        if (p != null && !(productionorder.getId().equals(p.getId())))
-            errors = errors + "<br> Not existing";
+        if (errors == "") {
+            productionorderdao.save(extPOrder); // Save the updated extUser object
+        } else {
+            errors = "Server Validation Errors : <br> " + errors;
+        }
 
 
-        if (errors == "") productionorderdao.save(productionorder);
-        else errors = "Server Validation Errors : <br> " + errors;
+        response.put("id", String.valueOf(order.getId()));
+        response.put("url", "/productionorders/" + order.getId());
+        response.put("errors", errors);
 
-        responce.put("id", String.valueOf(productionorder.getId()));
-        responce.put("url", "/productionorders/" + productionorder.getId());
-        responce.put("errors", errors);
-
-        return responce;
+        return response;
     }
 
 
