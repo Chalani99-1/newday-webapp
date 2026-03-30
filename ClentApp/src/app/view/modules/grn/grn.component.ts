@@ -29,6 +29,8 @@ import {Materialcategoryservice} from "../../../service/materialcategoryservice"
 import {ProductionOrder} from "../../../entity/productionOrder";
 import {Client} from "../../../entity/client";
 import {Product} from "../../../entity/product";
+import {ConfirmComponent} from "../../../util/dialog/confirm/confirm.component";
+import {Purchaseordersrms} from "../../../report/entity/purchaseordersrms";
 
 @Component({
   selector: 'app-grn',
@@ -111,16 +113,22 @@ export class GrnComponent {
   isFirstGrn = false;
   advancedPayment = 0;
   //purchase order
-  // povsrms: Array<Purchaseordersrms> = [];
-  // podata!: MatTableDataSource<Purchaseordersrms>;
+  povsrms: Array<Purchaseordersrms> = [];
+  podata!: MatTableDataSource<Purchaseordersrms>;
 
   dynamicMin = 1
   dynamicMax = 1
   innerTableLoad=false;
 
+  emptyPOtable: boolean = false;
   maxDate: Date = new Date();  // Today's date
   minDate = new Date(new Date(this.maxDate).setDate(this.maxDate.getDate() + 1));
 
+  pocolumns: string[] = ['number', 'rmName', 'quentity', 'receivedAmount'];
+  poheaders: string[] = ['Order Number', 'Raw Material', 'Amount Requested', 'Amount Received'];
+  pobinders: string[] = ['number', 'rmName', 'quentity', 'receivedAmount'];
+
+  public pocsearch!: FormGroup;
   constructor(
     private pos: Purchaseorderservice,
     private gss: Grnstatusservice,
@@ -154,6 +162,13 @@ export class GrnComponent {
 
     this.uiassist = new UiAssist(this);
 
+    this.pocsearch = this.fb.group({
+      'pocsnumber': new FormControl(),
+      'pocsrmName': new FormControl(),
+      'pocsquentity': new FormControl(),
+      'pocsreceivedAmount': new FormControl(),
+    });
+
     this.csearch = this.fb.group({
       "csnumber": new FormControl(),
       "cspurchaseorder": new FormControl(),
@@ -180,10 +195,11 @@ export class GrnComponent {
 
   ngOnInit() {
     this.initialize();
+    //this.numberGenerate();
   }
 
   initialize() {
-    //this.createView();
+    this.createView();
 
     this.pos.getAllPOs().then((pors: Purchaseorder[]) => this.purchaseorders = pors);
     this.es.getAll('').then((emps: Employee[]) => this.employees = emps);
@@ -202,7 +218,7 @@ export class GrnComponent {
 
     this.gs.getAll("").then((regs:Grn []) => {
       this.orders = regs;
-     // this.createForm();
+     this.createForm();
     });
   }
 
@@ -275,8 +291,7 @@ export class GrnComponent {
       );
 
     }
-
-    //this.filterMaterials();
+    this.numberGenerate();
     this.enableButtons(true, false, false);
 
   }
@@ -311,6 +326,30 @@ export class GrnComponent {
         this.data.paginator = this.paginator1;
       });
 
+  }
+
+  getFormControlName(column: string): string {
+    const columnMap = {
+      'number': 'pocsnumber',
+      'rmName': 'pocsrmName',
+      'quentity': 'pocsquentity',
+      'receivedAmount': 'pocsreceivedAmount'
+    };
+    // @ts-ignore
+    return columnMap[column] || '';
+  }
+
+  filterTable2() {
+    const cserchdata = this.pocsearch.getRawValue();
+
+    this.podata.filterPredicate = (porms: Purchaseordersrms, filter: string) => {
+      return (cserchdata.pocsnumber == null || porms.number.toLowerCase().includes(cserchdata.pocsnumber)) &&
+        (cserchdata.pocsrmName == null || porms.rmName.toLowerCase().includes(cserchdata.pocsrmName)) &&
+        (cserchdata.pocsquentity == null || porms.quentity.toString().toLowerCase().includes(cserchdata.pocsquentity)) &&
+        (cserchdata.pocsreceivedAmount == null || porms.receivedAmount.toString().toLowerCase().includes(cserchdata.pocsreceivedAmount))
+    };
+
+    this.podata.filter = 'xx';
   }
 
   numberGenerate(): void {
@@ -384,7 +423,7 @@ export class GrnComponent {
         }
       });
     } else {
-      this.enaInnerAdd = true;
+      //this.enaInnerAdd = true;
       this.innerTableLoad=true;
 
       const innerdata = this.innerform.getRawValue();
@@ -426,10 +465,10 @@ export class GrnComponent {
         const innerForm = this.myInnerForm.nativeElement as HTMLFormElement;
         innerForm.reset();
 
-        this.innerform.controls['rawmaterial'].setValidators([Validators.required]);
-       // this.innerform.controls['quantity'].setValidators([Validators.required, Validators.pattern(/^\d{1,4}$/)]);
-        this.innerform.controls['quantity'].setValidators(
-          [Validators.required, Validators.min(this.dynamicMin), Validators.max(this.dynamicMax)]);
+       //  this.innerform.controls['rawmaterial'].setValidators([Validators.required]);
+       // // this.innerform.controls['quantity'].setValidators([Validators.required, Validators.pattern(/^\d{1,4}$/)]);
+       //  this.innerform.controls['quantity'].setValidators(
+       //    [Validators.required, Validators.min(this.dynamicMin), Validators.max(this.dynamicMax)]);
 
       }
     }
@@ -484,7 +523,7 @@ export class GrnComponent {
     this.grnrawmaterial= grnrawmaterial;
     this.oldgrnrawmaterial =grnrawmaterial;
     // @ts-ignore
-    this.grnrawmaterial = this.grnRawmaterials.find(p => p.id === this.productionOrderProduct.id);
+    this.grnrawmaterial = this.grnRawmaterials.find(p => p.id === this.grnrawmaterial.id);
     this.innerform.controls["rawmaterial"].setValue(this.grnrawmaterial.rawmaterial.id);
     this.innerform.patchValue(this.grnrawmaterial);
     this.getRmAmount();
@@ -509,7 +548,7 @@ export class GrnComponent {
     this.dynamicMin = min;
     this.dynamicMax = max;
 
-    const amountControl = this.innerform.controls['amount'];
+    const amountControl = this.innerform.controls['quantity'];
     amountControl.setValidators([
       Validators.required,
       Validators.min(this.dynamicMin),
@@ -517,4 +556,465 @@ export class GrnComponent {
     ]);
     amountControl.updateValueAndValidity();
   }
+
+  getBtn(element: Grn) {
+    return `<button mat-raised-button>Remove</button>`;
+  }
+
+  btnupdateMc() {
+    let errors = "";
+    errors = this.getInnerErrors();
+    if (errors != "") {
+      //if errors
+      const errmsg = this.dg.open(MessageComponent, {
+        width: '500px',
+        data: {heading: "Errors  ", message: "You have following Errors <br> " + errors}
+      });
+      errmsg.afterClosed().subscribe(async result => {
+        if (!result) {
+          return;
+        }
+      });
+    } else {
+      const innerdata = this.innerform.getRawValue();
+
+      if (innerdata != null) {
+        // Calculate the line total
+        const linetotal = innerdata.rawmaterial.unitprice * innerdata.quantity;
+
+        // Find the item to update
+        const existingItemIndex = this.grnRawmaterials.findIndex(item => item.rawmaterial.id === innerdata.rawmaterial.id);
+
+        if (existingItemIndex > -1) {
+          // Update the item in the list
+          this.grnRawmaterials[existingItemIndex] = new Grnrawmaterials(
+            this.id,  // Use the current item's ID or a new ID
+            innerdata.rawmaterial,
+            innerdata.unitprice,
+            innerdata.quantity,
+            linetotal,
+            innerdata.grn
+          );
+
+          // Update the data source with the new list
+          this.updateDataSource();
+
+          // Calculate the new grand total
+          this.calculateGrandTotal();
+
+          // Reset the inner form
+          this.innerform.reset();
+          this.innerform.controls["rawmaterial"].clearValidators();
+          this.innerform.controls["quantity"].clearValidators();
+
+          const innerForm = this.myInnerForm.nativeElement as HTMLFormElement;
+          innerForm.reset();
+        } else {
+          // Handle the case where the item to update does not exist
+          console.error('Item to update not found.');
+        }
+      }
+    }
+  }
+
+  getErrors(): string {
+
+    let errors: string = "";
+
+    for (const controlName in this.form.controls) {
+      const control = this.form.controls[controlName];
+      if (control.errors) errors = errors + "<br>Invalid " + controlName;
+    }
+
+    return errors;
+  }
+
+  areaHiddenFix() {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+  }
+  add() {
+
+    let errors = this.getErrors();
+    this.areaHiddenFix();
+    if (errors != "") {
+      this.areaHiddenFix();
+      const errmsg = this.dg.open(MessageComponent, {
+        width: '500px',
+        data: {heading: "Errors - Product Add ", message: "You have following Errors <br> " + errors}
+      });
+      errmsg.afterClosed().subscribe(async result => {
+        if (!result) {
+          return;
+        }
+      });
+    } else {
+
+      this.grn = this.form.getRawValue();
+
+      this.grn.grnrawmaterials = this.grnRawmaterials;
+
+      // @ts-ignore
+      this.grnRawmaterials.forEach((i) => delete i.id);
+
+      // @ts-ignore
+      this.grn.doreceived = new Date(this.grn.doreceived).toISOString()
+
+      let invdata: string = "";
+
+
+      invdata = invdata + "<br>Received Day is : " + this.grn.doreceived.toString()
+      invdata = invdata + "<br>PurchaseOrder is : " + this.grn.purchaseorder.number;
+
+      const confirm = this.dg.open(ConfirmComponent, {
+        width: '500px',
+        data: {
+          heading: "Confirmation - Product Add",
+          message: "Are you sure to Add the following Product? <br> <br>" + invdata
+        }
+      });
+
+      let addstatus: boolean = false;
+      let addmessage: string = "Server Not Found";
+
+      confirm.afterClosed().subscribe(async result => {
+        if (result) {
+          // console.log(this.product);
+          this.gs.add(this.grn).then((responce: [] | undefined) => {
+            //console.log("Res-" + responce);
+            //console.log("Un-" + responce == undefined);
+            if (responce != undefined) { // @ts-ignore
+              console.log("Add-" + responce['id'] + "-" + responce['url'] + "-" + (responce['errors'] == ""));
+              // @ts-ignore
+              addstatus = responce['errors'] == "";
+              console.log("Add Sta-" + addstatus);
+              if (!addstatus) { // @ts-ignore
+                addmessage = responce['errors'];
+              }
+            } else {
+              console.log("undefined");
+              addstatus = false;
+              addmessage = "Content Not Found"
+            }
+          }).finally(() => {
+
+            if (addstatus) {
+              addmessage = "Successfully Saved";
+             // this.loadTable2();
+              this.resetForms();
+              this.loadTable("");
+            }
+
+            const stsmsg = this.dg.open(MessageComponent, {
+              width: '500px',
+              data: {heading: "Status -Product Add", message: addmessage}
+            });
+
+            stsmsg.afterClosed().subscribe(async result => {
+
+              if (!result) {
+                return;
+              }
+            });
+          });
+        }
+      });
+    }
+  }
+
+  resetForms() {
+    this.innerTableLoad = false
+    const form = this.myForm?.nativeElement as HTMLFormElement;
+    form?.reset();
+
+    const innerForm = this.myInnerForm.nativeElement as HTMLFormElement;
+    innerForm.reset();
+    this.selectedrow = null;
+    // @ts-ignore
+    this.grn = null;
+    // @ts-ignore
+    this.oldGrn = null;
+    this.grnRawmaterials = []
+    // @ts-ignore
+    this.indata = new MatTableDataSource([]);
+    this.form.controls['number'].reset();
+    this.innerform.controls['rawmaterial'].reset();
+    this.innerform.controls['quantity'].reset();
+    this.enableButtons(true, false, false);
+    this.loadTable("");
+   // this.loadTable2();
+
+    Object.values(this.form.controls).forEach(control => {
+      control.markAsUntouched();
+    });
+    Object.values(this.innerform.controls).forEach(control => {
+      control.markAsUntouched();
+    });
+    this.numberGenerate();
+  }
+
+  fillForm(grn: Grn) {
+    this.innerTableLoad = true
+    this.enaInnerAdd = true;
+    this.enableButtons(false, true, true);
+    this.rawmaterials = Array.from(this.oldrawmaterials);
+
+    this.selectedrow = grn;
+
+    this.grn = JSON.parse(JSON.stringify(grn));
+    this.grnRawmaterials = Array.from(this.grn.grnrawmaterials);
+    this.oldGrnrawmaterials = Array.from(this.grn.grnrawmaterials);
+    this.oldGrn = JSON.parse(JSON.stringify(grn));
+
+    // Set initial form values
+    this.updateFormValues();
+
+    for (const controlName in this.innerform.controls) {
+      this.innerform.controls[controlName].clearValidators();
+      this.innerform.controls[controlName].updateValueAndValidity();
+    }
+  }
+
+  updateFormValues() {
+    // @ts-ignore
+    this.grn.employee =this.employees.find(e => e.id === this.grn.employee.id);
+
+    // @ts-ignore
+    this.grn.grnstatus = this.grnstatuses.find(s => s.id === this.grn.grnstatus.id);
+
+    // Update the form values
+    this.form.patchValue(this.grn);
+    this.form.markAsPristine();
+    this.enableButtons(false, true, true);
+
+    // Ensure the purchaseorder field is updated correctly
+    // @ts-ignore
+    this.grn.purchaseorder = this.purchaseorders.find(s => s.id === this.grn.purchaseorder.id);
+    this.form.controls['purchaseorder'].setValue(this.grn.purchaseorder);
+
+    this.rawmaterials = this.grn.purchaseorder.poitems.map(p => p.rawmaterial);
+    this.innerform.get('rawmaterial')?.setValue(this.rawmaterials);
+
+    this.form.controls["number"].setValue(this.grn.number);
+    // Preserve the existing items when updating the form
+    this.grnRawmaterials = this.grn.grnrawmaterials || [];
+    this.updateDataSource();
+
+    // Calculate the grand total after updating the items
+    this.calculateGrandTotal();
+  }
+
+  filterTable(): void {
+
+    const cserchdata = this.csearch.getRawValue();
+
+    this.data.filterPredicate = (grn: Grn, filter: string) => {
+      // @ts-ignore
+      return (cserchdata.csnumber == null || grn.number.includes(cserchdata.csnumber)) &&
+        (cserchdata.cspurchaseorder == null || grn.purchaseorder.number.toLowerCase().includes(cserchdata.cspurchaseorder)) &&
+        (cserchdata.csemployee == null || grn.employee.callingname.toLowerCase().includes(cserchdata.csemployee))&&
+        (cserchdata.csdoreceived == null || grn.doreceived.includes(cserchdata.csdoreceived)) &&
+        (cserchdata.csgrnstatus == null || grn.grnstatus.name.includes(cserchdata.csgrnstatus))
+
+    };
+
+    this.data.filter = 'xx';
+
+  }
+
+  update() {
+    this.areaHiddenFix()
+    let errors = this.getErrors();
+
+    if (errors != "") {
+
+      const errmsg = this.dg.open(MessageComponent, {
+        width: '500px',
+        data: {heading: "Errors - GRN Update ", message: "You have following Errors <br> " + errors}
+      });
+      errmsg.afterClosed().subscribe(async result => {
+        if (!result) {
+          return;
+        }
+      });
+
+    } else {
+
+      let updates: string = this.getUpdates();
+
+      if (updates != "") {
+
+        let updstatus: boolean = false;
+        let updmessage: string = "Server Not Found";
+
+        const confirm = this.dg.open(ConfirmComponent, {
+          width: '500px',
+          data: {
+            heading: "Confirmation - GRN Update",
+            message: "Are you sure to Save following Updates? <br> <br>" + updates
+          }
+        });
+        confirm.afterClosed().subscribe(async result => {
+          if (result) {
+
+            this.grn = this.form.getRawValue();
+            this.grn.grnrawmaterials = this.grnRawmaterials;
+
+            // @ts-ignore
+            this.grnRawmaterials.forEach((i) => delete i.id);
+
+            // @ts-ignore
+            this.grn.doreceived = this.dp.transform(this.grn.doreceived, 'yyyy-MM-dd');
+
+            this.grn.id = this.oldGrn.id;
+
+            this.gs.update(this.grn).then((responce: [] | undefined) => {
+              if (responce != undefined) { // @ts-ignore
+                // @ts-ignore
+                updstatus = responce['errors'] == "";
+                if (!updstatus) { // @ts-ignore
+                  updmessage = responce['errors'];
+                }
+              } else {
+                updstatus = false;
+                updmessage = "Content Not Found"
+              }
+            }).finally(() => {
+              if (updstatus) {
+                updmessage = "Successfully Updated";
+
+                this.resetForms();
+                Object.values(this.form.controls).forEach(control => control.markAsUntouched());
+                Object.values(this.innerform.controls).forEach(control => control.markAsUntouched());
+                this.loadTable("")
+              }
+
+              const stsmsg = this.dg.open(MessageComponent, {
+                width: '500px',
+                data: {heading: "Status -GRN Update", message: updmessage}
+              });
+              stsmsg.afterClosed().subscribe(async result => {
+                if (result) {
+                  return;
+                }
+              });
+
+            });
+          }
+        });
+      } else {
+
+        const updmsg = this.dg.open(MessageComponent, {
+          width: '500px',
+          data: {heading: "Confirmation -GRN Update", message: "Nothing Changed"}
+        });
+        updmsg.afterClosed().subscribe(async result => {
+          if (!result) {
+            return;
+          }
+
+        });
+
+      }
+    }
+  }
+
+  getUpdates(): string {
+
+    let updates: string = "";
+    for (const controlName in this.form.controls) {
+      const control = this.form.controls[controlName];
+      if (control.dirty) {
+        updates = updates + "<br>" + controlName.charAt(0).toUpperCase() + controlName.slice(1) + " Changed";
+      }
+    }
+    for (const controlName in this.innerform.controls) {
+      console.log("in");
+      const control = this.innerform.controls[controlName];
+      if (control.dirty) {
+        updates = updates + "<br>" + controlName.charAt(0).toUpperCase() + controlName.slice(1) + " Changed";
+      }
+    }
+    if (JSON.stringify(this.grnRawmaterials) !== JSON.stringify(this.oldGrnrawmaterials)) {
+      updates = updates + "<br>Products in the Order Changed";
+    }
+    return updates;
+
+  }
+
+  clear(): void {
+    this.areaHiddenFix();
+    const confirm = this.dg.open(ConfirmComponent, {
+      width: '500px',
+      data: {
+        heading: "Confirmation - GRN Clear",
+        message: "Are you sure to Clear following Details ? <br> <br>"
+      }
+    });
+
+    confirm.afterClosed().subscribe(async result => {
+      if (result) {
+        this.resetForms();
+
+      }
+    });
+  }
+
+  delete(): void {
+    this.areaHiddenFix();
+    const confirm = this.dg.open(ConfirmComponent, {
+      width: '500px',
+      data: {
+        heading: "Confirmation - GRN Delete",
+        message: "Are you sure to Delete following GRN of Purchase Order ? <br> <br>" + this.grn.purchaseorder.number
+      }
+    });
+
+    confirm.afterClosed().subscribe(async result => {
+      if (result) {
+        let delstatus: boolean = false;
+        let delmessage: string = "Server Not Found";
+
+        this.gs.delete(this.grn.id).then((responce: [] | undefined) => {
+
+          if (responce != undefined) { // @ts-ignore
+            delstatus = responce['errors'] == "";
+            if (!delstatus) { // @ts-ignore
+              delmessage = responce['errors'];
+            }
+          } else {
+            delstatus = false;
+            delmessage = "Content Not Found"
+          }
+        }).finally(() => {
+          if (delstatus) {
+            delmessage = "Successfully Deleted";
+            this.resetForms();
+            Object.values(this.form.controls).forEach(control => {
+              control.markAsUntouched();
+            });
+            Object.values(this.innerform.controls).forEach(control => {
+              control.markAsUntouched();
+            });
+
+            this.loadTable("");
+          }
+          const stsmsg = this.dg.open(MessageComponent, {
+            width: '500px',
+            data: {heading: "Status - GRN Delete ", message: delmessage}
+          });
+          stsmsg.afterClosed().subscribe(async result => {
+
+            if (!result) {
+              return;
+            }
+          });
+
+        });
+      }
+    });
+  }
+
+
 }

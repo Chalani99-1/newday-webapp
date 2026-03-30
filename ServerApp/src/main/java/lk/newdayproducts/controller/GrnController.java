@@ -3,10 +3,8 @@ package lk.newdayproducts.controller;
 import lk.newdayproducts.dao.GrnDao;
 import lk.newdayproducts.dao.PurchaseorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
-import lk.newdayproducts.entity.Grn;
-import lk.newdayproducts.entity.Grnrawmaterial;
-import lk.newdayproducts.entity.Product;
-import lk.newdayproducts.entity.Rawmaterial;
+import lk.newdayproducts.entity.*;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,25 +25,25 @@ public class GrnController {
     private GrnDao grndao;
 
     @Autowired
-    private RawmaterialDao rmdao;
+    private RawmaterialDao rawmaterialDao;
 
     @Autowired
-    private PurchaseorderDao podao;
+    private PurchaseorderDao purchaseorderDao;
 
-//    @GetMapping(path = "/number", produces = "application/json")
-//    public ResponseEntity<Map<String, String>> get() {
-//        int maxid = this.grndao.findMaxNumber();
-//        if (maxid == 0) maxid = 1;
-//        Map<String, String> response = new HashMap<>();
-//        response.put("number", "" + maxid);
-//        return ResponseEntity.ok().body(response);
-//    }
     @GetMapping(path = "/number", produces = "application/json")
-    public ResponseEntity<Integer> get() {
+    public ResponseEntity<Map<String, String>> get() {
         int maxid = this.grndao.findMaxNumber();
         if (maxid == 0) maxid = 1;
-        return ResponseEntity.ok().body(maxid);
+        Map<String, String> response = new HashMap<>();
+        response.put("number", "" + maxid);
+        return ResponseEntity.ok().body(response);
     }
+//    @GetMapping(path = "/number", produces = "application/json")
+//    public ResponseEntity<Integer> get() {
+//        int maxid = this.grndao.findMaxNumber();
+//        if (maxid == 0) maxid = 1;
+//        return ResponseEntity.ok().body(maxid);
+//    }
 
     @GetMapping(produces = "application/json")
     public List<Grn> get(@RequestParam HashMap<String, String> params) {
@@ -101,23 +99,23 @@ public class GrnController {
 
     public HashMap<String, String> update(@RequestBody Grn grn) {
 
-        HashMap<String, String> responce = new HashMap<>();
+        HashMap<String, String> response = new HashMap<>();
         String errors = "";
+        Grn extGrn = grndao.findByMyId(grn.getId());
+        if (extGrn == null) errors = errors + "<br> GRN Does Not Exist";
 
-        Grn g = grndao.findByMyId(grn.getId());
+        if (extGrn != null) {
+                    grndao.save(extGrn);
+                } else {
+                    errors = "Server Validation Errors : <br> " + errors;
+                }
 
-        if (g != null && !(grn.getId().equals(g.getId())))
-            errors = errors + "<br> Not existing";
+        response.put("id",String.valueOf(grn.getId()));
+        response.put("url","/grns/"+grn.getId());
+        response.put("errors",errors);
 
+        return response;
 
-        if (errors == "") grndao.save(grn);
-        else errors = "Server Validation Errors : <br> " + errors;
-
-        responce.put("id", String.valueOf(grn.getId()));
-        responce.put("url", "/grns/" + grn.getId());
-        responce.put("errors", errors);
-
-        return responce;
     }
 
 
