@@ -9,6 +9,90 @@
 
         <form #myForm [formGroup]="form">
 
+          <mat-form-field appearance="outline">
+            <mat-label>Client Order</mat-label>
+            <mat-select formControlName="clientorder">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let clientorder of psNotcompleteClientorders"
+                          [value]="clientorder">{{ clientorder.number }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Number</mat-label>
+            <input matInput formControlName="number">
+          </mat-form-field>
+
+          <p *ngIf="!apHide" style="color: #36A2EB;font-size: 12px; margin-bottom: 20px">Your Grand Total Updated By Reducing The
+            Advanced Payment of <span
+              style="font-weight: bold ;font-size: 12px;">{{ advanced }}</span></p>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Grand Total After Reduced Advanced</mat-label>
+            <input matInput formControlName="grandtotal">
+          </mat-form-field>
+
+          <div id="price-change" *ngIf="pricesChanged">
+            Product prices Changed while Order Production Ongoing
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Payment Type</mat-label>
+            <mat-select formControlName="paytype">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let paytype of paytypes" [value]="paytype">{{ paytype.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field *ngIf="!cashPayment" appearance="outline">
+            <mat-label>Paymentref</mat-label>
+            <input matInput formControlName="paymentref">
+          </mat-form-field>
+
+          <div id="imgpanel" *ngIf="!cashPayment">
+            <img [src]="imageReceiptUrl">
+            <input id="userImage" hidden="hidden" (change)="selectImage($event)" Select type="file"
+                   accept="image/*" formControlName="receipt">
+            <label for="userImage" id="selectbutton">Select Image</label>
+            <label id="clearbutton" (click)="clearImage()">Clear</label>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <input matInput formControlName="description">
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Placed Date</mat-label>
+            <input matInput [matDatepicker]="doplcd" formControlName="date" [max]="maxDate">
+            <mat-datepicker-toggle matIconSuffix [for]="doplcd"></mat-datepicker-toggle>
+            <mat-datepicker #doplcd></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Invoice Status</mat-label>
+            <mat-select formControlName="invoicestatus">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let invoicestatus of invoicestatuses" [value]="invoicestatus">{{ invoicestatus.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Employee</mat-label>
+            <mat-select formControlName="employee">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div id="butpanel">
+            <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>
+            <button id="butpanel-clear" mat-raised-button (click)="clear()">Clear</button>
+            <button id="butpanel-update" mat-raised-button (click)="update()" [disabled]="!enaupd">Update</button>
+            <button id="butpanel-delete" mat-raised-button (click)="delete()" [disabled]="!enadel">Delete</button>
+          </div>
+
         </form>
 
       </mat-card-content>
@@ -20,8 +104,42 @@
       <mat-card-header>
         Client Order Table
       </mat-card-header>
+
       <mat-card-content>
+
+        <mat-table style="cursor: not-allowed" [dataSource]="data2">
+
+          <ng-container *ngFor="let column of columns2;let i = index;" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef> {{ headers2[i] }}</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, binders2[i]) }}</mat-cell>
+          </ng-container>
+
+          <ng-container *ngFor="let cscolumn of cscolumns2;let i = index;" [matColumnDef]="cscolumn">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-form [formGroup]="csearch2" class="csearch">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ csprompts2[i] }}</mat-label>
+                  <input matInput [formControlName]="cscolumn" (keyup)="filterTable2()">
+                </mat-form-field>
+              </mat-form>
+            </mat-header-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columns2"></mat-header-row>
+          <mat-header-row *matHeaderRowDef="cscolumns2"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columns2;"
+                   [ngStyle]="row.clientorderstatus.name !== 'Completed' ? {'background-color': '#fad8d8'} :
+             {'background-color': '#c2ffbf'}"
+          ></mat-row>
+
+        </mat-table>
+
+        <mat-paginator #paginator2 class="mat-paginator-sticky" showFirstLastButtons [length]="20" [pageSize]="5"
+                       [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+
       </mat-card-content>
+
+
     </mat-card>
   </mat-grid-tile>
 
@@ -33,6 +151,38 @@
       </mat-card-header>
 
       <mat-card-content>
+
+        <mat-table [dataSource]="data">
+
+          <ng-container *ngFor="let column of columns;let i = index;" [matColumnDef]="column">
+            <mat-header-cell *matHeaderCellDef> {{ headers[i] }}</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{ uiassist.getProperty(element, binders[i]) }}</mat-cell>
+          </ng-container>
+
+          <ng-container *ngFor="let cscolumn of cscolumns;let i = index;" [matColumnDef]="cscolumn">
+            <mat-header-cell *matHeaderCellDef>
+              <mat-form [formGroup]="csearch" class="csearch">
+                <mat-form-field appearance="outline">
+                  <mat-label>{{ csprompts[i] }}</mat-label>
+                  <input matInput [formControlName]="cscolumn" (keyup)="filterTable()"]>
+                </mat-form-field>
+              </mat-form>
+            </mat-header-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+          <mat-header-row *matHeaderRowDef="cscolumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: columns;" (click)="fillForm(row)"
+                   [ngStyle]="row.invoicestatus.name !== 'Completed' ? {'background-color': '#fad8d8'} :
+             {'background-color': '#c2ffbf'}"
+                   [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
+
+        </mat-table>
+
+        <mat-paginator #paginator1 class="mat-paginator-sticky" showFirstLastButtons [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+        <div *ngIf="printRS" style="display: flex;  justify-content: flex-end ;margin-top: 20px">
+          <button mat-raised-button color="primary" (click)="printReceipt()">Print Receipt</button>
+        </div>
       </mat-card-content>
 
     </mat-card>

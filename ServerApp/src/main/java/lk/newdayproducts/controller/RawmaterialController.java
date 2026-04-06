@@ -110,9 +110,9 @@ public class RawmaterialController {
 
         Rawmaterial rm = rawmaterialdao.findByMyId(id);
 
-        if (rm == null) errors = errors + "<br> Raw Material Does Not Exist";
+        if (rm == null) errors = errors + "<br> RawMaterial Does Not Exist";
 
-        if (errors.isEmpty()) rawmaterialdao.delete(rm);
+        if (errors == "") rawmaterialdao.delete(rm);
         else errors = "Server Validation Errors : <br> " + errors;
 
         responce.put("id", String.valueOf(id));

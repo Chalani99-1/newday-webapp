@@ -9,5 +9,8 @@ import org.springframework.data.repository.query.Param;
 public interface InvoiceDao extends JpaRepository<Invoice,Integer> {
     @Query("select i from Invoice i where i.id = :id")
     Invoice findByMyId(@Param("id") Integer id);
+
+    @Query("SELECT max(i.id) FROM Invoice i")
+    int findMaxNumber();
 }
 

@@ -29,6 +29,7 @@ import {Regexconst} from "../../../util/regexconst";
 import {ConfirmComponent} from "../../../util/dialog/confirm/confirm.component";
 import {Purchaseorder} from "../../../entity/purchaseorder";
 import {Client} from "../../../entity/client";
+import {Clientordervsproducts} from "../../../entity/clientordervsproducts";
 
 @Component({
   selector: 'app-productionorder',
@@ -118,8 +119,8 @@ export class ProductionorderComponent {
   innerformAmountupdate = 0;
   newAmount = 0;
   //client order
-  //cordervsproducts!: Clientordervsproducts[];
-  //codata!: MatTableDataSource<Clientordervsproducts>;
+  cordervsproducts!: Clientordervsproducts[];
+  codata!: MatTableDataSource<Clientordervsproducts>;
 
   cocolumns: string[] = ['number', 'productCode', 'amount', 'completed'];
   coheaders: string[] = ['Order Number', 'Product Code', 'Amount Requested', 'Amount Completed'];
@@ -208,16 +209,16 @@ export class ProductionorderComponent {
 
   initialize() {
     this.createView();
-    // this.rs.clientordervsproducts()
-    //   .then((covps: Clientordervsproducts[]) => {
-    //     this.cordervsproducts = covps;
-    //     this.cordervsproducts = this.cordervsproducts.filter((ovp) => ovp.amount !== ovp.completed);
-    //     if (this.cordervsproducts.length < 1) {
-    //       this.emptyCOtable = true;
-    //     }
-    //   }).finally(() => {
-    //   this.loadTable2();
-    // });
+    this.rs.clientordervsproducts()
+      .then((covps: Clientordervsproducts[]) => {
+        this.cordervsproducts = covps;
+        this.cordervsproducts = this.cordervsproducts.filter((ovp) => ovp.amount !== ovp.completed);
+        if (this.cordervsproducts.length < 1) {
+          this.emptyCOtable = true;
+        }
+      }).finally(() => {
+      this.loadTable2();
+    });
     this.cos.getAllList().then((pcs: Clientorder[]) => {
       this.clientorders = pcs;
       this.incompleteclientorders = this.clientorders.filter((co) => co.clientorderstatus.id !== 2);
@@ -239,6 +240,23 @@ export class ProductionorderComponent {
 
   }
 
+  loadTable2(): void {
+    this.codata = new MatTableDataSource(this.cordervsproducts);
+    this.codata.paginator=this.paginator2
+  }
+
+  filterTable2() {
+    const cserchdata = this.cocsearch.getRawValue();
+
+    this.codata.filterPredicate = (covsps: Clientordervsproducts, filter: string) => {
+      return (cserchdata.cocsnumber == null || covsps.number.toLowerCase().includes(cserchdata.cocsnumber)) &&
+        (cserchdata.cocsproductCode == null || covsps.productCode.includes(cserchdata.cocsproductCode)) &&
+        (cserchdata.cocsamount == null || covsps.amount.toString().toLowerCase().includes(cserchdata.cocsamount)) &&
+        (cserchdata.cocscompleted == null || covsps.completed.toString().toLowerCase().includes(cserchdata.cocscompleted))
+    };
+
+    this.codata.filter = 'xx';
+  }
 
   createForm() {
 
@@ -713,9 +731,11 @@ export class ProductionorderComponent {
 
     this.oldProductionOrder = JSON.parse(JSON.stringify(productionorder));
 
-
     // @ts-ignore
     this.productionOrder.employee = this.employees.find(e => e.id === this.productionOrder.employee.id);
+
+    // @ts-ignore
+    this.productionOrder.clientorder = this.clientorders.find(e => e.id === this.productionOrder.clientorder.id);
 
     // @ts-ignore
     this.productionOrder.productionorderstatus = this.productionorderstatuses.find(s => s.id === this.productionOrder.productionorderstatus.id);
@@ -835,7 +855,7 @@ export class ProductionorderComponent {
 
             if (addstatus) {
               addmessage = "Successfully Saved";
-              //this.resetForms();
+              this.resetForms();
 
               this.loadTable("");
             }

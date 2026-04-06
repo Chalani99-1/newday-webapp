@@ -137,31 +137,31 @@
         Incomplete Client Order Details
       </mat-card-header>
 
-<!--      <mat-card-content>-->
-<!--        <p *ngIf="emptyCOtable" style="background-color: #c2ffbf; font-size: large;-->
-<!--padding: 5px">No Incomplete Client Orders </p>-->
-<!--        <mat-table style="cursor: not-allowed" [dataSource]="codata">-->
-<!--          <ng-container *ngFor="let column of cocolumns; let i = index;" [matColumnDef]="column">-->
-<!--            <mat-header-cell id="headercell" *matHeaderCellDef style="font-weight: bold">-->
-<!--              {{ coheaders[i] }}-->
-<!--              <form [formGroup]="cocsearch" class="cocsearch">-->
-<!--                <mat-form-field appearance="outline">-->
-<!--                  <mat-label>Search {{ coheaders[i] }}</mat-label>-->
-<!--                  <input matInput [formControlName]="getFormControlName(column)" (keyup)="filterTable2()">-->
-<!--                </mat-form-field>-->
-<!--              </form>-->
-<!--            </mat-header-cell>-->
-<!--            <mat-cell style="background-color: #fad8d8" *matCellDef="let element"> {{ element[cobinders[i]] }}-->
-<!--            </mat-cell>-->
-<!--          </ng-container>-->
+      <mat-card-content>
+        <p *ngIf="emptyCOtable" style="background-color: #c2ffbf; font-size: large;
+padding: 5px">No Incomplete Client Orders </p>
+        <mat-table style="cursor: not-allowed" [dataSource]="codata">
+          <ng-container *ngFor="let column of cocolumns; let i = index;" [matColumnDef]="column">
+            <mat-header-cell id="headercell" *matHeaderCellDef style="font-weight: bold">
+              {{ coheaders[i] }}
+              <form [formGroup]="cocsearch" class="cocsearch">
+                <mat-form-field appearance="outline">
+                  <mat-label>Search {{ coheaders[i] }}</mat-label>
+                  <input matInput [formControlName]="getFormControlName(column)" (keyup)="filterTable2()">
+                </mat-form-field>
+              </form>
+            </mat-header-cell>
+            <mat-cell style="background-color: #fad8d8" *matCellDef="let element"> {{ element[cobinders[i]] }}
+            </mat-cell>
+          </ng-container>
 
-<!--          &lt;!&ndash; Header and Row Definitions &ndash;&gt;-->
-<!--          <mat-header-row *matHeaderRowDef="cocolumns"></mat-header-row>-->
-<!--          <mat-row *matRowDef="let row; columns: cocolumns;"></mat-row>-->
-<!--        </mat-table>-->
-<!--        <mat-paginator #paginator2 [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"></mat-paginator>-->
+          <!-- Header and Row Definitions -->
+          <mat-header-row *matHeaderRowDef="cocolumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: cocolumns;"></mat-row>
+        </mat-table>
+        <mat-paginator #paginator2 [length]="20" [pageSize]="5" [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
 
-<!--      </mat-card-content>-->
+      </mat-card-content>
     </mat-card>
   </mat-grid-tile>
 

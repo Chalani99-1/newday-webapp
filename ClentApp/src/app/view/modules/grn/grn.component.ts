@@ -328,6 +328,21 @@ export class GrnComponent {
 
   }
 
+  loadTable2(): void {
+    this.rs.purchaseordervsrawmaterials()
+      .then((p: Purchaseordersrms[]) => {
+        this.povsrms = p;
+        this.povsrms = this.povsrms.filter((porm) => porm.quentity !== porm.receivedAmount);
+        if (this.povsrms.length < 1) {
+          this.emptyPOtable = true;
+        }
+      }).finally(() => {
+      this.podata = new MatTableDataSource(this.povsrms);
+      this.podata.paginator=this.paginator2
+    });
+
+  }
+
   getFormControlName(column: string): string {
     const columnMap = {
       'number': 'pocsnumber',

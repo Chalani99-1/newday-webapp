@@ -82,30 +82,74 @@ public class ClientorderController {
         return response;
 
     }
+//    @PutMapping
+//    @ResponseStatus(HttpStatus.CREATED)
+//
+//    public HashMap<String, String> update(@RequestBody Clientorder clientorder) {
+//
+//        HashMap<String, String> responce = new HashMap<>();
+//        String errors = "";
+//        Clientorder c = clientorderdao.findByMyId(clientorder.getId());
+//
+//        if (c != null && !(clientorder.getId().equals(c.getId())))
+//            errors = errors + "<br> Not existing";
+//
+//        if (c != null) {
+//            clientorderdao.save(clientorder);
+//        } else {
+//            errors = "Server Validation Errors : <br> " + errors;
+//        }
+//
+//        responce.put("id", String.valueOf(clientorder.getId()));
+//        responce.put("url", "/clientorders/" + clientorder.getId());
+//        responce.put("errors", errors);
+//
+//        return responce;
+//    }
+
     @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
+    public HashMap<String, String> update(@RequestBody Clientorder order) {
 
-    public HashMap<String, String> update(@RequestBody Clientorder clientorder) {
-
-        HashMap<String, String> responce = new HashMap<>();
+        HashMap<String, String> response = new HashMap<>();
         String errors = "";
-        Clientorder c = clientorderdao.findByMyId(clientorder.getId());
+        Clientorder extOrder = clientorderdao.findByMyId(order.getId());
 
-        if (c != null && !(clientorder.getId().equals(c.getId())))
+        if (extOrder != null && !(order.getNumber().equals(extOrder.getNumber()))) {
             errors = errors + "<br> Not existing";
-
-        if (c != null) {
-            clientorderdao.save(clientorder);
-        } else {
-            errors = "Server Validation Errors : <br> " + errors;
         }
 
-        responce.put("id", String.valueOf(clientorder.getId()));
-        responce.put("url", "/clientorders/" + clientorder.getId());
-        responce.put("errors", errors);
+        if (extOrder != null) {
+            try {
+                extOrder.getOrderproducts().clear();
 
-        return responce;
+                order.getOrderproducts().forEach(newOP -> {
+                    newOP.setClientorder(extOrder);
+                    extOrder.getOrderproducts().add(newOP);
+
+                });
+
+                BeanUtils.copyProperties(order, extOrder, "id", "orderproducts", "amount");
+
+                if (errors == "") {
+                    System.out.println("update");
+                    clientorderdao.save(extOrder);
+                } else {
+                    errors = "Server Validation Errors : <br> " + errors;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        response.put("id", String.valueOf(order.getId()));
+        response.put("url", "/clientorder/" + order.getId());
+        response.put("errors", errors);
+
+        return response;
     }
+
 
 //    @PutMapping
 //    @ResponseStatus(HttpStatus.CREATED)

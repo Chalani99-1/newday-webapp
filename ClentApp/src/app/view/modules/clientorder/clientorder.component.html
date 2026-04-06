@@ -100,15 +100,17 @@
                 </mat-select>
               </mat-form-field>
 
-              <mat-form-field appearance="outline">
-                <mat-label>Paid Status</mat-label>
-                <mat-select formControlName="paidstatus">
-                  <mat-option [value]="null" selected>Not Selected</mat-option>
-                  <mat-option *ngFor="let paidstatus of clientorderstatuses" [value]="paidstatus">{{ paidstatus.name }}</mat-option>
-                </mat-select>
-              </mat-form-field>
 
-              <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline">
+            <mat-label>Paid Status</mat-label>
+            <mat-select formControlName="paidstatus">
+              <mat-option [value]="null" selected>Not Selected</mat-option>
+              <mat-option *ngFor="let paidstatus of paidstatuses" [value]="paidstatus">{{ paidstatus.name }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+
+          <mat-form-field appearance="outline">
                 <mat-label>Employee</mat-label>
                 <mat-select formControlName="employee">
                   <mat-option [value]="null" selected>Not Selected</mat-option>
@@ -179,6 +181,7 @@
 
         <mat-paginator class="mat-paginator-sticky" showFirstLastButtons [length]="20" [pageSize]="5"
                        [pageSizeOptions]="[3,5,10,20]"></mat-paginator>
+
 
       </mat-card-content>
 

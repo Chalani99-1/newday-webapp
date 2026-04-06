@@ -729,7 +729,7 @@ export class PurchaseorderComponent {
     this.oldpoitem = JSON.parse(JSON.stringify(poitem));
     // @ts-ignore
     this.poitem = this.poitems.find(p => p.id === this.poitem.id);
-    this.innerform.controls["rawmaterial"].setValue(this.poitem.rawmaterial);
+    this.innerform.controls["rawmaterial"].setValue(this.poitem.rawmaterial.id);
     this.innerform.patchValue(this.poitem);
 
   }

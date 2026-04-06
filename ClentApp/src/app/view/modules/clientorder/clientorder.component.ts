@@ -532,7 +532,10 @@ export class ClientorderComponent {
     this.clientOrder.clientorderstatus = this.clientorderstatuses.find(c => c.id === this.clientOrder.clientorderstatus.id);
 
     // @ts-ignore
-    this.clientOrder.paidstatus = this.paidstatuses.find(ps => ps.id === this.clientOrder.paidstatus.id);
+    this.clientOrder.paidstatus = this.paidstatuses.find(p => p.id === this.clientOrder.paidstatus.id);
+
+    // // @ts-ignore
+    // this.clientOrder.paidstatus = this.paidstatuses.find(ps => ps.id === this.clientOrder.paidstatus.id);
 
     // Update the form values
     this.form.patchValue(this.clientOrder);
@@ -544,7 +547,7 @@ export class ClientorderComponent {
     this.form.controls['client'].setValue(this.clientOrder.client);
 
     this.form.controls["number"].setValue(this.clientOrder.number);
-
+    this.form.controls["paidstatus"].setValue(this.clientOrder.paidstatus.name);
     this.updateDataSource();
 
     // Calculate the grand total after updating the items
@@ -594,8 +597,11 @@ export class ClientorderComponent {
   resetForms() {
     this.tableInnerLoad = false
     this.ns.refreshNotifications();
-    const form = this.myForm.nativeElement as HTMLFormElement;
-    form.reset();
+    // const form = this.myForm.nativeElement as HTMLFormElement;
+    // form.reset();
+
+    const form = this.myForm?.nativeElement as HTMLFormElement;
+    form?.reset();
 
     const innerForm = this.myInnerForm.nativeElement as HTMLFormElement;
     innerForm.reset();
@@ -1091,5 +1097,6 @@ export class ClientorderComponent {
       document.activeElement.blur();
     }
   }
+
 
 }
