@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface ClientorderDao extends JpaRepository<Clientorder,Integer> {
 
     @Query("select co from Clientorder co where co.id = :id")
@@ -16,6 +18,9 @@ public interface ClientorderDao extends JpaRepository<Clientorder,Integer> {
 
     @Query("SELECT max(p.id) FROM Clientorder  p")
     int findMaxNumber();
+
+    @Query("SELECT CONCAT(co.number, ' - of Client - ', co.client.name) FROM Clientorder co WHERE co.clientorderstatus.id!=2")
+    List<String> findIncomplete();
 }
 
 

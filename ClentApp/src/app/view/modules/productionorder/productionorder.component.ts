@@ -126,8 +126,8 @@ export class ProductionorderComponent {
   coheaders: string[] = ['Order Number', 'Product Code', 'Amount Requested', 'Amount Completed'];
   cobinders: string[] = ['number', 'productCode', 'amount', 'completed'];
 
-  cocscolumns: string[] = ['cocsnumber', 'cocsproductCode', 'cocsamount', 'cocscompleted'];
-  cocsprompts: string[] = ['Search by Order Number', 'Search by Produuct Code', 'Search by Amount', 'Search by Completed',];
+  // cocscolumns: string[] = ['cocsnumber', 'cocsproductCode', 'cocsamount', 'cocscompleted'];
+  // cocsprompts: string[] = ['Search by Order Number', 'Search by Produuct Code', 'Search by Amount', 'Search by Completed',];
 
   public cocsearch!: FormGroup;
   emptyCOtable: boolean = false;
@@ -208,6 +208,7 @@ export class ProductionorderComponent {
   }
 
   initialize() {
+    //console.log(this.loadTable2());
     this.createView();
     this.rs.clientordervsproducts()
       .then((covps: Clientordervsproducts[]) => {
@@ -234,7 +235,7 @@ export class ProductionorderComponent {
 
     this.pos.getAll("").then((regs:ProductionOrder []) => {
       this.productionorders = regs;
-      // console.log(this.regexes)
+      //console.log(this.regexes)
       this.createForm();
     });
 
@@ -403,10 +404,6 @@ export class ProductionorderComponent {
     return columnMap[column] || '';
   }
 
-  // loadTable2(): void {
-  //   this.codata = new MatTableDataSource(this.cordervsproducts);
-  //   this.codata.paginator=this.paginator2
-  // }
 
 
   createView() {
@@ -1085,7 +1082,7 @@ export class ProductionorderComponent {
       this.clientorders = pcs;
       this.incompleteclientorders = this.clientorders.filter((co) => co.clientorderstatus.id !== 2);
     });
-   // this.fillOrderNumber();
+    this.fillOrderNumber();
     this.enableButtons(true, false, false);
     this.loadTable("");
 

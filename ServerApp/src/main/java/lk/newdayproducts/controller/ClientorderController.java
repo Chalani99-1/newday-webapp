@@ -2,6 +2,7 @@ package lk.newdayproducts.controller;
 
 import lk.newdayproducts.dao.ClientorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
+import lk.newdayproducts.dto.NotifyResponse;
 import lk.newdayproducts.entity.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,6 +56,31 @@ public class ClientorderController {
         return postream.collect(Collectors.toList());
 
     }
+
+//    @GetMapping(path = "/lessthanweek", produces = "application/json")
+//    public List<NotifyResponse> getLessThanWeek(@RequestParam HashMap<String, String> params) {
+//        Date today = new Date();
+////not less than week. edited to get all incomplete
+//        // Create an instance of Calendar
+//        Calendar calendar = Calendar.getInst ance();
+//        calendar.setTime(today);  // Set the current date
+//
+//        // Add 7 days to the current date
+//        calendar.add(Calendar.DAY_OF_MONTH, 7);
+//
+//        // Get the new date (7 days later)
+//        Date endDate = calendar.getTime();
+////        List<String> outOfStock = this.codao.findLessThanWeek(endDate);
+//        List<String> outOfStock = this.clientorderdao.findIncomplete();
+//        List<NotifyResponse> corders = new ArrayList<>();
+//        for (String s : outOfStock) {
+//            corders.add(new NotifyResponse(s));
+//        }
+//        if (params.isEmpty()) return corders;
+//        Stream<NotifyResponse> postream = corders.stream();
+//        return postream.collect(Collectors.toList());
+//
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
