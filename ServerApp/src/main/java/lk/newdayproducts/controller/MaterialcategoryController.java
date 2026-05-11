@@ -86,28 +86,6 @@ public class MaterialcategoryController {
         return responce;
     }
 
-//    @DeleteMapping("/{id}")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public HashMap<String, String> delete(@PathVariable Integer id) {
-//
-//        // System.out.println(id);
-//
-//        HashMap<String, String> responce = new HashMap<>();
-//        String errors = "";
-//
-//        Materialcategory mc = materialcategorydao.findByMyId(id);
-//
-//        if (mc == null) errors = errors + "<br> Material Category Does Not Exist";
-//
-//        if (errors.isEmpty()) materialcategorydao.delete(mc);
-//        else errors = "Server Validation Errors : <br> " + errors;
-//
-//        responce.put("id", String.valueOf(id));
-//        responce.put("url", "/materialcategories/" + id);
-//        responce.put("errors", errors);
-//
-//        return responce;
-//    }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.CREATED)

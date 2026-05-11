@@ -4,9 +4,7 @@
     <mat-grid-tile [colspan]="1" [rowspan]="34">
 
       <mat-card class="csearch first-card" >
-        <mat-card-header>
-          Supplier vise Purchase Order Count Table
-        </mat-card-header>
+        <mat-card-header>Supplier vise Purchase Order Count Table</mat-card-header>
         <mat-card-content id="table-top">
 
           <div class="table-container">
@@ -37,14 +35,8 @@
             <mat-datepicker #enddate></mat-datepicker>
           </mat-form-field>
           <div>
-            <button mat-raised-button id="ssearch-btn" (click)="btnsupSearchMC()">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              Search
-            </button>
-            <button mat-raised-button id="ssearch-clearbtn" (click)="btnsupSearchClearMc()">
-              <i class="fa-solid fa-xmark"></i>
-              Clear
-            </button>
+            <button mat-raised-button id="ssearch-btn" (click)="btnsupSearchMC()"><i class="fa-solid fa-magnifying-glass"></i>Search</button>
+            <button mat-raised-button id="ssearch-clearbtn" (click)="btnsupSearchClearMc()"><i class="fa-solid fa-xmark"></i>Clear</button>
           </div>
 
         </form>
@@ -52,15 +44,14 @@
       </mat-card>
 
       <mat-card>
-        <mat-card-header>
-          Pie Chat View
-        </mat-card-header>
+        <mat-card-header>Pie Chat View</mat-card-header>
         <mat-card-content id="printSection2">
           <canvas baseChart
                   [data]="pieChartData"
                   [options]="pieChartOptions"
                   [type]="'pie'">
           </canvas>
+
         </mat-card-content>
       </mat-card>
 
@@ -68,16 +59,6 @@
     </mat-grid-tile>
 
 
-    <!--  <mat-grid-tile [colspan]="1" [rowspan]="2">-->
-
-
-    <!--&lt;!&ndash;    <mat-card>&ndash;&gt;-->
-    <!--&lt;!&ndash;      <mat-card-header>Line Chart View</mat-card-header>&ndash;&gt;-->
-    <!--&lt;!&ndash;      <mat-card-content><div #linechart></div></mat-card-content>&ndash;&gt;-->
-    <!--&lt;!&ndash;    </mat-card>&ndash;&gt;-->
-
-
-    <!--  </mat-grid-tile>-->
   </mat-grid-list>
 </div>
 

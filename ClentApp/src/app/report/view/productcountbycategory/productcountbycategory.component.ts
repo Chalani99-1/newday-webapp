@@ -18,16 +18,16 @@ import {BreakpointObserver} from "@angular/cdk/layout";
 })
 export class ProductcountbycategoryComponent {
 
-  maxDate: Date = new Date();  // Today's date
-  minDate = new Date(new Date(this.maxDate).setDate(this.maxDate.getDate()+1));
+  // maxDate: Date = new Date();  // Today's date
+  // minDate = new Date(new Date(this.maxDate).setDate(this.maxDate.getDate()+1));
 
   productcountbycategories!: Productcountbycategory[];
   cntbycatdata!: MatTableDataSource<Productcountbycategory>;
 
   public catsearch!: FormGroup;
   searchEnable = false;
-  stdate = '';
-  endate = '';
+  // stdate = '';
+  // endate = '';
   columns: string[] = ['categoryName', 'count', 'percentage'];
   headers: string[] = ['Product Category', 'Product Count', 'Percentage'];
   binders: string[] = ['categoryName', 'count', 'percentage'];
@@ -160,55 +160,55 @@ export class ProductcountbycategoryComponent {
     };
   }
 
-  btnsupSearchMC() {
-    this.searchEnable=true;
-    // this.loadSupTableInit('');
-    const catsearchdata = this.catsearch.getRawValue();
-    let startdate = catsearchdata.startdate;
-    let enddate = catsearchdata.enddate;
+  // btnsupSearchMC() {
+  //   this.searchEnable=true;
+  //   // this.loadSupTableInit('');
+  //   const catsearchdata = this.catsearch.getRawValue();
+  //   let startdate = catsearchdata.startdate;
+  //   let enddate = catsearchdata.enddate;
+  //
+  //   let datesValid = Validations.isEndDateBiggerThanStartDate(startdate, enddate);
+  //
+  //   if (!datesValid) {
+  //     this.dateInvalidPopup();
+  //   } else {
+  //     if (startdate && enddate) {
+  //       startdate = this.dp.transform(startdate, 'yyyy-MM-dd');
+  //       enddate = this.dp.transform(enddate, 'yyyy-MM-dd');
+  //     }
+  //
+  //     let query: string = "";
+  //     if (startdate != null && startdate.trim() != "") query = query + "&startDate=" + startdate;
+  //     if (enddate != null && enddate.trim() != "") query = query + "&endDate=" + enddate;
+  //     if (query != "") query = query.replace(/^./, "?")
+  //
+  //     // console.log(query);
+  //     this.stdate=startdate;
+  //     this.endate=enddate;
+  //     this.loadSupTable(query);
+  //
+  //   }
+  // }
 
-    let datesValid = Validations.isEndDateBiggerThanStartDate(startdate, enddate);
+  // dateInvalidPopup() {
+  //   const error = this.db.open(MessageComponent, {
+  //     width: '500px',
+  //     data: {
+  //       heading: "Invalid Parameters",
+  //       message: "Start date must be smaller than end date "
+  //     }
+  //   });
+  //   error.afterClosed().subscribe(async result => {
+  //     this.catsearch.reset();
+  //     this.loadSupTableInit('');
+  //   });
+  // }
 
-    if (!datesValid) {
-      this.dateInvalidPopup();
-    } else {
-      if (startdate && enddate) {
-        startdate = this.dp.transform(startdate, 'yyyy-MM-dd');
-        enddate = this.dp.transform(enddate, 'yyyy-MM-dd');
-      }
-
-      let query: string = "";
-      if (startdate != null && startdate.trim() != "") query = query + "&startDate=" + startdate;
-      if (enddate != null && enddate.trim() != "") query = query + "&endDate=" + enddate;
-      if (query != "") query = query.replace(/^./, "?")
-
-      // console.log(query);
-      this.stdate=startdate;
-      this.endate=enddate;
-      this.loadSupTable(query);
-
-    }
-  }
-
-  dateInvalidPopup() {
-    const error = this.db.open(MessageComponent, {
-      width: '500px',
-      data: {
-        heading: "Invalid Parameters",
-        message: "Start date must be smaller than end date "
-      }
-    });
-    error.afterClosed().subscribe(async result => {
-      this.catsearch.reset();
-      this.loadSupTableInit('');
-    });
-  }
-
-  btnsupSearchClearMc() {
-    this.searchEnable=false;
-    this.catsearch.reset();
-    this.loadSupTableInit("");
-  }
+  // btnsupSearchClearMc() {
+  //   this.searchEnable=false;
+  //   this.catsearch.reset();
+  //   this.loadSupTableInit("");
+  // }
 
   printReport(): void {
     const printContents1 = document.getElementById('printSection1')?.innerHTML || '';
@@ -238,10 +238,6 @@ export class ProductcountbycategoryComponent {
       <div>
         ${printContents1}
       </div>
-
-      <p style="font-size: 14px; margin-top: 10px; font-style: italic; text-align: start;">
-        Time Period: ${this.searchEnable ? `${this.stdate} to ${this.endate}` : 'Whole time'}
-      </p>
 
       <!-- Custom separator line -->
       <div style="border-bottom: 2px solid rgba(73,80,87,0.91); margin: 20px 0;"></div>

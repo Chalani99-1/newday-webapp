@@ -5,7 +5,7 @@
 
       <mat-card class="csearch first-card">
         <mat-card-header>
-          Product By Product Category Count Table
+          Product Count By Product Category Table
         </mat-card-header>
         <mat-card-content id="table-top">
 
@@ -22,32 +22,32 @@
           </div>
         </mat-card-content>
 
-        <form id="frm-group" [formGroup]="catsearch">
-          <mat-form-field appearance="outline">
-            <mat-label>Start Date</mat-label>
-            <input matInput [matDatepicker]="startdate" formControlName="startdate" [max]="maxDate">
-            <mat-datepicker-toggle matIconSuffix [for]="startdate"></mat-datepicker-toggle>
-            <mat-datepicker #startdate></mat-datepicker>
-          </mat-form-field>
+<!--        <form id="frm-group" [formGroup]="catsearch">-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Start Date</mat-label>-->
+<!--            <input matInput [matDatepicker]="startdate" formControlName="startdate" [max]="maxDate">-->
+<!--            <mat-datepicker-toggle matIconSuffix [for]="startdate"></mat-datepicker-toggle>-->
+<!--            <mat-datepicker #startdate></mat-datepicker>-->
+<!--          </mat-form-field>-->
 
-          <mat-form-field appearance="outline">
-            <mat-label>End Date</mat-label>
-            <input matInput [matDatepicker]="enddate" formControlName="enddate" [max]="minDate">
-            <mat-datepicker-toggle matIconSuffix [for]="enddate"></mat-datepicker-toggle>
-            <mat-datepicker #enddate></mat-datepicker>
-          </mat-form-field>
-          <div>
-            <button mat-raised-button id="ssearch-btn" (click)="btnsupSearchMC()">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              Search
-            </button>
-            <button mat-raised-button id="ssearch-clearbtn" (click)="btnsupSearchClearMc()">
-              <i class="fa-solid fa-xmark"></i>
-              Clear
-            </button>
-          </div>
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>End Date</mat-label>-->
+<!--            <input matInput [matDatepicker]="enddate" formControlName="enddate" [max]="minDate">-->
+<!--            <mat-datepicker-toggle matIconSuffix [for]="enddate"></mat-datepicker-toggle>-->
+<!--            <mat-datepicker #enddate></mat-datepicker>-->
+<!--          </mat-form-field>-->
+<!--          <div>-->
+<!--            <button mat-raised-button id="ssearch-btn" (click)="btnsupSearchMC()">-->
+<!--              <i class="fa-solid fa-magnifying-glass"></i>-->
+<!--              Search-->
+<!--            </button>-->
+<!--            <button mat-raised-button id="ssearch-clearbtn" (click)="btnsupSearchClearMc()">-->
+<!--              <i class="fa-solid fa-xmark"></i>-->
+<!--              Clear-->
+<!--            </button>-->
+<!--          </div>-->
 
-        </form>
+<!--        </form>-->
 
       </mat-card>
       <mat-card>

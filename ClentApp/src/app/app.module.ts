@@ -44,7 +44,7 @@ import { SuppliercountbymaterialcategoryComponent } from './report/view/supplier
 
 import { PurchaseordercountbydateComponent } from './report/view/purchaseordercountbydate/purchaseordercountbydate.component';
 
-import { ClientcountbystateComponent } from './report/view/clientcountbycountry/clientcountbystate.component';
+import { ClientcountbystateComponent } from './report/view/clientcountbyState/clientcountbystate.component';
 
 import { ProductcountbycategoryComponent } from './report/view/productcountbycategory/productcountbycategory.component';
 

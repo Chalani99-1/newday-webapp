@@ -5,21 +5,25 @@ import javax.persistence.Id;
 import java.math.BigDecimal;
 
 @Entity
-public class PurchaseOrderExpenseByDate {
+public class ExpenseOfPurchaseorderByDate {
 
     private Integer id;
     private String purchaseOrderNumber;
     private String supplierName;
     private BigDecimal expense;
 
-    public PurchaseOrderExpenseByDate(String purchaseOrderNumber, String supplierName, BigDecimal expense) {
+    public ExpenseOfPurchaseorderByDate(String purchaseOrderNumber, String supplierName, BigDecimal expense) {
         this.purchaseOrderNumber = purchaseOrderNumber;
         this.supplierName = supplierName;
         this.expense = expense;
     }
 
-    public String getSupplierName() {
-        return supplierName;
+    public ExpenseOfPurchaseorderByDate(String supplierName,String purchaseOrderNumber) {
+        this.purchaseOrderNumber = purchaseOrderNumber;
+        this.supplierName = supplierName;
+    }
+
+    public String getSupplierName() {return supplierName;
     }
 
     public void setSupplierName(String supplierName) {
@@ -34,8 +38,7 @@ public class PurchaseOrderExpenseByDate {
         this.expense = expense;
     }
 
-    public PurchaseOrderExpenseByDate() {
-    }
+    public ExpenseOfPurchaseorderByDate() {  }
 
     public String getPurchaseOrderNumber() {
         return purchaseOrderNumber;
@@ -44,6 +47,11 @@ public class PurchaseOrderExpenseByDate {
     public void setPurchaseOrderNumber(String purchaseOrderNumber) {
         this.purchaseOrderNumber = purchaseOrderNumber;
     }
+
+
+
+
+
 
     public void setId(Integer id) {
         this.id = id;

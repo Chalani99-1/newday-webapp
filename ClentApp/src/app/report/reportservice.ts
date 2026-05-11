@@ -238,7 +238,7 @@ export class ReportService {
 
   async expensebyporder(qry:String): Promise<Array<Expensebyporderbydate>> {
 
-    const cocountbydate = await this.http.get<Array<Expensebyporderbydate>>('http://localhost:8080/reports/expensebyporder'+qry).toPromise();
+    const cocountbydate = await this.http.get<Array<Expensebyporderbydate>>('http://localhost:8080/reports/expenseofpurchaseorderbydate'+qry).toPromise();
     if(cocountbydate == undefined){
       return [];
     }
@@ -247,7 +247,7 @@ export class ReportService {
 
   async expensebyporderall(): Promise<Array<Expensebyporderbydate>> {
 
-    const cocountbydate = await this.http.get<Array<Expensebyporderbydate>>('http://localhost:8080/reports/expensebyporderall').toPromise();
+    const cocountbydate = await this.http.get<Array<Expensebyporderbydate>>('http://localhost:8080/reports/expenseofpurchaseorderall').toPromise();
     if(cocountbydate == undefined){
       return [];
     }
