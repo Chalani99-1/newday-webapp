@@ -24,6 +24,7 @@ import {Materialtype} from "../../../entity/materialtype";
 })
 export class MaterialcategoryComponent {
 
+  //Gets reference to the HTML form.
   @ViewChild('myForm', {static: false}) myForm!: ElementRef;
 
   enaadd: boolean = false;
@@ -37,15 +38,19 @@ export class MaterialcategoryComponent {
   cscolumns: string[] = ['csname', 'cssize', 'cstype'];
   csprompts: string[] = ['Filter by Name', 'Filter by Size', 'Filter by Type'];
 
+  //for filtering table data
   public csearch!: FormGroup;
 
+  //main CRUD form
   public form!: FormGroup;
 
+//Store backend data.
   materialtypes: Array<Materialtype> = [];
   mcsizes: Array<Mcsize> = [];
   oldmcsizes: Array<Mcsize> = [];
-
   materialcategories: Array<Materialcategory> = [];
+
+  //table datasource
   data!: MatTableDataSource<Materialcategory>;
   imageurl: string = '';
   categorySubscription: any;
@@ -67,6 +72,7 @@ export class MaterialcategoryComponent {
     private db: MatDialog,
     public authService: AuthorizationManager,
     private breakpointObserver: BreakpointObserver) {
+    //Changes row height depending on screen size.
     this.breakpointObserver
       .observe([
         '(max-width: 1366px)',
@@ -103,6 +109,7 @@ export class MaterialcategoryComponent {
 
   }
 
+ //Runs when component loads.
   ngOnInit() {
     this.initialize();
   }
@@ -127,11 +134,13 @@ export class MaterialcategoryComponent {
 
   }
 
+ //Loads table data
   createView() {
     this.loadTable("");
   }
 
   createForm() {
+    //Adds validators
     this.form.controls['name'].setValidators([Validators.required]);
     this.form.controls['materialtype'].setValidators([Validators.required]);
     this.form.controls['mcsize'].setValidators([Validators.required]);
@@ -143,6 +152,7 @@ export class MaterialcategoryComponent {
 
     for (const controlName in this.form.controls) {
       const control = this.form.controls[controlName];
+     //Checks whether field changed compared to original data.
       control.valueChanges.subscribe(value => {
 
           if (this.oldmaterialcategory != undefined && control.valid) {
