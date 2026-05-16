@@ -26,12 +26,12 @@ public interface ExpenseOfPurchaseOrderByDateDao extends JpaRepository<ExpenseOf
 //        List<ExpenseOfPurchaseorderByDate> expenseOfPurchaseorderByDate(@Param("startDate") Date startDate, @Param("endDate") Date endDate);
 
 
-        @Query("SELECT po.number,po.supplier.name,po.expectedtotal FROM Purchaseorder po ")
-        List<Purchaseorder> getPurchaseOrderExpectedAll();
+//        @Query("SELECT po.number,po.supplier.name,po.expectedtotal FROM Purchaseorder po ")
+//        List<Purchaseorder> getPurchaseOrderExpectedAll();
 
-//        @Query("SELECT new ExpenseOfPurchaseorderByDate (s.name,po.number,po.expectedtotal) " +
-//                "FROM Purchaseorder po " +
-//                "JOIN po.supplier s " +
-//                "GROUP BY s.name")
-//        List<ExpenseOfPurchaseorderByDate> expenseOfPurchaseorderAll();
+        @Query("SELECT new ExpenseOfPurchaseorderByDate (s.name,po.number,po.expectedtotal) " +
+                "FROM Purchaseorder po " +
+                "JOIN po.supplier s " +
+                "GROUP BY s.name")
+        List<ExpenseOfPurchaseorderByDate> expenseOfPurchaseorderAll();
 }
