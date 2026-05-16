@@ -198,7 +198,7 @@ export class ProductionorderComponent {
     this.innerform = this.fb.group({
       "product": new FormControl('', Validators.required),
       "amount": new FormControl(0, Validators.required),
-      // "completed": new FormControl({value: 0, disabled: true}, Validators.required)
+       "completed": new FormControl('', Validators.required)
     });
   }
 
@@ -265,7 +265,7 @@ export class ProductionorderComponent {
     this.innerform.controls['product'].setValidators([Validators.required]);
     this.innerform.controls['amount'].setValidators(
       [Validators.required, Validators.min(this.dynamicMin), Validators.max(this.dynamicMax)]);
-    // this.innerform.controls['completed'].setValidators([Validators.required, Validators.pattern("^\\d{1,4}$")]);
+    this.innerform.controls['completed'].setValidators([Validators.required, Validators.pattern("^\\d{1,4}$")]);
 
     this.form.controls['dorequired'].setValidators([Validators.required]);
     this.form.controls['completepercentage'].setValidators([Validators.required]);
@@ -938,7 +938,7 @@ export class ProductionorderComponent {
             this.productionOrder.productionorderproducts = this.productionorderproducts;
 
             // @ts-ignore
-            this.popitems.forEach((i) => delete i.id);
+            this.productionorderproducts.forEach((i) => delete i.id);
 
             // @ts-ignore
             this.productionOrder.dorequired = this.dp.transform(this.productionOrder.dorequired, 'yyyy-MM-dd');
@@ -962,6 +962,8 @@ export class ProductionorderComponent {
               if (updstatus) {
                 updmessage = "Successfully Updated";
                 this.resetForms();
+                Object.values(this.form.controls).forEach(control => control.markAsUntouched());
+                Object.values(this.innerform.controls).forEach(control => control.markAsUntouched());
                 this.loadTable("");
               }
 

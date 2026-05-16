@@ -340,13 +340,11 @@ public class ReportController {
         return pbobdates;
     }
 
-
-
     @GetMapping(path = "/expenseofpurchaseorderall", produces = "application/json")
     public List<ExpenseOfPurchaseorderByDate> getPurchaseOrderExpenseByDateAll() {
 
-        List<ExpenseOfPurchaseorderByDate> pbobdates = new ArrayList<ExpenseOfPurchaseorderByDate>();
-        List<Purchaseorder> porders = purchaseorderdao.findAll();
+        List<ExpenseOfPurchaseorderByDate> pbobdates = new ArrayList<>();
+        List<Purchaseorder> porders = expenseofpurchaseorderbydatedao.getPurchaseOrderExpectedAll();
         for (Purchaseorder corder : porders) {
             BigDecimal expense = BigDecimal.valueOf(0.0);
 
@@ -360,6 +358,25 @@ public class ReportController {
 
         return pbobdates;
     }
+
+//    @GetMapping(path = "/expenseofpurchaseorderall", produces = "application/json")
+//    public List<ExpenseOfPurchaseorderByDate> getPurchaseOrderExpenseByDateAll() {
+//
+//        List<ExpenseOfPurchaseorderByDate> pbobdates = new ArrayList<ExpenseOfPurchaseorderByDate>();
+//        List<Purchaseorder> porders = purchaseorderdao.findAll();
+//        for (Purchaseorder corder : porders) {
+//            BigDecimal expense = BigDecimal.valueOf(0.0);
+//
+//            ExpenseOfPurchaseorderByDate ob1 =
+//                    new ExpenseOfPurchaseorderByDate
+//                            (corder.getNumber(),
+//                                    corder.getSupplier().getName(),
+//                                    corder.getExpectedtotal());
+//            pbobdates.add(ob1);
+//        }
+//
+//        return pbobdates;
+//    }
 }
 
 

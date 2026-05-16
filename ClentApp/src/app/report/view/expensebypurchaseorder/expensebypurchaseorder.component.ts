@@ -35,6 +35,7 @@ export class ExpensebypurchaseorderComponent {
   headers: string[] = ['Order Number', 'Supplier Name', 'Full Expense (LKR)'];
   binders: string[] = ['purchaseOrderNumber', 'supplierName', 'expense'];
 
+  barChartLabels: string[] = [];
   //chart data
   barChartData: ChartData<'bar', number[], string> = {
     labels: [],
@@ -156,10 +157,10 @@ export class ExpensebypurchaseorderComponent {
   }
 
   loadChartData(): void {
-    const labels = this.pbobdates.map(c => c.purchaseOrderNumber);
+    this.barChartLabels = this.pbobdates.map(c => c.purchaseOrderNumber);
 
     this.barChartData = {
-      labels,
+      labels:this.barChartLabels,
       datasets: [
         {
           label: 'Expense',

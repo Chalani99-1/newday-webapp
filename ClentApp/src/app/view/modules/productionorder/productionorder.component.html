@@ -21,6 +21,8 @@
             </mat-select>
           </mat-form-field>
 
+
+
           <div id="innertable">
             <form #myInnerForm [formGroup]="innerform">
 
@@ -49,6 +51,11 @@
                 <mat-error *ngIf="innerform.get('amount')?.hasError('max')">
                   Amount must be less than or equal to {{ dynamicMax }}
                 </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Completed</mat-label>
+                <input matInput formControlName="completed">
               </mat-form-field>
 
               <button mat-raised-button id="btnAdd" (click)="btnaddMc()" [disabled]="!enaInnerAdd">Add</button>
