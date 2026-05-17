@@ -64,6 +64,12 @@ public class ProfitByOrderByDate {
         this.profit = profit;
     }
 
+    public ProfitByOrderByDate(String clientOrderNumber, String clientName, BigDecimal revenue) {
+        this.clientOrderNumber = clientOrderNumber;
+        this.clientName = clientName;
+        this.revenue = revenue;
+    }
+
     public void setId(Integer id) {
         this.id = id;
     }

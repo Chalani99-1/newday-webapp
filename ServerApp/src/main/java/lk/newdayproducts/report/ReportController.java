@@ -1,8 +1,11 @@
 package lk.newdayproducts.report;
 
+import lk.newdayproducts.dao.ClientorderDao;
 import lk.newdayproducts.dao.ProductionorderDao;
 import lk.newdayproducts.dao.PurchaseorderDao;
 import lk.newdayproducts.entity.Charge;
+import lk.newdayproducts.entity.Clientorder;
+import lk.newdayproducts.entity.Orderproduct;
 import lk.newdayproducts.entity.Purchaseorder;
 import lk.newdayproducts.report.dao.*;
 import lk.newdayproducts.report.entity.*;
@@ -42,21 +45,29 @@ public class ReportController {
     private ExpenseOfPurchaseOrderByDateDao expenseofpurchaseorderbydatedao;
     @Autowired
     private PurchaseorderDao purchaseorderdao;
+    @Autowired
+    private ProductionVsAmountDao productionvsamountdao;
+    @Autowired
+    private ProfitByOrderByDateDao profitbyorderbydatedao;
+    @Autowired
+    private ClientorderDao clientorderdao;
+    @Autowired
+    private ClientOrderVsProductDao clientordervsproductdao;
 
-    @GetMapping(path ="/countbymaterialcategory", produces = "application/json")
+    @GetMapping(path = "/countbymaterialcategory", produces = "application/json")
     public List<CountByMaterialCategory> get() {
-        List<CountByMaterialCategory> cats =countbymaterialcategorydao.countCountByMaterialCategory();
-        System.out.println("in  --------"+cats);
+        List<CountByMaterialCategory> cats = countbymaterialcategorydao.countCountByMaterialCategory();
+        System.out.println("in  --------" + cats);
         long totalCount = 0;
 
-        for(CountByMaterialCategory countByMaterialCategory: cats){
+        for (CountByMaterialCategory countByMaterialCategory : cats) {
             totalCount += countByMaterialCategory.getCount();
         }
 
-        for(CountByMaterialCategory countbymc: cats){
+        for (CountByMaterialCategory countbymc : cats) {
             long count = countbymc.getCount();
             double percentage = (double) count / totalCount * 100;
-            percentage = Math.round(percentage*100.00)/100;
+            percentage = Math.round(percentage * 100.00) / 100;
             countbymc.setPercentage(percentage);
         }
         System.out.println(cats);
@@ -64,20 +75,20 @@ public class ReportController {
 
     }
 
-    @GetMapping(path ="/clientcountbystate", produces = "application/json")
+    @GetMapping(path = "/clientcountbystate", produces = "application/json")
     public List<ClientCountByState> getclientcountbystate() {
-        List<ClientCountByState> sts =clientcountbystatedao.countClientCountByState();
-        System.out.println("in  --------"+sts);
+        List<ClientCountByState> sts = clientcountbystatedao.countClientCountByState();
+        System.out.println("in  --------" + sts);
         long totalCount = 0;
 
-        for(ClientCountByState clientCountByState: sts){
+        for (ClientCountByState clientCountByState : sts) {
             totalCount += clientCountByState.getCount();
         }
 
-        for(ClientCountByState countbyst: sts){
+        for (ClientCountByState countbyst : sts) {
             long count = countbyst.getCount();
             double percentage = (double) count / totalCount * 100;
-            percentage = Math.round(percentage*100.00)/100;
+            percentage = Math.round(percentage * 100.00) / 100;
             countbyst.setPercentage(percentage);
         }
         System.out.println(sts);
@@ -85,20 +96,20 @@ public class ReportController {
 
     }
 
-    @GetMapping(path ="/suppliercountbymaterialcategory", produces = "application/json")
+    @GetMapping(path = "/suppliercountbymaterialcategory", produces = "application/json")
     public List<SupplierCountByMaterialCategory> getsuppliercountbymaterialcategory() {
-        List<SupplierCountByMaterialCategory> supcbmat =suppliercountbymaterialcategorydao.countSupplierCountByMaterialCategory();
-        System.out.println("in  --------"+supcbmat);
+        List<SupplierCountByMaterialCategory> supcbmat = suppliercountbymaterialcategorydao.countSupplierCountByMaterialCategory();
+        System.out.println("in  --------" + supcbmat);
         long totalCount = 0;
 
-        for(SupplierCountByMaterialCategory supplierCountByMaterialCategory: supcbmat){
+        for (SupplierCountByMaterialCategory supplierCountByMaterialCategory : supcbmat) {
             totalCount += supplierCountByMaterialCategory.getCount();
         }
 
-        for(SupplierCountByMaterialCategory countbymt: supcbmat){
+        for (SupplierCountByMaterialCategory countbymt : supcbmat) {
             long count = countbymt.getCount();
             double percentage = (double) count / totalCount * 100;
-            percentage = Math.round(percentage*100.00)/100;
+            percentage = Math.round(percentage * 100.00) / 100;
             countbymt.setPercentage(percentage);
         }
         System.out.println(supcbmat);
@@ -262,20 +273,20 @@ public class ReportController {
         return counts;
     }
 
-    @GetMapping(path ="/productcountbycategory", produces = "application/json")
+    @GetMapping(path = "/productcountbycategory", produces = "application/json")
     public List<ProductCountByCategory> getproductcountbycategory() {
-        List<ProductCountByCategory> sts =productcountbycategorydao.countProductCountByCategory();
-        System.out.println("in  --------"+sts);
+        List<ProductCountByCategory> sts = productcountbycategorydao.countProductCountByCategory();
+        System.out.println("in  --------" + sts);
         long totalCount = 0;
 
-        for(ProductCountByCategory clientCountByState: sts){
+        for (ProductCountByCategory clientCountByState : sts) {
             totalCount += clientCountByState.getCount();
         }
 
-        for(ProductCountByCategory countbyst: sts){
+        for (ProductCountByCategory countbyst : sts) {
             long count = countbyst.getCount();
             double percentage = (double) count / totalCount * 100;
-            percentage = Math.round(percentage*100.00)/100;
+            percentage = Math.round(percentage * 100.00) / 100;
             countbyst.setPercentage(percentage);
         }
         System.out.println(sts);
@@ -353,6 +364,7 @@ public class ReportController {
 
         return counts;
     }
+
     @GetMapping(path = "/expenseofpurchaseorderall", produces = "application/json")
     public List<ExpenseOfPurchaseorderByDate> getExpenseOfPurchaseorderByDate() {
 
@@ -361,7 +373,84 @@ public class ReportController {
         return expenses;
     }
 
-}
 
+    @GetMapping(path = "/productionvsamount", produces = "application/json")
+    public List<ProductionVsAmount> getProductionVsAmount() {
+
+        List<ProductionVsAmount> expenses = productionvsamountdao.productionVsAmount();
+
+        return expenses;
+    }
+
+    @GetMapping(path = "/profitbydate", produces = "application/json")
+    public List<ProfitByOrderByDate> getProfitByOrderByDate(@RequestParam String startDate, @RequestParam String endDate) {
+        Timestamp startTimestamp;
+        Timestamp endTimestamp;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date start = dateFormat.parse(startDate);
+            Date end = dateFormat.parse(endDate);
+
+            startTimestamp = new Timestamp(start.getTime());
+            endTimestamp = new Timestamp(end.getTime());
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+        List<ProfitByOrderByDate> pbobdates = new ArrayList<ProfitByOrderByDate>();
+        List<Clientorder> corders = clientorderdao.getClientOrderByDate(startTimestamp, endTimestamp);
+        for (Clientorder corder : corders) {
+            BigDecimal expense = BigDecimal.valueOf(0.0);
+            for (Orderproduct orderproduct : corder.getOrderproducts()) {
+                BigDecimal tcbeforecharge = orderproduct.getProduct().getTcbeforecharge();
+                BigDecimal amount = BigDecimal.valueOf(orderproduct.getAmount());
+                BigDecimal fullExpnse = tcbeforecharge.multiply(amount);
+                expense = expense.add(fullExpnse);
+            }
+            ProfitByOrderByDate ob1 = new ProfitByOrderByDate(corder.getNumber(), corder.getClient().getName(), corder.getExpectedtotal(), expense, corder.getExpectedtotal().subtract(expense));
+            pbobdates.add(ob1);
+        }
+
+        return pbobdates;
+    }
+    @GetMapping(path = "/profitbydateall", produces = "application/json")
+    public List<ProfitByOrderByDate> getProfitByOrderByDate() {
+
+        List<ProfitByOrderByDate> expenses = new ArrayList<ProfitByOrderByDate>();
+        List<Clientorder> corders = clientorderdao.findAll();
+        for (Clientorder corder : corders) {
+            BigDecimal expense = BigDecimal.valueOf(0.0);
+            for (Orderproduct orderproduct : corder.getOrderproducts()) {
+                BigDecimal tcbeforecharge = orderproduct.getProduct().getTcbeforecharge();
+                BigDecimal amount = BigDecimal.valueOf(orderproduct.getAmount());
+                BigDecimal fullExpnse = tcbeforecharge.multiply(amount);
+                expense = expense.add(fullExpnse);
+            }
+            ProfitByOrderByDate ob1 = new ProfitByOrderByDate(corder.getNumber(), corder.getClient().getName(), corder.getExpectedtotal(), expense, corder.getExpectedtotal().subtract(expense));
+            expenses.add(ob1);
+        }
+
+        return expenses;
+    }
+
+
+    @GetMapping(path = "/clientordervsproducts", produces = "application/json")
+    public List<ClientOrderVsProducts> getlientOrderVsProducts() {
+
+        List<ClientOrderVsProducts> expenses = clientordervsproductdao.clientOrderVsProducts();
+        long totalCount = 0;
+
+
+        for (ClientOrderVsProducts countbymc : expenses) {
+            long amntreq = countbymc.getAmount();
+            long amntcom = countbymc.getCompleted();
+            double percentage = (double) amntcom/ amntreq * 100;
+            percentage = Math.round(percentage * 100.00) / 100;
+            countbymc.setPercentage(percentage);
+        }
+        System.out.println(expenses);
+        return expenses;
+    }
+}
 
 

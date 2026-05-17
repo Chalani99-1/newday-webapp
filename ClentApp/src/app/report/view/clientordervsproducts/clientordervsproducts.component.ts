@@ -175,9 +175,9 @@ export class ClientordervsproductsComponent {
 
     this.codata.filterPredicate = (covsps: Clientordervsproducts, filter: string) => {
       return (cserchdata.cocsnumber == null || covsps.number.toLowerCase().includes(cserchdata.cocsnumber)) &&
-        (cserchdata.cocsproductName == null || covsps.productCode.includes(cserchdata.cocsproductName)) &&
-        (cserchdata.cocsamount == null || covsps.amount === cserchdata.cocsamount) &&
-        (cserchdata.cocscompleted == null || covsps.completed === cserchdata.cocscompleted);
+        (cserchdata.cocsproductName == null || covsps.productName.includes(cserchdata.cocsproductName)) &&
+        (cserchdata.cocsamount == null || covsps.amount.toString().includes(cserchdata.cocsamount) &&
+        (cserchdata.cocscompleted == null || covsps.completed.toString().includes(cserchdata.cocscompleted)));
     };
 
 

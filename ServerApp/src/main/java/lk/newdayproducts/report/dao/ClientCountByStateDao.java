@@ -9,7 +9,10 @@ import java.util.List;
 
 public interface ClientCountByStateDao extends JpaRepository<ClientCountByState, Integer> {
         @Query
-        ("SELECT new ClientCountByState(s.name, COUNT(s.name)) FROM State s, Client c WHERE s.id = c.state.id GROUP BY s.name")
+        ("SELECT new ClientCountByState(s.name, COUNT(s.name)) " +
+                "FROM State s, Client c " +
+                "WHERE s.id = c.state.id " +
+                "GROUP BY s.name")
         List<ClientCountByState> countClientCountByState();
         
 }

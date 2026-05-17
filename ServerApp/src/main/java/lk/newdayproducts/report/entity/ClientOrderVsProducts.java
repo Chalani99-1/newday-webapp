@@ -9,17 +9,16 @@ public class ClientOrderVsProducts {
     @Id
     private Integer id;
     private String number;
-    private String productCode;
     private String productName;
     private Integer amount;
     private Integer completed;
+    private double percentage;
 
     public ClientOrderVsProducts() {
     }
 
-    public ClientOrderVsProducts(String number, String productCode, String productName, Integer amount, Integer completed) {
+    public ClientOrderVsProducts(String number,  String productName, Integer amount, Integer completed) {
         this.number = number;
-        this.productCode = productCode;
         this.productName = productName;
         this.amount = amount;
         this.completed = completed;
@@ -57,19 +56,18 @@ public class ClientOrderVsProducts {
         this.number = number;
     }
 
-    public String getProductCode() {
-        return productCode;
-    }
-
-    public void setProductCode(String productCode) {
-        this.productCode = productCode;
-    }
-
     public Integer getAmount() {
         return amount;
     }
 
     public void setAmount(Integer amount) {
         this.amount = amount;
+    }
+
+    public double getPercentage() {
+        return percentage;
+    }
+    public void setPercentage(double percentage) {
+        this.percentage = percentage;
     }
 }
