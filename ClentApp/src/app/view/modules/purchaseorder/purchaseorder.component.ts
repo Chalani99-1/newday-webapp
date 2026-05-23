@@ -330,6 +330,10 @@ export class PurchaseorderComponent {
     this.rms.getAll(query)
       .then((rmss: Rawmaterial[]) => {
         this.oosRawmats = rmss.filter(rm => rm.qoh <= rm.rop)
+
+        console.log(rmss);
+        console.log("------------------------------------------------------------");
+        console.log(this.oosRawmats);
       })
       .catch((error) => {
         console.log(error);

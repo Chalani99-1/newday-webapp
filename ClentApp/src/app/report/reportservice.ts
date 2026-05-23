@@ -199,11 +199,11 @@ export class ReportService {
   }
   async purchaseordervsrawmaterials(): Promise<Array<Purchaseordersrms>> {
 
-    const coc = await this.http.get<Array<Purchaseordersrms>>('http://localhost:8080/reports/purchaseordervsrms').toPromise();
-    if(coc == undefined){
+    const por = await this.http.get<Array<Purchaseordersrms>>('http://localhost:8080/reports/purchaseordervsrms').toPromise();
+    if(por == undefined){
       return [];
     }
-    return coc;
+    return por;
   }
 
 

@@ -213,9 +213,13 @@ export class GrnComponent {
         this.povsrms = this.povsrms.filter((porm) => porm.quentity !== porm.receivedAmount);
         if (this.povsrms.length < 1) {
           this.emptyPOtable = true;
+
+          console.log(this.povsrms);
+          console.log("--------------------------------");
+          console.log(p);
         }
       }).finally(() => {
-      this.loadTable2("");
+      this.loadTable2();
     });
 
     this.gs.getAll("").then((regs:Grn []) => {
@@ -227,7 +231,7 @@ export class GrnComponent {
   createView() {
     this.imageurl = 'assets/pending.gif';
     this.loadTable("");
-    this.loadTable2("");
+    this.loadTable2();
   }
 
   createForm() {
@@ -331,14 +335,18 @@ export class GrnComponent {
 
   }
 
-  loadTable2(query: string): void {
+  loadTable2(): void {
     this.rs.purchaseordervsrawmaterials()
-      .then((p: Purchaseordersrms[]) => {
-        this.povsrms = p;
+      .then((pur: Purchaseordersrms[]) => {
+        this.povsrms = pur;
+
+
         this.povsrms = this.povsrms.filter((porm) => porm.quentity !== porm.receivedAmount);
         if (this.povsrms.length < 1) {
           this.emptyPOtable = true;
         }
+
+
       }).finally(() => {
       this.podata = new MatTableDataSource(this.povsrms);
       this.podata.paginator=this.paginator2
@@ -719,7 +727,7 @@ export class GrnComponent {
 
             if (addstatus) {
               addmessage = "Successfully Saved";
-             this.loadTable2("");
+             this.loadTable2();
               this.resetForms();
               this.loadTable("");
             }
@@ -761,7 +769,7 @@ export class GrnComponent {
     this.innerform.controls['quantity'].reset();
     this.enableButtons(true, false, false);
     this.loadTable("");
-   // this.loadTable2();
+    this.loadTable2();
 
     Object.values(this.form.controls).forEach(control => {
       control.markAsUntouched();
