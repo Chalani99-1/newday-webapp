@@ -38,6 +38,8 @@ import {Purchaseordersrms} from "../../../report/entity/purchaseordersrms";
   styleUrls: ['./grn.component.css']
 })
 export class GrnComponent {
+
+
   @ViewChild('myForm', {static: false}) myForm!: ElementRef;
   @ViewChild('myInnerForm', {static: false}) myInnerForm!: ElementRef;
 
@@ -205,16 +207,16 @@ export class GrnComponent {
     this.es.getAll('').then((emps: Employee[]) => this.employees = emps);
     this.rms.getAllRMs().then((rmts: Rawmaterial[]) => this.rawmaterials = rmts);
     this.gss.getAllList().then((grnst: Grnstatus[]) => this.grnstatuses = grnst);
-    // this.rs.purchaseordervsrawmaterials()
-    //   .then((p: Purchaseordersrms[]) => {
-    //     this.povsrms = p;
-    //     this.povsrms = this.povsrms.filter((porm) => porm.quentity !== porm.receivedAmount);
-    //     if (this.povsrms.length < 1) {
-    //       this.emptyPOtable = true;
-    //     }
-    //   }).finally(() => {
-    //   this.loadTable2();
-    // });
+    this.rs.purchaseordervsrawmaterials()
+      .then((p: Purchaseordersrms[]) => {
+        this.povsrms = p;
+        this.povsrms = this.povsrms.filter((porm) => porm.quentity !== porm.receivedAmount);
+        if (this.povsrms.length < 1) {
+          this.emptyPOtable = true;
+        }
+      }).finally(() => {
+      this.loadTable2("");
+    });
 
     this.gs.getAll("").then((regs:Grn []) => {
       this.orders = regs;
@@ -225,6 +227,7 @@ export class GrnComponent {
   createView() {
     this.imageurl = 'assets/pending.gif';
     this.loadTable("");
+    this.loadTable2("");
   }
 
   createForm() {
@@ -328,7 +331,7 @@ export class GrnComponent {
 
   }
 
-  loadTable2(): void {
+  loadTable2(query: string): void {
     this.rs.purchaseordervsrawmaterials()
       .then((p: Purchaseordersrms[]) => {
         this.povsrms = p;
@@ -358,7 +361,7 @@ export class GrnComponent {
     const cserchdata = this.pocsearch.getRawValue();
 
     this.podata.filterPredicate = (porms: Purchaseordersrms, filter: string) => {
-      return (cserchdata.pocsnumber == null || porms.number.toLowerCase().includes(cserchdata.pocsnumber)) &&
+      return (cserchdata == null || porms.number.toLowerCase().includes(cserchdata.pocsnumber)) &&
         (cserchdata.pocsrmName == null || porms.rmName.toLowerCase().includes(cserchdata.pocsrmName)) &&
         (cserchdata.pocsquentity == null || porms.quentity.toString().toLowerCase().includes(cserchdata.pocsquentity)) &&
         (cserchdata.pocsreceivedAmount == null || porms.receivedAmount.toString().toLowerCase().includes(cserchdata.pocsreceivedAmount))
@@ -716,7 +719,7 @@ export class GrnComponent {
 
             if (addstatus) {
               addmessage = "Successfully Saved";
-             // this.loadTable2();
+             this.loadTable2("");
               this.resetForms();
               this.loadTable("");
             }

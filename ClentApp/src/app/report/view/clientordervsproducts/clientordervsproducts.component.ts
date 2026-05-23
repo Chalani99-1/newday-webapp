@@ -8,6 +8,7 @@ import * as html2pdf from 'html2pdf.js';
 import {BaseChartDirective} from "ng2-charts";
 import {ChartData, ChartOptions} from "chart.js";
 import {BreakpointObserver} from "@angular/cdk/layout";
+import {Clientcountbystate} from "../../entity/clientcountbystate";
 
 @Component({
   selector: 'app-clientordervsproducts',
@@ -15,6 +16,10 @@ import {BreakpointObserver} from "@angular/cdk/layout";
   styleUrls: ['./clientordervsproducts.component.css']
 })
 export class ClientordervsproductsComponent {
+
+
+
+
   cordervsproducts!: Clientordervsproducts[];
 
   hideForm = false;
@@ -28,7 +33,7 @@ export class ClientordervsproductsComponent {
   cobinders: string[] = ['number', 'productName', 'amount', 'completed'];
 
   //chart data
-  amounts!: { percentage: number; count: number }[];
+  amounts!: {percentage: number; count: number }[];
   totalCount = 0;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
