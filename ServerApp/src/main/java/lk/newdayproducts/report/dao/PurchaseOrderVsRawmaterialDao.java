@@ -8,11 +8,11 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface PurchaseOrderVsRawmaterialDao extends JpaRepository<PurchaseOrderVsRawMaterials, Integer> {
-
-//        @Query("SELECT new PurchaseOrderVsRawMaterials (po.ordernumber,p.code,p.name,pop.amount,po.productionorderstatus.name) " +
-//                "FROM Poitem poi,Purchaseorder p,Rawmaterial r" +
-//                "WHERE  " +
-//                "AND p.id=pop.product.id")
-//        List<ClientCountByState> countClientCountByState();
+    @Query("SELECT new PurchaseOrderVsRawMaterials(p.number,r.name,po.quentity,po.receivedamount) " +
+            "FROM Poitem po,Rawmaterial r,Purchaseorder p " +
+            "WHERE p.id=po.purchaseorder.id " +
+            "AND r.id=po.rawmaterial.id " +
+            "AND p.id!=3 ")
+        List<PurchaseOrderVsRawMaterials> getPurchaseOrderVsRawMaterials();
         
 }

@@ -53,8 +53,8 @@ public class ReportController {
     private ClientorderDao clientorderdao;
     @Autowired
     private ClientOrderVsProductDao clientordervsproductdao;
-//    @Autowired
-//    private Purchaseordervs clientordervsproductdao;
+    @Autowired
+    private PurchaseOrderVsRawmaterialDao purchaseOrderVsRawmaterialdao;
 
     @GetMapping(path = "/countbymaterialcategory", produces = "application/json")
     public List<CountByMaterialCategory> get() {
@@ -454,11 +454,11 @@ public class ReportController {
         return expenses;
     }
 
-//    @GetMapping(path = "/purchaseordervsrms", produces = "application/json")
-//    public List<PurchaseOrderVsRawMaterials> getPurchaseOrderVsRawMaterials() {
-//        List<PurchaseOrderVsRawMaterials> pos = purchaseOrderVsRmsDao.getPurchaseOrderVsRawMaterials();
-//        return pos;
-//    }
+    @GetMapping(path = "/purchaseordervsrms", produces = "application/json")
+    public List<PurchaseOrderVsRawMaterials> getPurchaseOrderVsRawMaterials() {
+        List<PurchaseOrderVsRawMaterials> pos = purchaseOrderVsRawmaterialdao.getPurchaseOrderVsRawMaterials();
+        return pos;
+    }
 }
 
 

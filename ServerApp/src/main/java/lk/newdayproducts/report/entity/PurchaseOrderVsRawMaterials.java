@@ -27,6 +27,13 @@ public class PurchaseOrderVsRawMaterials {
         this.receivedPercentage = receivedPercentage;
     }
 
+    public PurchaseOrderVsRawMaterials(String number, String rmName, BigDecimal quentity, Integer receivedAmount) {
+        this.number = number;
+        this.rmName = rmName;
+        this.quentity = quentity;
+        this.receivedAmount = receivedAmount;
+    }
+
     public Integer getId() {
         return id;
     }
