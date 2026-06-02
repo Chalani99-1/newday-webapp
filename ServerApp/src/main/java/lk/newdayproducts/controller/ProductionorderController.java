@@ -4,9 +4,8 @@ import lk.newdayproducts.dao.ProductDao;
 import lk.newdayproducts.dao.ProductionorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
 import lk.newdayproducts.dto.NotifyResponse;
-import lk.newdayproducts.entity.Productionorder;
-import lk.newdayproducts.entity.Productionorderproduct;
-import lk.newdayproducts.entity.Rawmaterial;
+import lk.newdayproducts.entity.*;
+import lk.newdayproducts.util.business.ExtractedData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -120,7 +119,8 @@ public class ProductionorderController {
 
     }
 
-      @PutMapping
+
+    @PutMapping
     @ResponseStatus(HttpStatus.CREATED)
     public HashMap<String, String> update(@RequestBody Productionorder order) {
 

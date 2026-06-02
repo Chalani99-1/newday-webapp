@@ -12,7 +12,7 @@ public interface PurchaseOrderVsRawmaterialDao extends JpaRepository<PurchaseOrd
             "FROM Poitem po,Rawmaterial r,Purchaseorder p " +
             "WHERE p.id=po.purchaseorder.id " +
             "AND r.id=po.rawmaterial.id " +
-            "AND p.id!=3 ")
+            "AND p.postatus.id!=3 ")
         List<PurchaseOrderVsRawMaterials> getPurchaseOrderVsRawMaterials();
         
 }
