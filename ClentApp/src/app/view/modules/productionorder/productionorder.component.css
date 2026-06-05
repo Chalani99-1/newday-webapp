@@ -17,6 +17,21 @@
 /*  height: 100%;*/
 /*}*/
 
+#frm{
+  padding-top: 10px !important;
+}
+
+#rlbtn{
+  width: 180px;
+  margin-top: 3px;
+  margin-bottom: 10px;
+  background-color: #87780a;
+  color: white;
+  font-size: 12px;
+  border-radius: 12px;
+  max-height: 30px;
+}
+
 mat-card {
   width: 170%;
   height: 100%;

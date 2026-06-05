@@ -7,10 +7,10 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ProductionVsAmountDao extends JpaRepository<ProductionVsAmount, Integer> {
-        @Query("SELECT new ProductionVsAmount (po.ordernumber,p.code,p.name,pop.amount,po.productionorderstatus.name) " +
-                "FROM Productionorderproduct pop,Productionorder po,Product p " +
-                "WHERE po.id=pop.productionorder.id " +
-                "AND p.id=pop.product.id")
-        List<ProductionVsAmount> productionVsAmount();
+//        @Query("SELECT new ProductionVsAmount (po.ordernumber,p.code,p.name,pop.amount,po.productionorderstatus.name) " +
+//                "FROM Productionorderproduct pop,Productionorder po,Product p " +
+//                "WHERE po.id=pop.productionorder.id " +
+//                "AND p.id=pop.product.id")
+//        List<ProductionVsAmount> productionVsAmount();
         
 }

@@ -51,5 +51,16 @@ public interface RawmaterialDao extends JpaRepository<Rawmaterial,Integer> {
     @Modifying
     @Query("UPDATE Rawmaterial rm set rm.materialstatus.id =:msId where rm.id=:rmId")
     void updateRmStatusAfter(@Param("rmId")Integer rmId, @Param("msId") int msId);
+
+    @Transactional
+    @Modifying
+    @Query("update Rawmaterial r set r.qoh =r.qoh+:quantity where r.id = :id")
+    void updateRawMaterialQuantityAfterUpdate(@Param("quantity") BigDecimal quantity, @Param("id") Integer id);
+
+    @Transactional
+    @Modifying
+    @Query("update Rawmaterial r set r.qoh =r.qoh+:quantity where r.id = :id")
+    void updateRawMaterialQuantityAfterDelete(@Param("quantity") BigDecimal quantity, @Param("id") Integer id);
+
 }
 

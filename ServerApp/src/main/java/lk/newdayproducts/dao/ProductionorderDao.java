@@ -24,40 +24,35 @@ public interface ProductionorderDao extends JpaRepository<Productionorder,Intege
 
     @Query("select i from Productionorder i where i.productionorderstatus.id!=2")
     List<Productionorder> findIncomplete();
+//
+//    @Query("select sum(i.completed) from Productionorderproduct i where i.productionorder.id=:poid ")
+//    Integer findPopCompleted(@Param("poid") Integer poid);
+//
+//    @Query("select sum(i.amount) from Productionorderproduct i where i.productionorder.id=:poid ")
+//    Integer findPopAmount(@Param("poid") Integer poid);
 
-    @Query("select sum(i.completed) from Productionorderproduct i where i.productionorder.id=:poid ")
-    Integer findPopCompleted(@Param("poid") Integer poid);
+//    @Transactional
+//    @Modifying
+//    @Query("update Productionorderproduct p set p.completed =p.completed+:quantity where p.product.id = :id and p.productionorder.id=:poid")
+//    void updateExistingProductQuantity(@Param("quantity") Integer quantity, @Param("id") Integer id, @Param("poid") Integer poid);
 
-    @Query("select sum(i.amount) from Productionorderproduct i where i.productionorder.id=:poid ")
-    Integer findPopAmount(@Param("poid") Integer poid);
+//    @Transactional
+//    @Modifying
+//    @Query("update Productionorderproduct p set p.completed =p.completed-:quantity where p.product.id = :id and p.productionorder.id=:poid")
+//    void updateExistingProductQuantityAfterDelete(@Param("quantity") Integer quantity, @Param("id") Integer id, @Param("poid") Integer poid);
+//
+//    @Transactional
+//    @Modifying
+//    @Query("update Productionorderproduct p set p.completed = p.completed + (:newAmount - :oldAmount) where p.product.id = :id and p.productionorder.id = :poid")
+//    void updateExistingProductQuantityAfterUpdate(@Param("newAmount") Integer newAmount, @Param("oldAmount") Integer oldAmount, @Param("id") Integer id, @Param("poid") Integer poid);
 
-    @Transactional
-    @Modifying
-    @Query("update Productionorderproduct p set p.completed =p.completed+:quantity where p.product.id = :id and p.productionorder.id=:poid")
-    void updateExistingProductQuantity(@Param("quantity") Integer quantity, @Param("id") Integer id, @Param("poid") Integer poid);
-
-    @Transactional
-    @Modifying
-    @Query("update Productionorderproduct p set p.completed =p.completed-:quantity where p.product.id = :id and p.productionorder.id=:poid")
-    void updateExistingProductQuantityAfterDelete(@Param("quantity") Integer quantity, @Param("id") Integer id, @Param("poid") Integer poid);
-
-    @Transactional
-    @Modifying
-    @Query("update Productionorderproduct p set p.completed = p.completed + (:newAmount - :oldAmount) where p.product.id = :id and p.productionorder.id = :poid")
-    void updateExistingProductQuantityAfterUpdate(@Param("newAmount") Integer newAmount, @Param("oldAmount") Integer oldAmount, @Param("id") Integer id, @Param("poid") Integer poid);
-
-    @Transactional
-    @Modifying
-    @Query("update Productionorder p set p.completepercentage =:percentage where  p.id=:poid")
-    void updatePercentage(@Param("percentage") String percentage, @Param("poid") Integer poid);
 
     @Transactional
     @Modifying
     @Query("update Productionorder po set po.productionorderstatus.id=:i where po.id=:poid" )
     void updatePOStatus(@Param("i") int i,@Param("poid") int poid);
 
-    @Query("select po.completepercentage from Productionorder po where po.id =:id")
-    BigDecimal getComletedPercentage(@Param("id")int id);
+
 
 
     @Query("SELECT c FROM Productionorder c WHERE c.doplaced BETWEEN :startDate AND :endDate")

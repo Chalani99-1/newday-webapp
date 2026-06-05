@@ -1,100 +1,57 @@
 <mat-grid-list [cols]="12" class="component-background" [rowHeight]="rowHeight" gutterSize="5px">
   <mat-grid-tile [colspan]="4" [rowspan]="30">
-
     <mat-card>
       <mat-card-header>
         Production Order Form
       </mat-card-header>
-      <mat-card-content id="productionorderform">
+      <mat-card-content id="productionform">
 
-        <form #myForm [formGroup]="form">
-          <mat-form-field appearance="outline">
-            <mat-label>Production Order Number</mat-label>
+        <form #myForm id="frm" [formGroup]="form">
+
+          <mat-form-field id="1field" appearance="outline">
+            <mat-label>Number</mat-label>
             <input matInput formControlName="ordernumber">
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Client Order</mat-label>
-            <mat-select formControlName="clientorder">
-              <mat-option [value]="null" selected>Not Selected</mat-option>
-              <mat-option *ngFor="let clientorder of incompleteclientorders" [value]="clientorder">{{ clientorder.number }}</mat-option>
+            <mat-label>Select Client Order</mat-label>
+            <mat-select formControlName="clientorder"><
+              <mat-option selected>Not Selected</mat-option>
+              <mat-option *ngFor="let Co of clientorders"
+                          [value]="Co">{{ Co.number + " ( " + Co.clientorderstatus.name + " )" }}
+              </mat-option>
             </mat-select>
           </mat-form-field>
 
-
-
-          <div id="innertable">
-            <form #myInnerForm [formGroup]="innerform">
-
-              <mat-form-field appearance="outline">
-                <mat-label>Product</mat-label>
-                <mat-select formControlName="product" [compareWith]="compareProducts">
-                  <mat-option [value]="null" selected>Not Selected</mat-option>
-                  <mat-option *ngFor="let product of products" [value]="product">{{ product.code }}-{{ product.name }}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline" id="last">
-                <mat-label>Amount</mat-label>
-                <input
-                  [min]="dynamicMin"
-                  [max]="dynamicMax"
-                  type="number"
-                  matInput formControlName="amount">
-                <mat-error *ngIf="innerform.get('amount')?.hasError('required')">
-                  Amount is required
-                </mat-error>
-                <mat-error *ngIf="innerform.get('amount')?.hasError('min')">
-                  Amount must be greater than to {{ dynamicMin }}
-                </mat-error>
-                <mat-error *ngIf="innerform.get('amount')?.hasError('max')">
-                  Amount must be less than or equal to {{ dynamicMax }}
-                </mat-error>
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Completed</mat-label>
-                <input matInput formControlName="completed">
-              </mat-form-field>
-
-              <button mat-raised-button id="btnAdd" (click)="btnaddMc()" [disabled]="!enaInnerAdd">Add</button>
-              <button mat-raised-button id="btnUpdate" (click)="btnupdateMc()" [disabled]="!enaInnerUpdate">Update
-              </button>
-              <button mat-raised-button id="btnDelete" (click)="btndeleteMc()" [disabled]="!enaInnerUpdate">Clear
-              </button>
-
-            </form>
-
-            <mat-table *ngIf="tableInnerLoad" id="tableInner" [dataSource]="indata">
-              <ng-container *ngFor="let column of incolumns;let i = index;" [matColumnDef]="column">
-                <mat-header-cell *matHeaderCellDef> {{ inheaders[i] }}</mat-header-cell>
-                <mat-cell *matCellDef="let element">
-                  <div *ngIf="i<inbinders.length-1" [innerHTML]="uiassist.getProperty(element, inbinders[i])"></div>
-                  <div *ngIf="i>=inbinders.length-1">
-                    <button mat-raised-button id="removeBtn" (click)="deleteRaw(element)">Remove</button>
-                  </div>
-                </mat-cell>
-              </ng-container>
-
-              <mat-header-row *matHeaderRowDef="incolumns"></mat-header-row>
-              <mat-row *matRowDef="let row; columns: incolumns;" (click)="fillInnerForm(row)"
-                       [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
-
-            </mat-table>
-          </div>
-
           <mat-form-field appearance="outline">
-            <mat-label>Do Required</mat-label>
-            <input matInput [matDatepicker]="dorqrd" formControlName="dorequired" [min]="minDate">
-            <mat-datepicker-toggle matIconSuffix [for]="dorqrd"></mat-datepicker-toggle>
-            <mat-datepicker #dorqrd></mat-datepicker>
+            <mat-label>Select A Product</mat-label>
+            <mat-select formControlName="product"><
+              <mat-option [value]="null">Not Selected</mat-option>
+              <mat-option *ngFor="let product of products"
+                          [value]="product">{{ product.code + " (" + product.name + " )" }}
+              </mat-option>
+            </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Production Percentage</mat-label>
-            <input matInput formControlName="completepercentage">
+          <mat-form-field appearance="outline" id="last">
+            <mat-label>Amount</mat-label>
+            <input
+              [min]="dynamicMin"
+              [max]="dynamicMax"
+              type="number"
+              matInput formControlName="amount">
+            <mat-error *ngIf="form.get('amount')?.hasError('required')">
+              Amount is required
+            </mat-error>
+            <mat-error *ngIf="form.get('amount')?.hasError('min')">
+              Amount must be greater than to {{ dynamicMin }}
+            </mat-error>
+            <mat-error *ngIf="form.get('amount')?.hasError('max')">
+              Amount must be less than or equal to {{ dynamicMax }}
+            </mat-error>
           </mat-form-field>
+
+          <button id="rlbtn" mat-button (click)="openDialog()">Check Resources</button>
 
           <mat-form-field appearance="outline">
             <mat-label>Description</mat-label>
@@ -102,27 +59,35 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Production Order Status</mat-label>
-            <mat-select formControlName="productionorderstatus">
-              <mat-option [value]="null" selected>Not Selected</mat-option>
-              <mat-option *ngFor="let postatus of productionorderstatuses" [value]="postatus">{{ postatus.name }}</mat-option>
-            </mat-select>
+            <mat-label>Placed Date</mat-label>
+            <input matInput [matDatepicker]="itdate1" formControlName="doplaced" [max]="maxDate">
+            <mat-datepicker-toggle matIconSuffix [for]="itdate1"></mat-datepicker-toggle>
+            <mat-datepicker #itdate1></mat-datepicker>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>Do Placed</mat-label>
-            <input matInput [matDatepicker]="doplaced" formControlName="doplaced" [max]="maxDate">
-            <mat-datepicker-toggle matIconSuffix [for]="doplaced"></mat-datepicker-toggle>
-            <mat-datepicker #doplaced></mat-datepicker>
+            <mat-label>Required Date</mat-label>
+            <input matInput [matDatepicker]="itdate2" formControlName="dorequired" [min]="minDate">
+            <mat-datepicker-toggle matIconSuffix [for]="itdate2"></mat-datepicker-toggle>
+            <mat-datepicker #itdate2></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Select Status</mat-label>
+            <mat-select formControlName="productionorderstatus"><
+              <mat-option [value]="null">Not Selected</mat-option>
+              <mat-option *ngFor="let ps of productionOrderStatuses" [value]="ps">{{ ps.name }}</mat-option>
+            </mat-select>
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Employee</mat-label>
-            <mat-select formControlName="employee">
-              <mat-option [value]="null" selected>Not Selected</mat-option>
+            <mat-select formControlName="employee"><
+              <mat-option [value]="null">Not Selected</mat-option>
               <mat-option *ngFor="let employee of employees" [value]="employee">{{ employee.callingname }}</mat-option>
             </mat-select>
           </mat-form-field>
+
 
           <div id="butpanel">
             <button id="butpanel-add" mat-raised-button (click)="add()" [disabled]="!enaadd">Add</button>
@@ -132,18 +97,16 @@
           </div>
 
         </form>
-
       </mat-card-content>
     </mat-card>
-
   </mat-grid-tile>
 
+  <!--  //client order-->
   <mat-grid-tile [colspan]="8" [rowspan]="14">
     <mat-card>
       <mat-card-header>
         Incomplete Client Order Details
       </mat-card-header>
-
       <mat-card-content>
         <p *ngIf="emptyCOtable" style="background-color: #c2ffbf; font-size: large;
 padding: 5px">No Incomplete Client Orders </p>
@@ -171,11 +134,14 @@ padding: 5px">No Incomplete Client Orders </p>
       </mat-card-content>
     </mat-card>
   </mat-grid-tile>
+  <!--  //-->
 
+  <!--  //production order-->
   <mat-grid-tile [colspan]="8" [rowspan]="16">
     <mat-card>
       <mat-card-header>
         Production Order Table
+
       </mat-card-header>
 
       <mat-card-content>
@@ -214,6 +180,7 @@ padding: 5px">No Incomplete Client Orders </p>
       </mat-card-content>
 
     </mat-card>
+
   </mat-grid-tile>
 
 </mat-grid-list>

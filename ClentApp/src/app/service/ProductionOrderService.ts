@@ -39,10 +39,10 @@ export class ProductionOrderService {
     return productionorders;
   }
 
-  async getMaxNumber(): Promise<String> {
-    const number1 = await this.http.get<String>('http://localhost:8080/productionorders/number').toPromise();
+  async getMaxNumber(): Promise<number> {
+    const number1 = await this.http.get<number>('http://localhost:8080/productionorders/number').toPromise();
         if (number1 == undefined) {
-      return "";
+      return 0;
     }
     return number1;
   }

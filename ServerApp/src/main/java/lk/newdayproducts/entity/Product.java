@@ -52,14 +52,22 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     private Employee employee;
-    @JsonIgnore
-    @OneToMany(mappedBy = "product")
-    private Collection<Productionorderproduct> productionorderproducts;
 
     @OneToMany(mappedBy = "product")
     @JsonIgnore
     private Collection<Orderproduct> orderproducts;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "product")
+    private Collection<Productionorder> productionorders;
+
+    public Collection<Productionorder> getProductionorders() {
+        return productionorders;
+    }
+
+    public void setProductionorders(Collection<Productionorder> productionorders) {
+        this.productionorders = productionorders;
+    }
 
     public BigDecimal getTcbeforecharge() {
         return tcbeforecharge;
@@ -193,13 +201,6 @@ public class Product {
         this.productrawmaterials = productrawmaterials;
     }
 
-    public Collection<Productionorderproduct> getProductionorderproducts() {
-        return productionorderproducts;
-    }
-
-    public void setProductionorderproducts(Collection<Productionorderproduct> productionorderproducts) {
-        this.productionorderproducts = productionorderproducts;
-    }
 
     public Collection<Orderproduct> getOrderproducts() {
         return orderproducts;

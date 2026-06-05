@@ -18,11 +18,11 @@ public class Productionorder {
     @Column(name = "ordernumber")
     private String ordernumber;
     @Basic
+    @Column(name = "amount")
+    private Integer amount;
+    @Basic
     @Column(name = "dorequired")
     private Date dorequired;
-    @Basic
-    @Column(name = "completepercentage")
-    private String completepercentage;
     @Basic
     @Column(name = "description")
     private String description;
@@ -35,12 +35,30 @@ public class Productionorder {
     @ManyToOne
     @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     private Employee employee;
-    @OneToMany(mappedBy = "productionorder",cascade = CascadeType.ALL,orphanRemoval = true)
-    private Collection<Productionorderproduct> productionorderproducts;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", referencedColumnName = "id", nullable = false)
+    private Product product;
 
     @ManyToOne
     @JoinColumn(name = "clientorder_id", referencedColumnName = "id", nullable = false)
     private Clientorder clientorder;
+
+    public Integer getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Integer amount) {
+        this.amount = amount;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
+    }
 
     public Clientorder getClientorder() {
         return clientorder;
@@ -130,22 +148,6 @@ public class Productionorder {
 
     public void setEmployee(Employee employee) {
         this.employee = employee;
-    }
-
-    public Collection<Productionorderproduct> getProductionorderproducts() {
-        return productionorderproducts;
-    }
-
-    public void setProductionorderproducts(Collection<Productionorderproduct> productionorderproducts) {
-        this.productionorderproducts = productionorderproducts;
-    }
-
-    public String getCompletepercentage() {
-        return completepercentage;
-    }
-
-    public void setCompletepercentage(String completepercentage) {
-        this.completepercentage = completepercentage;
     }
 
 

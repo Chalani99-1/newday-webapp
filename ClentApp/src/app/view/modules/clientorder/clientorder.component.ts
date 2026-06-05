@@ -654,9 +654,9 @@ export class ClientorderComponent {
         additionalProductDeficiencyAmount = Math.floor(innerdata.amount / 50);
 
         // Calculate the line total
-        const expectedlinecost = innerdata.product.totalcost * innerdata.amount;
+        const expectedlinecost = Number((innerdata?.product.totalcost * innerdata.amount).toFixed(2));
         //deficincy amount after calculating full cost
-        innerdata.amount = Number(innerdata.amount) + additionalProductDeficiencyAmount;
+        innerdata.amount = Number(innerdata.amount) ;
         // Create a new Orderproduct
         const orderitem = new Orderproduct
         (this.id, innerdata.clientOrder, innerdata.product, Number(innerdata.amount), 0, expectedlinecost);
@@ -665,6 +665,7 @@ export class ClientorderComponent {
         const existing = this.orderproducts.find(op => op.product.id === orderitem.product.id);
         if (existing) {
           existing.amount += Number(orderitem.amount)
+          // console.log(existing);
           existing.expectedlinecost += Number(expectedlinecost)
 
         } else {
@@ -725,12 +726,8 @@ export class ClientorderComponent {
         })
 
         if (existingOrderItemIndex !== -1) {
-          let additionalProductDeficiencyAmount = 0;
-          additionalProductDeficiencyAmount = Math.floor(innerdata.amount / 50);
-          // Calculate the line total
-          const expectedlinecost = innerdata.product.totalcost * innerdata.amount;
-          //deficincy amount after calculating full cost
-          innerdata.amount = Number(innerdata.amount) + additionalProductDeficiencyAmount;
+          const expectedlinecost =
+            Number((innerdata?.product.totalcost * innerdata.amount).toFixed(2));
           // Update the existing order item with new values
           const updatedOrderItem = new Orderproduct(
             this.selectedrow.id, // Keep the existing ID
