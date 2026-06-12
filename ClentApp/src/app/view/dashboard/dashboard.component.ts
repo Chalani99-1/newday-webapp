@@ -36,6 +36,7 @@ export class DashboardComponent {
       this.user = this.users[0];
       [this.role] = (this.user.userroles.map(ur => ur.role.name));
       this.name = (this.user.employee.fullname);
+      // console.log(this.user.userroles)
     });
   }
 }

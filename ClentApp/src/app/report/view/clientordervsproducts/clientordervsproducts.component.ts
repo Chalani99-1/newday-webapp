@@ -18,8 +18,6 @@ import {Clientcountbystate} from "../../entity/clientcountbystate";
 export class ClientordervsproductsComponent {
 
 
-
-
   cordervsproducts!: Clientordervsproducts[];
 
   hideForm = false;
@@ -33,7 +31,7 @@ export class ClientordervsproductsComponent {
   cobinders: string[] = ['number', 'productName', 'amount', 'completed'];
 
   //chart data
-  amounts!: {percentage: number; count: number }[];
+  amounts!: { percentage: number; count: number }[];
   totalCount = 0;
 
   @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
@@ -145,6 +143,9 @@ export class ClientordervsproductsComponent {
     this.rs.clientordervsproducts()
       .then((covps: Clientordervsproducts[]) => {
         this.cordervsproducts = covps;
+        // covps.forEach(c=>{
+        //   console.log(c.productCode);
+        // })
         this.amounts = this.cordervsproducts.map(c => ({
           'count': c.amount, 'percentage': 0
         }));
@@ -182,7 +183,7 @@ export class ClientordervsproductsComponent {
       return (cserchdata.cocsnumber == null || covsps.number.toLowerCase().includes(cserchdata.cocsnumber)) &&
         (cserchdata.cocsproductName == null || covsps.productName.includes(cserchdata.cocsproductName)) &&
         (cserchdata.cocsamount == null || covsps.amount.toString().includes(cserchdata.cocsamount) &&
-        (cserchdata.cocscompleted == null || covsps.completed.toString().includes(cserchdata.cocscompleted)));
+          (cserchdata.cocscompleted == null || covsps.completed.toString().includes(cserchdata.cocscompleted)));
     };
 
 
@@ -192,6 +193,7 @@ export class ClientordervsproductsComponent {
   getTopProducts() {
 
     this.cordervsproducts.forEach(covp => {
+      // console.log(covp.productCode);
       const {productCode, productName, amount} = covp;
       const totalCount = amount; // Multiply amount by completed if needed
 
@@ -206,6 +208,7 @@ export class ClientordervsproductsComponent {
         };
       }
     });
+    // console.log(this.productTotalsMap);
 
 // Convert the accumulated map to an array of objects including productName
     this.productTotalsArray = Object.keys(this.productTotalsMap).map(productCode => ({
@@ -227,7 +230,7 @@ export class ClientordervsproductsComponent {
     setTimeout(() => {
       this.chart?.update();
     }, 0);
-
+    // console.log(this.productTotalsArray);
   }
 
 

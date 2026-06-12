@@ -59,10 +59,10 @@ export class AdmindashboardComponent {
   rowHeight = '1rem'
   row0 = 3;
   row1 = 7;
-  row2 = 19;
+  row2 = 20; //
   row3 = 28;
-  row4 = 15;
-  row5 = 15;
+  row4 = 19;
+  row5 = 18;
 
   constructor(private cos: Clientorderservice,
               private rs: ReportService,
@@ -121,10 +121,6 @@ export class AdmindashboardComponent {
     })
     this.us.getAll('').then(u => {
       this.totalUsers = u.length;
-    })
-    this.ps.getAllBy('').then(u => {
-      this.productions = u;
-      this.loadChart3()
     })
     this.cos.getAll('').then(coss => {
       this.corders = coss
@@ -204,10 +200,6 @@ export class AdmindashboardComponent {
     this.drawCharts();
   }
 
-  loadChart3(): void {
-    this.drawCharts1();
-  }
-
   // Line Chart: Sales & Profit
   drawCharts() {
     const profitByDate: { [date: string]: { profit: number, sale: number } } = {};
@@ -273,72 +265,9 @@ export class AdmindashboardComponent {
     });
   }
 
-  // Bar Chart: Production
-  drawCharts1() {
-    const productionsByDate: { [date: string]: { count: number, productcount: number, names: string[] } } = {};
-
-    this.productions.forEach(prod => {
-      const date = new Date(prod.date).toISOString().split('T')[0];
-      const amount = prod.amount;
-      const name = prod.product.name;
-
-      if (productionsByDate[date]) {
-        productionsByDate[date].count += 1;
-        productionsByDate[date].productcount += amount;
-        productionsByDate[date].names.push(name);
-      } else {
-        productionsByDate[date] = {
-          count: 1,
-          productcount: amount,
-          names: [name]
-        };
-      }
-    });
-
-    const sortedDates = Object.keys(productionsByDate).sort();
-    const labels = sortedDates;
-    const productionCounts = sortedDates.map(date => productionsByDate[date].count);
-    const productCounts = sortedDates.map(date => productionsByDate[date].productcount);
-
-    if (this.barChartInstance) this.barChartInstance.destroy();
-
-    this.barChartInstance = new Chart(this.barchart.nativeElement.getContext('2d'), {
-      type: 'bar',
-      data: {
-        labels,
-        datasets: [
-          {
-            label: 'Production Count',
-            backgroundColor: '#f45a7a',
-            data: productionCounts
-          },
-          {
-            label: 'Product Amount',
-            backgroundColor: '#83e6e6',
-            data: productCounts
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          datalabels: {
-            color: 'black'
-          },
-          title: {display: true, text: 'Productions & Product Quantities by Date'},
-          legend: {position: 'bottom'},
-          tooltip: {mode: 'index', intersect: false}
-        },
-        scales: {
-          x: {title: {display: true, text: 'Date'}},
-          y: {title: {display: true, text: 'Count'}, beginAtZero: true}
-        }
-      }
-    });
-  }
-
   // Pie Chart: Product Sales
   drawCharts2() {
+    console.log(this.productTotalsArray);
     const labels = this.productTotalsArray.map(pt => `${pt.productName} (count ${pt.count})`);
     const counts = this.productTotalsArray.map(pt => pt.count);
 
@@ -372,7 +301,7 @@ export class AdmindashboardComponent {
             color: 'black'
           },
           title: {display: false, text: 'Product Sales Distribution'},
-          legend: {position: 'bottom', display: true}
+          legend: {position: 'top', display: true}
         },
         cutout: '30%' // makes it donut
       }

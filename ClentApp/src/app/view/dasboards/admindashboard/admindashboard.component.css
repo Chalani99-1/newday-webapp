@@ -106,11 +106,11 @@ mat-card-header {
 }
 
 #card-5 mat-card-content {
-  background-color: var(--color-accent) !important;
+  /*background-color: var(--color-accent) !important;*/
 }
 
 #detail-outer {
-    padding-top: 5px;
+  padding-top: 5px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -120,7 +120,7 @@ mat-card-header {
 }
 
 #detail-container {
-  background-color: var(--color-accent) !important;
+  /*background-color: var(--color-accent) !important;*/
   padding: 2px;
   margin: 2px;
   display: flex;

@@ -20,7 +20,7 @@ public interface ClientOrderVsProductDao extends JpaRepository<ClientOrderVsProd
 //                 List<ClientOrderVsProducts> clientOrderVsProductsdate();
 
         @Query
-        ("SELECT new ClientOrderVsProducts (co.number,p.name,op.amount,op.completed) " +
+        ("SELECT new ClientOrderVsProducts (co.number,p.name,p.code,op.amount,op.completed) " +
                 "FROM Orderproduct op,Clientorder co,Product p " +
                 "WHERE co.id=op.clientorder.id " +
                 "AND p.id=op.product.id")

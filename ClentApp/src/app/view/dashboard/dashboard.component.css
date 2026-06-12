@@ -1,3 +1,9 @@
+#box {
+  color: red;
+  background-color: black;
+  height: 100%;
+}
+
 
 mat-card {
   width: 100%;
@@ -11,7 +17,6 @@ mat-card-content {
 }
 
 
-
 .csearch mat-card-content {
   padding-top: 30px;
 
@@ -22,28 +27,31 @@ mat-card-content {
   width: 230px;
 }
 
-#frm-group{
+#frm-group {
   margin-bottom: 30px;
   text-align: center;
 }
 
-#table-top{
+#table-top {
   padding-top: 0px;
   margin-bottom: 10px;
 }
+
 canvas {
-  height: 95% !important;   /* override default */
+  height: 95% !important; /* override default */
   width: auto !important;
 }
-.first-card{
+
+.first-card {
   width: 100% !important;
 }
 
 @media screen and (max-width: 1366px) {
   canvas {
-    height: 100% !important;   /* override default */
+    height: 100% !important; /* override default */
     width: auto !important;
   }
+
   .csearch mat-form-field {
     padding-left: 15px;
     width: 150px;
