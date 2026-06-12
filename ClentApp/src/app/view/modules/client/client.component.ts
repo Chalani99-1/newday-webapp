@@ -18,6 +18,12 @@ import {BreakpointObserver} from "@angular/cdk/layout";
 import {Regexconst} from "../../../util/regexconst";
 import {ConfirmComponent} from "../../../util/dialog/confirm/confirm.component";
 import {MessageComponent} from "../../../util/dialog/message/message.component";
+import {Materialcategoryservice} from "../../../service/materialcategoryservice";
+import {Mcsizeservice} from "../../../service/mcsizeservice";
+import {Materialtypeservice} from "../../../service/materialtypeservice";
+import {Materialcategory} from "../../../entity/materialcategory";
+import {Materialtype} from "../../../entity/materialtype";
+import {Mcsize} from "../../../entity/mcsize";
 
 @Component({
   selector: 'app-client',
@@ -27,51 +33,52 @@ import {MessageComponent} from "../../../util/dialog/message/message.component";
 export class ClientComponent {
 
   @ViewChild('myForm', {static: false}) myForm!: ElementRef;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   enaadd: boolean = false;
   enaupd: boolean = false;
   enadel: boolean = false;
 
-  columns: string[] = ['name',  'state', 'status', 'email'];
-  headers: string[] = ['Name',  'State', 'Status', 'Email'];
-  binders: string[] = ['name',  'state.name', 'clientstatus.name', 'email'];
+  columns: string[] = ['name', 'state', 'status','telephone'];
+  headers: string[] = ['Name', 'State', 'Client Status','Contact Number'];
+  binders: string[] = ['name', 'state.name', 'clientstatus.name','telephone'];
 
-  cscolumns: string[] = ['csname', 'csstate', 'csstatus', 'csemail'];
-  csprompts: string[] = ['Search by Name', 'Search by State', 'Search by Status', 'Search by Email'];
+  cscolumns: string[] = ['csname', 'csstate', 'csstatus','cstelephone'];
+  csprompts: string[] = ['Search by Name', 'Search by State', 'Search by Status','Search by Contact Number'];
 
+  public csearch!: FormGroup;
   public form!: FormGroup;
   public ssearch!: FormGroup;
-  public csearch!: FormGroup;
 
-  clients: Array<Client> = [];
+  states:Array<State>=[];
+  clientstatuses:Array<Clientstatus>=[];
+  employees:Array<Employee>=[];
+  clients:Array<Client>=[];
+
   data!: MatTableDataSource<Client>;
+  client!:Client;
+  oldclient!:Client;
+
+  rowHeight = '1rem'
   imageurl: string = '';
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-
-  states: Array<State> =[];
-  employees: Array<Employee> =[];
-  clientstatuses: Array<Clientstatus> =[];
-
-  selectedrow: any;
-  client!: Client;
-  oldclient!: Client;
-
-  regexes: any;
-  uiassist: UiAssist;
   maxDate: Date = new Date();  // Today's date
 
-  rowHeight='1rem'
+  selectedrow: any;
+
+
+  uiassist: UiAssist;
 
   constructor(
     private cs: Clientservice,
+    private ss: Stateservice,
     private css: Clientstatusservice,
-    private fb: FormBuilder,
-    private db:MatDialog,
-    private ss:Stateservice,
-    private dp:DatePipe,
     private es:EmployeeService,
-    public authService:AuthorizationManager,
-    public breakpointObserver: BreakpointObserver) {
+    private fb: FormBuilder,
+    private db: MatDialog,
+    private dp: DatePipe,
+    public authService: AuthorizationManager,
+    private breakpointObserver: BreakpointObserver) {
+    //Changes row height depending on screen size.
     this.breakpointObserver
       .observe([
         '(max-width: 1366px)',
@@ -80,15 +87,15 @@ export class ClientComponent {
       ])
       .subscribe(result => {
         if (result.breakpoints['(max-width: 1366px)']) {
-          this.rowHeight = '0.85rem';
-        }else if (result.breakpoints['(min-width: 1367px) and (max-width: 1680px)']
+          this.rowHeight = '2.7rem';
+        } else if (result.breakpoints['(min-width: 1367px) and (max-width: 1680px)']
         ) {
-          this.rowHeight = '1.05rem';
-        }  else if (result.breakpoints['(min-width: 1681px) and (max-width: 1920px)']
+          this.rowHeight = '4.5rem';
+        } else if (result.breakpoints['(min-width: 1681px) and (max-width: 1920px)']
         ) {
-          this.rowHeight = '1.33rem';
+          this.rowHeight = '5.2em';
         } else {
-          this.rowHeight = '1.6rem'; // fallback for larger screens
+          this.rowHeight = '5.5rem'; // fallback for larger screens
         }
       });
 
@@ -98,13 +105,13 @@ export class ClientComponent {
       'csname': new FormControl(),
       'csstate': new FormControl(),
       'csstatus': new FormControl(),
-      'csemail': new FormControl()
+      'cstelephone': new FormControl(),
     });
 
     this.ssearch = this.fb.group({
-      'ssname': new FormControl(),
-      'ssstatus': new FormControl(),
-      'ssstate': new FormControl(),
+      "ssname": new FormControl(),
+      "ssstatus": new FormControl(),
+      "ssstate": new FormControl()
     });
 
     this.form = this.fb.group({
@@ -114,10 +121,9 @@ export class ClientComponent {
       "telephone": new FormControl('', [Validators.required]),
       "email": new FormControl('', [Validators.required]),
       "clientstatus": new FormControl('', [Validators.required]),
-      "doregister": new FormControl( new Date(), [Validators.required]),
-      "employee": new FormControl('', [Validators.required])
+      "doregister": new FormControl('', [Validators.required]),
+      "employee": new FormControl('', [Validators.required]),
     });
-
   }
 
   ngOnInit() {
@@ -128,38 +134,60 @@ export class ClientComponent {
 
     this.createView();
 
-    this.ss.getAllList().then((stss: State[]) => {
-      this.states = stss;
-    });
-
-    this.css.getAllList().then((cntsts: Clientstatus[]) => {
-      this.clientstatuses = cntsts;
-    });
-
-    this.es.getAll('').then((empss: Employee[]) => {
-      this.employees = empss;
-    });
-
-    this.cs.getAllClients().then((regs: Client[]) => {
-      this.clients = regs;
-
+    this.cs.getAll('').then((css: Client[]) => {
+      this.clients = css;
       this.createForm();
-    })
+    });
+
+    this.ss.getAllList().then((sss: State[]) => {
+      this.states = sss;
+    });
+
+    this.css.getAllList().then((csss: Clientstatus[]) => {
+      this.clientstatuses = csss;
+    });
+
+    this.es.getAll('').then((ess: Employee[]) => {
+      this.employees = ess;
+    });
+
   }
+
 
   createView() {
     this.loadTable("");
   }
 
+  loadTable(query: string) {
+
+    this.cs.getAll(query)
+      .then((clnts: Client[]) => {
+        this.clients = clnts;
+        this.imageurl = 'assets/fullfilled.png';
+        // console.log(this.clients);
+      })
+      .catch((error) => {
+        console.log(error);
+        this.imageurl = 'assets/fullfilled.png';
+      })
+      .finally(() => {
+        this.data = new MatTableDataSource(this.clients);
+        // console.log(this.data);
+        this.data.paginator = this.paginator;
+      });
+
+  }
+
   createForm() {
+    //Adds validators
     this.form.controls['state'].setValidators([Validators.required]);
-    this.form.controls['name'].setValidators([Validators.required, Validators.pattern(Regexconst.nameRegex)]);
-    this.form.controls['address'].setValidators([Validators.required,  Validators.pattern(Regexconst.addressRegex)]);
+    this.form.controls['name'].setValidators([Validators.required, Validators.pattern(Regexconst.supNameRegex)]);
+    this.form.controls['address'].setValidators([Validators.required, Validators.pattern(Regexconst.addressRegex)]);
     this.form.controls['telephone'].setValidators([Validators.required, Validators.pattern(Regexconst.phoneNumberRegex)]);
-    this.form.controls['email'].setValidators([Validators.required, Validators.pattern(Regexconst.emailRegex)]);
+    this.form.controls['email'].setValidators([Validators.required]);
     this.form.controls['clientstatus'].setValidators([Validators.required]);
     this.form.controls['doregister'].setValidators([Validators.required]);
-    this.form.controls['employee'].setValidators([Validators.required]);
+    this.form.controls['email'].setValidators([Validators.required, Validators.pattern(Regexconst.emailRegex)]);
 
     Object.values(this.form.controls).forEach(control => {
       control.markAsUntouched();
@@ -168,10 +196,12 @@ export class ClientComponent {
 
     for (const controlName in this.form.controls) {
       const control = this.form.controls[controlName];
+      //Checks whether field changed compared to original data.
       control.valueChanges.subscribe(value => {
-          // @ts-ignore
-          if (controlName == "doregister")
-            value = this.dp.transform(new Date(value), 'yyyy-MM-dd');
+
+        // @ts-ignore
+        if (controlName == "doregister")
+          value = this.dp.transform(new Date(value), 'yyyy-MM-dd');
 
           if (this.oldclient != undefined && control.valid) {
             // @ts-ignore
@@ -196,97 +226,38 @@ export class ClientComponent {
     this.enadel = del;
   }
 
-  loadTable(query: string) {
-
-    this.cs.getAll(query)
-      .then((clnt: Client[]) => {
-        this.clients = clnt;
-        // console.log(this.clients);
-        this.imageurl = 'assets/fullfilled.png';
-      })
-      .catch((error) => {
-        console.log(error);
-        this.imageurl = 'assets/rejected.png';
-      })
-      .finally(() => {
-        this.data = new MatTableDataSource(this.clients);
-        // console.log(this.data);
-        this.data.paginator = this.paginator;
-      });
-  }
-
   filterTable(): void {
 
     const cserchdata = this.csearch.getRawValue();
 
-    this.data.filterPredicate = (client: Client, filter: string) => {
-      return (cserchdata.csname == null || client.name.toLowerCase().includes(cserchdata.csname)) &&
-        (cserchdata.csstate == null || client.state.name.toLowerCase().includes(cserchdata.csstate)) &&
-        (cserchdata.csstatus == null || client.clientstatus.name.toLowerCase().includes(cserchdata.csstatus)) &&
-        (cserchdata.csemail == null || client.email.toLowerCase().includes(cserchdata.csemail));
+    this.data.filterPredicate = (c: Client, filter: string) => {
+      return (cserchdata.csname == null || c.name.toLowerCase().includes(cserchdata.csname)) &&
+        (cserchdata.csstate == null || c.state.name.toLowerCase().includes(cserchdata.csstate)) &&
+        (cserchdata.csstatus == null || c.clientstatus.name.toLowerCase().includes(cserchdata.csstatus)) &&
+        (cserchdata.cstelephone == null || c.telephone.toLowerCase().includes(cserchdata.cstelephone))
     };
     this.data.filter = 'xx';
   }
 
-  btnSearchMc() {
-    const ssearchdata = this.ssearch.getRawValue();
-
-    let name = ssearchdata.ssname;
-    let status = ssearchdata.ssstatus;
-    let state = ssearchdata.ssstate;
-
-    let query = "";
-
-    if (name != null && name.trim() != "") query = query + "&name=" + name;
-    if (state != null ) query = query + "&stateid=" + state;
-    if (status != null && status.toString().trim() != "") query = query + "&statusId=" + status;
-    // console.log("before " + query)
-    if (query != "") query = query.replace(/^./, "?")
-    // console.log("after " + query)
-    this.loadTable(query);
-  }
-
-  btnSearchClearMc(): void {
-
-    const confirm = this.db.open(ConfirmComponent, {
-      width: '500px',
-      data: {heading: "Search Clear", message: "Are you sure to Clear the Search?"}
-    });
-
-    confirm.afterClosed().subscribe(async result => {
-      if (result) {
-        this.ssearch.reset();
-        this.loadTable("");
-      }
-    });
-  }
-
-  fillForm(client: Client) {
+  fillForm(clnt: Client) {
 
     // this.enableButtons(false,true,true);
-    this.selectedrow = client;
+    this.selectedrow = clnt;
 
-    this.client = JSON.parse(JSON.stringify(client));
-    this.oldclient = JSON.parse(JSON.stringify(client));
+    this.client = JSON.parse(JSON.stringify(clnt));
+    this.oldclient = JSON.parse(JSON.stringify(clnt));
 
-    this.ss.getAllList().then((st: State[]) => {
-      this.states = st;
-      //@ts-ignore
-      this.client.state = this.states.find(st => st.id === this.client.state.id);
-      //@ts-ignore
-      this.client.clientstatus = this.clientstatuses.find(cs => cs.id === this.client.clientstatus.id);
+    //@ts-ignore
+    this.client.state = this.states.find(s => s.id === this.client.state.id);
 
-      //@ts-ignore
+    //@ts-ignore
+    this.client.clientstatus = this.clientstatuses.find(cs => cs.id === this.client.clientstatus.id);
 
-      //@ts-ignore
-      this.client.employee = this.employees.find(e => e.id === this.client.employee.id);
-      // console.log( this.client.employeeEntered);
+    //@ts-ignore
+    this.client.employee = this.employees.find(e => e.id === this.client.employee.id);
 
-      this.form.patchValue(this.client);
-
-      this.form.markAsPristine();
-      this.enableButtons(false, true, true);
-    });
+    this.enableButtons(false, true, true);
+    this.form.patchValue(this.client);
   }
 
   getUpdates(): string {
@@ -308,34 +279,12 @@ export class ClientComponent {
     for (const controlName in this.form.controls) {
       const control = this.form.controls[controlName];
       if (control.errors) {
-
-        if (this.regexes[controlName] != undefined) {
-          errors = errors + "<br>" + this.regexes[controlName]['message'];
-        } else {
-          errors = errors + "<br>Invalid " + controlName;
-        }
+        errors = errors + "<br>Invalid " + controlName;
       }
     }
-
     return errors;
   }
 
-
-  clear(): void {
-    const confirm = this.db.open(ConfirmComponent, {
-      width: '500px',
-      data: {
-        heading: "Confirmation - Client Clear",
-        message: "Are you sure to Clear following Details ? <br> <br>"
-      }
-    });
-
-    confirm.afterClosed().subscribe( result => {
-      if (result) {
-        this.resetForms();
-      }
-    });
-  }
 
   add() {
 
@@ -354,20 +303,18 @@ export class ClientComponent {
     } else {
 
       this.client = this.form.getRawValue();
-      console.log(this.client);
       // @ts-ignore
       this.client.doregister = this.dp.transform(this.client.doregister, "yyyy-MM-dd");
 
-      let clntdata: string = "";
-
-      clntdata = clntdata + "<br>Name is : " + this.client.name;
-      clntdata = clntdata + "<br>State is : " + this.client.state.name;
+      let matdata: string = "";
+      matdata = matdata + "<br>Name is : " + this.client.name;
+      matdata = matdata + "<br>State is : " + this.client.state.name;
 
       const confirm = this.db.open(ConfirmComponent, {
         width: '500px',
         data: {
           heading: "Confirmation - Client Add",
-          message: "Are you sure to Add the following Client? <br> <br>" + clntdata
+          message: "Are you sure to Add the following Client? <br> <br>" + matdata
         }
       });
 
@@ -376,7 +323,6 @@ export class ClientComponent {
 
       confirm.afterClosed().subscribe(async result => {
         if (result) {
-
           this.cs.add(this.client).then((responce: [] | undefined) => {
             // console.log("Res-" + responce);
             if (responce != undefined) { // @ts-ignore
@@ -405,7 +351,7 @@ export class ClientComponent {
 
             const stsmsg = this.db.open(MessageComponent, {
               width: '500px',
-              data: {heading: "Status -Client Add", message: addmessage }
+              data: {heading: "Status -Client Add", message: addmessage}
             });
 
             stsmsg.afterClosed().subscribe(async result => {
@@ -422,6 +368,7 @@ export class ClientComponent {
   update() {
 
     let errors = this.getErrors();
+
     if (errors != "") {
 
       const errmsg = this.db.open(MessageComponent, {
@@ -447,15 +394,14 @@ export class ClientComponent {
           width: '500px',
           data: {
             heading: "Confirmation - Client Update",
-            message: "Are you sure to Save following Updates? <br> <br>" + updates
+            message: "Are you sure to Save folowing Updates? <br> <br>" + updates
           }
         });
         confirm.afterClosed().subscribe(async result => {
           if (result) {
-
             this.client = this.form.getRawValue();
             this.client.id = this.oldclient.id;
-            // console.log(this.client);
+
             this.cs.update(this.client).then((responce: [] | undefined) => {
               //console.log("Res-" + responce);
               // console.log("Un-" + responce == undefined);
@@ -476,15 +422,13 @@ export class ClientComponent {
               if (updstatus) {
                 updmessage = "Successfully Updated";
                 this.resetForms();
-
-                this.loadTable("");
+                this.loadTable("")
               }
 
               const stsmsg = this.db.open(MessageComponent, {
                 width: '500px',
                 data: {heading: "Status -Client Update", message: updmessage}
               });
-
               stsmsg.afterClosed().subscribe(async result => {
                 if (result) {
                   return;
@@ -494,6 +438,7 @@ export class ClientComponent {
             });
           }
         });
+
       } else {
 
         const updmsg = this.db.open(MessageComponent, {
@@ -508,6 +453,44 @@ export class ClientComponent {
 
       }
     }
+
+  }
+
+
+  resetForms() {
+
+    const form = this.myForm.nativeElement as HTMLFormElement;
+    form.reset();
+    // Reset the form controls
+    Object.values(this.form.controls).forEach(control => {
+      control.markAsPristine();
+      control.markAsUntouched();
+    });
+
+    this.selectedrow = null;
+    // @ts-ignore
+    this.client = null;
+    // @ts-ignore
+    this.oldclient = null;
+
+    this.enableButtons(true, false, false);
+  }
+
+
+  clear(): void {
+    const confirm = this.db.open(ConfirmComponent, {
+      width: '500px',
+      data: {
+        heading: "Confirmation - Client Clear",
+        message: "Are you sure to Clear following Details ? <br> <br>"
+      }
+    });
+
+    confirm.afterClosed().subscribe(result => {
+      if (result) {
+        this.resetForms();
+      }
+    });
   }
 
   delete() {
@@ -562,23 +545,41 @@ export class ClientComponent {
   }
 
 
-  resetForms() {
+  btnSearchMc(): void {
+    const sserchdata = this.ssearch.getRawValue();
+    console.log(sserchdata)
+    let name = sserchdata.ssname;
+    let status = sserchdata.ssstatus;
+    let state = sserchdata.ssstate;
 
-    const form = this.myForm.nativeElement as HTMLFormElement;
-    form.reset();
-    // Reset the form controls
-    Object.values(this.form.controls).forEach(control => {
-      control.markAsPristine();
-      control.markAsUntouched();
+    //console.log("cn : "+c)
+    // console.log((name));
+    // console.log(state);
+    // console.log(status);
+    let query = "";
+
+    if (name!= null && name.trim() !== "") query = query + "&name=" + name;
+    if (state != null) query = query + "&stateid=" + state;
+    if (status != null) query = query + "&statusId=" + status;
+    // console.log("before " + query)
+    if (query != "") query = query.replace(/^./, "?")
+    console.log("after " + query)
+    this.loadTable(query);
+  }
+
+  btnSearchClearMc(): void {
+
+    const confirm = this.db.open(ConfirmComponent, {
+      width: '500px',
+      data: {heading: "Search Clear", message: "Are you sure to Clear the Search?"}
     });
-    this.form.controls['doregister'].setValue(new Date());
 
-    this.selectedrow=null;
-    // @ts-ignore
-    this.client=null;
-    // @ts-ignore
-    this.oldclient=null;
+    confirm.afterClosed().subscribe(async result => {
+      if (result) {
+        this.ssearch.reset();
+        this.loadTable("");
+      }
+    });
 
-    this.enableButtons(true, false, false);
   }
-  }
+}

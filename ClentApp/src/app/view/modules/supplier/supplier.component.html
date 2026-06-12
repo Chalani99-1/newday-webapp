@@ -1,3 +1,4 @@
+
 <mat-grid-list [cols]="12" class="component-background"  [rowHeight]="rowHeight">
 
   <mat-grid-tile [colspan]="4" [rowspan]="38">
@@ -210,3 +211,228 @@
 
 
 </mat-grid-list>
+
+
+
+
+
+<!--<mat-grid-list [cols]="12" class="component-background"  [rowHeight]="rowHeight">-->
+
+
+<!--  <mat-grid-tile [colspan]="5" [rowspan]="39">-->
+<!--    <mat-card>-->
+<!--      <mat-card-header>-->
+<!--        Client Detail-->
+<!--      </mat-card-header>-->
+<!--      <mat-card-content id="clientform">-->
+<!--        <form #myForm [formGroup]="form">-->
+
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>State</mat-label>-->
+<!--            <mat-select formControlName="state">-->
+<!--              <mat-option selected>Not Selected</mat-option>-->
+<!--              <mat-option *ngFor="let state of states" [value]="state">{{ state.name }}</mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Name</mat-label>-->
+<!--            <input matInput formControlName="name">-->
+<!--          </mat-form-field>-->
+
+<!--          <div id="innertable">-->
+<!--            <form #myInnerForm [formGroup]="innerform">-->
+
+<!--              <mat-form-field appearance="outline">-->
+<!--                <mat-label>Material Category</mat-label>-->
+<!--                <mat-select formControlName="materialcategory" [compareWith]="compareMaterialCategory">-->
+<!--                  <mat-option [value]="null" selected>Not Selected</mat-option>-->
+<!--                  <mat-option *ngFor="let materialcategory of materialcategories" [value]="materialcategory">{{ materialcategory.name}}-->
+<!--                  </mat-option>-->
+<!--                </mat-select>-->
+<!--              </mat-form-field>-->
+
+<!--              <button mat-raised-button id="btnAdd" (click)="btnaddMc()" [disabled]="!enaInnerAdd">Add</button>-->
+<!--&lt;!&ndash;              <button mat-raised-button id="btnUpdate" (click)="btnupdateMc()" [disabled]="!enaInnerUpdate">Update&ndash;&gt;-->
+<!--&lt;!&ndash;              </button>&ndash;&gt;-->
+<!--&lt;!&ndash;              <button mat-raised-button id="btnDelete" (click)="btndeleteMc()" [disabled]="!enaInnerUpdate">Clear&ndash;&gt;-->
+<!--&lt;!&ndash;              </button>&ndash;&gt;-->
+
+<!--            </form>-->
+
+<!--            <mat-table *ngIf="innerTableLoad" id="tableInner" [dataSource]="intdata">-->
+<!--              <ng-container *ngFor="let column of incolumns;let i = index;" [matColumnDef]="column">-->
+<!--                <mat-header-cell *matHeaderCellDef> {{ inheaders[i] }}</mat-header-cell>-->
+<!--                <mat-cell *matCellDef="let element">-->
+<!--                  <div *ngIf="i<inbinders.length-1" [innerHTML]="uiassist.getProperty(element, inbinders[i])"></div>-->
+<!--                  <div *ngIf="i>=inbinders.length-1">-->
+<!--                    <button mat-raised-button id="removeBtn" (click)="deleteRaw(element)">Remove</button>-->
+<!--                  </div>-->
+<!--                </mat-cell>-->
+<!--              </ng-container>-->
+
+<!--              <mat-header-row *matHeaderRowDef="incolumns"></mat-header-row>-->
+<!--              &lt;!&ndash;              <mat-row *matRowDef="let row; columns: incolumns"></mat-row>&ndash;&gt;-->
+<!--              <mat-row *matRowDef="let row; columns: incolumns;" (click)="fillInnerForm(row)"-->
+<!--                       [ngClass]="{'selected-row': row === selectedrow}"></mat-row>-->
+
+<!--            </mat-table>-->
+
+<!--          </div>-->
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Address</mat-label>-->
+<!--            <input matInput formControlName="address">-->
+<!--          </mat-form-field>-->
+
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Telephone</mat-label>-->
+<!--            <input matInput formControlName="telephone">-->
+<!--          </mat-form-field>-->
+
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Email</mat-label>-->
+<!--            <input matInput formControlName="email">-->
+<!--          </mat-form-field>-->
+
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Supplier Status</mat-label>-->
+<!--            <mat-select formControlName="supplierstatus">-->
+<!--              <mat-option selected>Not Selected</mat-option>-->
+<!--              <mat-option *ngFor="let supplierstatus of supplierstatuses" [value]="supplierstatus">{{ supplierstatus.name }}</mat-option>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Description</mat-label>-->
+<!--            <input matInput formControlName="description">-->
+<!--          </mat-form-field>-->
+
+<!--          <mat-form-field appearance="outline">-->
+<!--            <mat-label>Date od Register</mat-label>-->
+<!--            <input matInput [matDatepicker]="itdate" formControlName="doregister" [max]="maxDate">-->
+<!--            <mat-datepicker-toggle matIconSuffix [for]="itdate"></mat-datepicker-toggle>-->
+<!--            <mat-datepicker #itdate></mat-datepicker>-->
+<!--          </mat-form-field>-->
+
+<!--        </form>-->
+<!--      </mat-card-content>-->
+<!--    </mat-card>-->
+<!--  </mat-grid-tile>-->
+
+<!--  <mat-grid-tile [colspan]="7" [rowspan]="13">-->
+<!--    <mat-card id="ssearch">-->
+<!--      <mat-card-header>-->
+<!--        Client Search-->
+<!--      </mat-card-header>-->
+<!--      <mat-card-content id="ssearch-content">-->
+<!--        <mat-form [formGroup]="ssearch">-->
+
+<!--        </mat-form>-->
+<!--      </mat-card-content>-->
+<!--    </mat-card>-->
+<!--  </mat-grid-tile>-->
+
+<!--  <mat-grid-tile id="table" [colspan]="7" [rowspan]="25">-->
+<!--    <mat-card>-->
+<!--      <mat-card-header>-->
+<!--        Client Table-->
+<!--      </mat-card-header>-->
+<!--    </mat-card>-->
+<!--  </mat-grid-tile>-->
+
+<!--</mat-grid-list>-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

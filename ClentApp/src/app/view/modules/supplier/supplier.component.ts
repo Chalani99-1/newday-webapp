@@ -26,6 +26,15 @@ import {Productrawmaterial} from "../../../entity/productrawmaterial";
 import {Materialtype} from "../../../entity/materialtype";
 import {Materialtypeservice} from "../../../service/materialtypeservice";
 import {BreakpointObserver} from "@angular/cdk/layout";
+import {Clientservice} from "../../../service/clientservice";
+import {Clientstatusservice} from "../../../service/clientstatusservice";
+import {EmployeeService} from "../../../service/employeeservice";
+import {Materialcategoryservice} from "../../../service/materialcategoryservice";
+import {Client} from "../../../entity/client";
+import {Clientstatus} from "../../../entity/clientstatus";
+import {Employee} from "../../../entity/employee";
+import {Purchaseorder} from "../../../entity/purchaseorder";
+import {Poitem} from "../../../entity/poitem";
 
 @Component({
   selector: 'app-supplier',
@@ -33,6 +42,364 @@ import {BreakpointObserver} from "@angular/cdk/layout";
   styleUrls: ['./supplier.component.css']
 })
 export class SupplierComponent {
+
+  // @ViewChild('myForm', {static: false}) myForm!: ElementRef;
+  // @ViewChild(MatPaginator) paginator!: MatPaginator;
+  //
+  // columns: string[] = ['name', 'state','telephone','supplierstatus'];
+  // headers: string[] = ['Name', 'State','Contact Number','Supplier Status'];
+  // binders: string[] = ['name', 'state.name','telephone','supplierstatus'];
+  //
+  // cscolumns: string[] = ['csname', 'csstate','cstelephone','cssupplierstatus'];
+  // csprompts: string[] = ['Search by Name', 'Search by State','Search by Contact Number','Search by Supplier Status'];
+  //
+  // incolumns: string[] = ['materialcategory','remove'];
+  // inheaders: string[] = ['Material Category','Remove'];
+  // inbinders: string[] = ['materialcategory.name','getBtn()'];
+  //
+  // enaadd: boolean = false;
+  // enaupd: boolean = false;
+  // enadel: boolean = false;
+  //
+  // enaInnerUpdate: boolean = false;
+  // enaInnerAdd: boolean = false;
+  //
+  // public csearch!: FormGroup;
+  // public form!: FormGroup;
+  // public ssearch!: FormGroup;
+  // public innerform!: FormGroup;
+  //
+  // states:Array<State>=[];
+  // supplierstatuses:Array<Supplierstatus>=[];
+  // suppliers:Array<Supplier>=[];
+  // suppliermaterialcategories:Array<Suppliermaterialcategory>=[];
+  // oldsuppliermaterialcategories:Array<Suppliermaterialcategory>=[];
+  //
+  // materialcategories:Array<Materialcategory>=[];
+  // oldmaterialcategories:Array<Materialcategory>=[];
+  //
+  // data!:MatTableDataSource<Supplier>;
+  // intdata!:MatTableDataSource<Suppliermaterialcategory>;
+  // supplier!:Supplier;
+  // oldsupplier!:Supplier;
+  // suppliermaterialcategory!:Suppliermaterialcategory;
+  // oldsuppliermaterialcategoy!:Suppliermaterialcategory;
+  //
+  // rowHeight = '1rem'
+  // innerTableLoad: boolean = false;
+  // id = 0;
+  // filterFlag = true;
+  //
+  // imageurl: string = '';
+  // maxDate: Date = new Date();  // Today's date
+  //
+  // selectedrow: any;
+  //
+  // uiassist: UiAssist;
+  //
+  // constructor(
+  //   private sups: Supplierservice,
+  //   private ss: Stateservice,
+  //   private supss: Supplierstatusservice,
+  //   private mcs:Materialcategoryservice,
+  //   private fb: FormBuilder,
+  //   private db: MatDialog,
+  //   private dp: DatePipe,
+  //   public authService: AuthorizationManager,
+  //   private breakpointObserver: BreakpointObserver) {
+  //   //Changes row height depending on screen size.
+  //   this.breakpointObserver
+  //     .observe([
+  //       '(max-width: 1366px)',
+  //       '(min-width: 1367px) and (max-width: 1680px)',
+  //       '(min-width: 1681px) and (max-width: 1920px)'
+  //     ])
+  //     .subscribe(result => {
+  //       if (result.breakpoints['(max-width: 1366px)']) {
+  //         this.rowHeight = '2.7rem';
+  //       } else if (result.breakpoints['(min-width: 1367px) and (max-width: 1680px)']
+  //       ) {
+  //         this.rowHeight = '4.5rem';
+  //       } else if (result.breakpoints['(min-width: 1681px) and (max-width: 1920px)']
+  //       ) {
+  //         this.rowHeight = '5.2em';
+  //       } else {
+  //         this.rowHeight = '5.5rem'; // fallback for larger screens
+  //       }
+  //     });
+  //
+  //   this.uiassist = new UiAssist(this);
+  //
+  //   this.csearch = this.fb.group({
+  //     'csname': new FormControl(),
+  //     'csstate': new FormControl(),
+  //     'cstelephone': new FormControl(),
+  //     'cssupplierstatus': new  FormControl()
+  //   });
+  //
+  //   this.ssearch = this.fb.group({
+  //     "ssname": new FormControl(),
+  //     "sssupplierstatus": new FormControl(),
+  //     "ssstate": new FormControl(),
+  //     "ssmatcat": new FormControl()
+  //   });
+  //
+  //   this.form = this.fb.group({
+  //     "state": new FormControl('', [Validators.required]),
+  //     "name": new FormControl('', [Validators.required]),
+  //     "address": new FormControl('', [Validators.required]),
+  //     "telephone": new FormControl('', [Validators.required]),
+  //     "email": new FormControl('', [Validators.required]),
+  //     "supplierstatus": new FormControl('', [Validators.required]),
+  //     "description": new FormControl('', [Validators.required]),
+  //     "doregister": new FormControl('', [Validators.required]),
+  //   });
+  //
+  //   this.innerform = this.fb.group({
+  //     "materialcategory": new FormControl('',[Validators.required])
+  //   });
+  // }
+  //
+  // getBtn(element: Supplier) {
+  //   return `<button mat-raised-button>Remove</button>`;
+  // }
+  //
+  // ngOnInit() {
+  //   this.initialize();
+  // }
+  //
+  // initialize() {
+  //
+  //   this.createView();
+  //
+  //   this.sups.getAll('').then((supls: Supplier[]) => {
+  //     this.suppliers = supls;
+  //     this.createForm();
+  //   });
+  //
+  //   this.ss.getAllList().then((sss: State[]) => {
+  //     this.states = sss;
+  //   });
+  //
+  //   this.supss.getAllList().then((csss: Supplierstatus[]) => {
+  //     this.supplierstatuses = csss;
+  //   });
+  //
+  //   this.mcs.getAllList().then((mtcs: Materialcategory[]) => {
+  //     this.materialcategories = mtcs;
+  //     this.oldmaterialcategories =mtcs;
+  //   });
+  //
+  // }
+  //
+  // createView() {
+  //   this.loadTable("");
+  // }
+  //
+  // loadTable(query: string) {
+  //
+  //   this.sups.getAll(query)
+  //     .then((sps: Supplier[]) => {
+  //       this.suppliers = sps;
+  //       this.imageurl = 'assets/fullfilled.png';
+  //       // console.log(this.clients);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //       this.imageurl = 'assets/fullfilled.png';
+  //     })
+  //     .finally(() => {
+  //       this.data = new MatTableDataSource(this.suppliers);
+  //       // console.log(this.data);
+  //       this.data.paginator = this.paginator;
+  //     });
+  // }
+  //
+  // createForm() {
+  //   this.innerform.controls['materialcategory'].setValidators([Validators.required]);
+  //   //Adds validators
+  //   this.form.controls['state'].setValidators([Validators.required]);
+  //   this.form.controls['name'].setValidators([Validators.required, Validators.pattern(Regexconst.supNameRegex)]);
+  //   this.form.controls['address'].setValidators([Validators.required, Validators.pattern(Regexconst.addressRegex)]);
+  //   this.form.controls['telephone'].setValidators([Validators.required, Validators.pattern(Regexconst.phoneNumberRegex)]);
+  //   this.form.controls['email'].setValidators([Validators.required]);
+  //   this.form.controls['supplierstatus'].setValidators([Validators.required]);
+  //   this.form.controls['description'].setValidators([Validators.required, Validators.pattern(Regexconst.descriptionRegex)]);
+  //   this.form.controls['doregister'].setValidators([Validators.required]);
+  //
+  //   Object.values(this.form.controls).forEach(control => {
+  //     control.markAsUntouched();
+  //     control.markAsPristine();
+  //   });
+  //
+  //   for (const controlName in this.form.controls) {
+  //     const control = this.form.controls[controlName];
+  //     //Checks whether field changed compared to original data.
+  //     control.valueChanges.subscribe(value => {
+  //
+  //         // @ts-ignore
+  //         if (controlName == "doregister")
+  //           value = this.dp.transform(new Date(value), 'yyyy-MM-dd');
+  //
+  //         if (this.oldsupplier != undefined && control.valid) {
+  //           // @ts-ignore
+  //           if (value === this.client[controlName]) {
+  //             control.markAsPristine();
+  //           } else {
+  //             control.markAsDirty();
+  //           }
+  //         } else {
+  //           control.markAsPristine();
+  //         }
+  //       }
+  //     );
+  //
+  //   }
+  //   this.enableButtons(true, false, false);
+  // }
+  //
+  // enableButtons(add: boolean, upd: boolean, del: boolean) {
+  //   this.enaadd = add;
+  //   this.enaupd = upd;
+  //   this.enadel = del;
+  // }
+  //
+  // compareMaterialCategory(r1: any, r2: any): boolean {
+  //   return r1 && r2 ? r1.id === r2.id : r1 === r2;
+  // }
+  //
+  // btnaddMc() {
+  //   let errors = ""
+  //   errors = this.getInnerErrors();
+  //
+  //   if (errors != "") {
+  //     const errmsg = this.db.open(MessageComponent, {
+  //       width: '500px',
+  //       data: {heading: "Errors ", message: "You have following Errors <br> " + errors}
+  //     });
+  //     errmsg.afterClosed().subscribe(async result => {
+  //       if (!result) {
+  //         return;
+  //       }
+  //     });
+  //   } else {
+  //     this.innerTableLoad = true;
+  //     const innerdata = this.innerform.getRawValue();
+  //
+  //     if (innerdata != null) {
+  //       // Calculate the line total
+  //
+  //       // Create a new Poitem
+  //       const supmc = new Suppliermaterialcategory(this.id, innerdata.materialcategory);
+  //
+  //       const existing = this.suppliermaterialcategories.find(po => po.materialcategory.id === supmc.materialcategory.id)
+  //
+  //       // Increment the ID for the next item
+  //       this.id++;
+  //
+  //       for (const controlName in this.innerform.controls) {
+  //         const control = this.innerform.controls[controlName];
+  //         control.clearValidators();  // temporarily remove validators
+  //         control.reset();
+  //         control.updateValueAndValidity();
+  //         control.markAsUntouched();
+  //         control.markAsPristine();
+  //       }
+  //       this.selectedrow = null;
+  //       this.innerform.controls['matwrialcategory'].setValidators([Validators.required]);
+  //     }
+  //   }
+  // }
+  //
+  // getInnerErrors(): string {
+  //
+  //   let errors: string = "";
+  //
+  //   for (const controlName in this.innerform.controls) {
+  //     const control = this.innerform.controls[controlName];
+  //     if (control.errors) errors = errors + "<br>Invalid " + controlName;
+  //   }
+  //
+  //   return errors;
+  // }
+  //
+  // deleteRaw(x: any) {
+  //   // this.indata.data = this.indata.data.reduce((element) => element.id !== x.id);
+  //
+  //   let datasources = this.intdata.data;
+  //
+  //   const index = datasources.findIndex(item => item.id === x.id);
+  //   // console.log(x.id);
+  //   // console.log(index)
+  //
+  //   if (index > -1) {
+  //     datasources.splice(index, 1);
+  //   }
+  //   this.intdata.data = datasources;
+  //   this.suppliermaterialcategories = this.intdata.data;
+  //
+  //
+  // }
+  //
+  // fillInnerForm(suppliermaterialcategory: any) {
+  //   this.filterFlag = false;
+  //   this.enaInnerUpdate = true;
+  //   this.enaInnerUpdate = true;
+  //   this.selectedrow = suppliermaterialcategory;
+  //
+  //   this.suppliermaterialcategory = JSON.parse(JSON.stringify(suppliermaterialcategory));
+  //   this.oldsuppliermaterialcategoy = JSON.parse(JSON.stringify(suppliermaterialcategory));
+  //   // @ts-ignore
+  //   this.suppliermaterialcategory = this.suppliermaterialcategories.find(p => p.id === this.suppliermaterialcategory.id);
+  //   this.innerform.controls["materialcategory"].setValue(this.suppliermaterialcategory.materialcategory.id);
+  //   this.innerform.patchValue(this.suppliermaterialcategory);
+  //
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   @ViewChild('myForm', {static: false}) myForm!: ElementRef;
 

@@ -19,6 +19,7 @@ export class DashboardComponent {
   role!: String;
   name!: String;
 
+  rowHeight = '1rem'
   constructor(private authService: AuthorizationManager,
               private us: UserService,
               ) {

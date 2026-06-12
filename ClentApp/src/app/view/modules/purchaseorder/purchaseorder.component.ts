@@ -1084,3 +1084,43 @@ export class PurchaseorderComponent {
 
 }
 
+
+// btnaddMc() {
+//   const innerdata = this.innerform.getRawValue();
+//
+//   if (innerdata != null) {
+//     let smc = this.innerform.controls["materialcategory"].getRawValue()
+//     // Add the new item to the existing list
+//
+//     this.suppliermaterialcategories.forEach(sm => {
+//       if (sm.materialcategory.id === smc.id) {
+//         this.alreadyAvailable = true;
+//       }
+//     })
+//     if (!this.alreadyAvailable) {
+//
+//       this.suppliermaterialcategories.push(new Suppliermaterialcategory(this.id, smc));
+//
+//       // Update the data source with the new list
+//       this.updateDataSource();
+//
+//       // Increment the ID for the next item
+//       this.id++;
+//
+//       // Reset the inner form
+//       this.innerform.reset();
+//       this.innerform.controls["materialcategory"].clearValidators();
+//
+//
+//       const innerForm = this.myInnerForm.nativeElement as HTMLFormElement;
+//       innerForm.reset();
+//     } else {
+//       this.innerform.controls["materialcategory"].markAsDirty();
+//       setTimeout(() => {
+//         this.alreadyAvailable = false;
+//       }, 3000)
+//     }
+//
+//
+//   }
+// }

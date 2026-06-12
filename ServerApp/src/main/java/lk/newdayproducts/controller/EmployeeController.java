@@ -1,8 +1,10 @@
 package lk.newdayproducts.controller;
 import lk.newdayproducts.dao.EmployeeDao;
 import lk.newdayproducts.entity.Employee;
+import lk.newdayproducts.entity.Productionorder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -19,6 +21,17 @@ public class EmployeeController {
     @Autowired
     private EmployeeDao employeedao;
 
+//    @GetMapping(path = "/number", produces = "application/json")
+//    public ResponseEntity<Integer> get() {
+//        int maxid = 0;
+//        List<Employee> exist = this.employeedao.findAll();
+//        if (!exist.isEmpty()) {
+//            maxid = this.employeedao.findMaxNumber();
+//        } else {
+//            maxid = 0;
+//        }
+//        return ResponseEntity.ok().body(maxid);
+//    }
     @GetMapping(produces = "application/json")
 //    @PreAuthorize("hasAuthority('employee-select')")
     public List<Employee> get(@RequestParam HashMap<String, String> params) {

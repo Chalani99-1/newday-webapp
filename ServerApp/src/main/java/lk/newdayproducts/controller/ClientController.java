@@ -35,7 +35,15 @@ public class ClientController {
         if (statusId != null) stream = stream.filter(s -> s.getClientstatus().getId()== Integer.parseInt(statusId));
         if (stateid != null) stream = stream.filter(s -> s.getState().getId()==Integer.parseInt(stateid));
 
+        System.out.println(
+                "Client Name: " + clientname +
+                        ", Status ID: " + statusId +
+                        ", State ID: " + stateid
+        );
+
         return stream.collect(Collectors.toList());
+
+
     }
 
     @PostMapping

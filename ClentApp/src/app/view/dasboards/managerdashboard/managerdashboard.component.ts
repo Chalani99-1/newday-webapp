@@ -41,6 +41,7 @@ export class ManagerdashboardComponent {
   rmImgUrl = 'assets/rawMaterialDefault.png';
 
   @ViewChild('piechart', {static: false}) piechart!: ElementRef<HTMLCanvasElement>;
+
   pieChartInstance!: Chart<'doughnut', number[], string>;
 
   //bar chart

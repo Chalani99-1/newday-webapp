@@ -47,6 +47,14 @@ export class EmployeeService {
     return this.http.post<[]>('http://localhost:8080/employees', employee).toPromise();
   }
 
+  // async getMaxNumber(): Promise<number> {
+  //   const number1 = await this.http.get<number>('http://localhost:8080/employees/number').toPromise();
+  //   if (number1 == undefined) {
+  //     return 0;
+  //   }
+  //   return number1;
+  // }
+
 }
 
 

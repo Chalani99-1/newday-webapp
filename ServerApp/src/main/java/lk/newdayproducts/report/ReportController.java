@@ -45,8 +45,8 @@ public class ReportController {
     private ExpenseOfPurchaseOrderByDateDao expenseofpurchaseorderbydatedao;
     @Autowired
     private PurchaseorderDao purchaseorderdao;
-//    @Autowired
-//    private ProductionVsAmountDao productionvsamountdao;
+    @Autowired
+    private ProductionVsAmountDao productionvsamountdao;
     @Autowired
     private ProfitByOrderByDateDao profitbyorderbydatedao;
     @Autowired
@@ -379,7 +379,7 @@ public class ReportController {
     @GetMapping(path = "/productionvsamount", produces = "application/json")
     public List<ProductionVsAmount> getProductionVsAmount() {
 
-//        List<ProductionVsAmount> expenses = productionvsamountdao.productionVsAmount();
+      List<ProductionVsAmount> expenses = productionvsamountdao.productionVsAmount();
 
         return null;
     }

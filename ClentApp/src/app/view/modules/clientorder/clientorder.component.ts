@@ -511,6 +511,10 @@ export class ClientorderComponent {
       this.oldOrderproducts = Array.from(this.clientOrder.orderproducts);
       this.oldClientOrder = JSON.parse(JSON.stringify(clientOrder));
 
+      //@ts-ignore
+      this.clientOrder.paidstatus = this.paidstatuses.find(ps => ps.id === this.clientOrder.paidstatus.id);
+
+
       if (this.clientOrder.receipt != null) {
         this.imageReceiptUrl = atob(this.clientOrder.receipt);
         this.form.controls['receipt'].clearValidators();

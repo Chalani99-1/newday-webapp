@@ -20,5 +20,7 @@ public interface EmployeeDao extends JpaRepository<Employee,Integer> {
     @Query("SELECT NEW Employee (e.id, e.callingname) FROM Employee e")
     List<Employee> findAllNameId();
 
+//    @Query("SELECT max(e.id) FROM Employee e")
+//    int findMaxNumber();
 }
 

@@ -32,7 +32,6 @@ export class AdmindashboardComponent {
 
   @ViewChild('linechart', {static: false}) linechart: any;
   @ViewChild('barchart', {static: false}) barchart: any;
-
   @ViewChild('piechart', {static: false}) piechart: any;
 
   lineChartInstance: Chart | null = null;

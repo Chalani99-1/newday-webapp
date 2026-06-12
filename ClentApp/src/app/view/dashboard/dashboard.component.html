@@ -1,2 +1,32 @@
-<p>git test</p>
+<mat-grid-list [cols]="12" class="component-background" [rowHeight]="rowHeight">
 
+  <mat-grid-tile [colspan]="6" [rowspan]="20">
+
+    <mat-card>
+      <mat-card-header>Profits By Client Orders</mat-card-header>
+
+<!--        <canvas baseChart-->
+<!--                [data]="pieChartData"-->
+<!--                [options]="pieChartOptions"-->
+<!--                [type]="'pie'">-->
+<!--        </canvas>-->
+
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="6" [rowspan]="20">
+
+    <mat-card class="dashboard second-diagram" >
+      <mat-card-header>Expense by Purchase Orders</mat-card-header>
+
+    </mat-card>
+  </mat-grid-tile>
+
+  <mat-grid-tile [colspan]="6" [rowspan]="20">
+
+    <mat-card class="dashboard third-diagram" >
+      <mat-card-header>Client Order Count By Date</mat-card-header>
+
+    </mat-card>
+  </mat-grid-tile>
+</mat-grid-list>
