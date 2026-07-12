@@ -1,8 +1,11 @@
 package lk.newdayproducts.controller;
 
+import lk.newdayproducts.dao.ClientDao;
 import lk.newdayproducts.dao.ClientorderDao;
 import lk.newdayproducts.dao.InvoiceDao;
 import lk.newdayproducts.dao.RawmaterialDao;
+import lk.newdayproducts.entity.Client;
+import lk.newdayproducts.entity.Clientorder;
 import lk.newdayproducts.entity.Invoice;
 import lk.newdayproducts.entity.Rawmaterial;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +30,11 @@ public class InvoiceController {
 
     @Autowired
     private ClientorderDao clientorderDao;
+
+    @Autowired
+    private ClientDao clentDao;
+    @Autowired
+    private ClientDao clientDao;
 
 //    @GetMapping(path = "/number", produces = "application/json")
 //    public ResponseEntity<Integer> get() {
@@ -75,6 +84,23 @@ public class InvoiceController {
         if (this.invoicedao.findByMyId(invoice.getId()) != null) errors = errors + "<br> Existing Invoice";
 
         if (errors == "") {
+            List<Clientorder> clientorders = clientorderDao.findAll();
+            List<Client> clients = clientDao.findAll();
+
+            for (Client client : clients) {
+                    int count=0;
+                for (Clientorder clientorder : clientorders) {
+                    if(client.getId().equals(clientorder.getClient().getId())) {
+                        count++;
+                    }
+                }
+
+                if(count>=2){
+                    invoice.setGrandtotal(invoice.getGrandtotal().multiply(new BigDecimal(0.9)));
+                }
+
+            }
+
             this.invoicedao.save(invoice);
         } else {
             errors = errors + "<br> Server Validation Errors :";

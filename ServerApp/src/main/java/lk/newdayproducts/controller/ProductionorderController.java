@@ -83,7 +83,10 @@ public class ProductionorderController {
         List<NotifyResponse> porders = new ArrayList<>();
         for (Productionorder s : incomplete) {
             porders.add(
-                    new NotifyResponse(s.getOrdernumber() + " of Client Order : -   " + s.getClientorder().getNumber()));
+                    new NotifyResponse(
+                         "Please Complete the order : " +  s.getOrdernumber() + " of Client Order : -   " + s.getClientorder().getNumber()+
+                          " as it expected before "+ s.getDorequired().toString() ) );
+
         }
         if (params.isEmpty()) return porders;
         Stream<NotifyResponse> postream = porders.stream();

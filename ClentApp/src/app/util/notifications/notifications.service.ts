@@ -38,6 +38,7 @@ export class NotificationsService {
     private us: UserService,
     private authService: AuthorizationManager
   ) {
+    // console.log("in");
   }
 
   // Initialize user data
@@ -48,7 +49,6 @@ export class NotificationsService {
     this.user = this.users[0];
     [this.role] = this.user.userroles.map((ur) => ur.role.name);
     this.name = this.user.employee.fullname;
-
   }
 
   // Get all messages after initialization and processing
@@ -81,11 +81,11 @@ export class NotificationsService {
 
   // Check role-based conditions and fetch relevant notifications
   private async checkCondition(): Promise<void> {
+    // console.log("Awa");
     switch (this.role) {
       case 'Admin':
         await this.storeKeeper();
         await this.productionSupervisor();
-        await this.generalmanager();
         break;
       case 'Store Keeper':
         await this.storeKeeper();
@@ -93,10 +93,7 @@ export class NotificationsService {
       case 'Production Supervisor':
         await this.productionSupervisor();
         break;
-      case 'General Manager':
-        await this.generalmanager();
-        break;
-    }
+      }
   }
 
   // Fetch store keeper notifications
@@ -110,9 +107,10 @@ export class NotificationsService {
         updated: new Date(),
       });
     } else {
+      // console.log(this.rawmaterialsNRses);
       this.userspecmessages.push({
         name: 'Need to Restock Below Raw Materials',
-        detail: this.rawmaterialsNRses,
+        detail: this.rawmaterialsNRses  ,
         updated: new Date(),
       });
     }
@@ -120,6 +118,7 @@ export class NotificationsService {
 
   // Fetch production supervisor notifications
   private async productionSupervisor(): Promise<void> {
+    // console.log( this.userspecmessages);
     const po = await this.pos.getIncomplete();
     this.productionordersNRses = po;
     if (this.productionordersNRses.length === 0) {
@@ -134,6 +133,7 @@ export class NotificationsService {
         detail: this.productionordersNRses,
         updated: new Date(),
       });
+
     }
   }
 

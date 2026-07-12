@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface RawmaterialDao extends JpaRepository<Rawmaterial,Integer> {
 
@@ -20,6 +21,9 @@ public interface RawmaterialDao extends JpaRepository<Rawmaterial,Integer> {
 
     @Query("select  max(rm.id) from Rawmaterial rm")
     int findMaxNumber();
+
+    @Query("select i from Rawmaterial i where i.qoh <=i.rop")
+    List<Rawmaterial> findOutOfStock();
 
     @Transactional
     @Modifying

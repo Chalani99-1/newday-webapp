@@ -31,12 +31,31 @@ public class ClientorderController {
         return ResponseEntity.ok().body(response);
     }
 
-//    @GetMapping(path = "/number", produces = "application/json")
-//    public ResponseEntity<Integer> get() {
-//        int maxid = this.clientorderdao.findMaxNumber();
-//        if (maxid == 0) maxid = 1;
-//        return ResponseEntity.ok().body(maxid);
-//    }
+
+    @GetMapping(path ="/lessthanweek", produces = "application/json")
+    public List<NotifyResponse> getLessThanWeek(@RequestParam HashMap<String, String> params){
+        Date today = new Date();
+//not less than week. edited to get all incomplete
+        // Create an instance of Calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(today);  // Set the current date
+
+        // Add 7 days to the current date
+        calendar.add(Calendar.DAY_OF_MONTH, 7);
+
+        // Get the new date (7 days later)
+        Date endDate = calendar.getTime();
+//        List<String> outOfStock = this.codao.findLessThanWeek(endDate);
+        List<String> outOfStock = this.clientorderdao.findIncomplete();
+        List<NotifyResponse> corders =new ArrayList<>();
+        for (String s : outOfStock) {
+            corders.add(new NotifyResponse(s));
+        }
+        if (params.isEmpty()) return corders;
+        Stream<NotifyResponse> postream = corders.stream();
+        return postream.collect(Collectors.toList());
+
+    }
 
     @GetMapping(produces = "application/json")
     public List<Clientorder> get(@RequestParam HashMap<String, String> params) {
@@ -56,31 +75,6 @@ public class ClientorderController {
         return postream.collect(Collectors.toList());
 
     }
-
-//    @GetMapping(path = "/lessthanweek", produces = "application/json")
-//    public List<NotifyResponse> getLessThanWeek(@RequestParam HashMap<String, String> params) {
-//        Date today = new Date();
-////not less than week. edited to get all incomplete
-//        // Create an instance of Calendar
-//        Calendar calendar = Calendar.getInst ance();
-//        calendar.setTime(today);  // Set the current date
-//
-//        // Add 7 days to the current date
-//        calendar.add(Calendar.DAY_OF_MONTH, 7);
-//
-//        // Get the new date (7 days later)
-//        Date endDate = calendar.getTime();
-////        List<String> outOfStock = this.codao.findLessThanWeek(endDate);
-//        List<String> outOfStock = this.clientorderdao.findIncomplete();
-//        List<NotifyResponse> corders = new ArrayList<>();
-//        for (String s : outOfStock) {
-//            corders.add(new NotifyResponse(s));
-//        }
-//        if (params.isEmpty()) return corders;
-//        Stream<NotifyResponse> postream = corders.stream();
-//        return postream.collect(Collectors.toList());
-//
-//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -28,7 +28,6 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 })
 export class HomeComponent {
   userspecmessages$: Observable<any[]>; // RxJS observable for the messages
-  usermessages$: Observable<any[]>; // RxJS observable for the messages
 
   users: Array<User> = [];
   user!: User;
@@ -40,9 +39,8 @@ export class HomeComponent {
 
   rowHeight = '1rem';
   row0 = 2;
-  row1 = 10;
-  row2 = 16;
-  row3 = 16;
+  row1 = 15;
+  row2 = 22;
 
   constructor(private authService: AuthorizationManager,
               private us: UserService,
@@ -65,38 +63,33 @@ export class HomeComponent {
           this.row0 = 2;
           this.row1 = 14;
           this.row2 = 21;
-          this.row3 = 21;
         } else if (result.breakpoints['(min-width: 1367px) and (max-width: 1680px)']
         ) {
           this.rowHeight = '0.63rem';
           this.row0 = 5;
           this.row1 = 15;
           this.row2 = 20;
-          this.row3 = 20;
         } else if (result.breakpoints['(min-width: 1681px) and (max-width: 1920px)']
         ) {
           this.rowHeight = '1rem';
           this.row0 = 2;
           this.row1 = 15;
           this.row2 = 20;
-          this.row3 = 20;
         } else {
           this.rowHeight = '1.1rem'; // fallback for larger screens
         }
       });
     const username = this.authService.getUsername();
     this.userspecmessages$ = this.ns.userMessages$;
-    this.usermessages$ = this.cs.messages$;
+    // console.log(    this.userspecmessages$ );
 
   }
 
   ngOnInit() {
     this.initialize();
-    // this.ns.getMessages(); // trigger loading
-    this.usermessages$.subscribe(messages => {
-      this.msgLoading = !(messages && messages.length > 0);
-    });
+     // this.ns.getMessages(); // trigger loading
     this.userspecmessages$.subscribe(messages => {
+      // console.log(this.userspecmessages$);
       this.taskLoading = !(messages && messages.length > 0);
     });
   }
@@ -106,7 +99,7 @@ export class HomeComponent {
     this.us.getAll(qry).then(async (user: User[]) => {
       this.users = user;
       this.user = this.users[0];
-
+      [this.role] = (this.user.userroles.map(ur => ur.role.name));
       // await this.ns.getMessages();
     });
 
@@ -123,124 +116,5 @@ export class HomeComponent {
     }
   }
 
-  toggleRead(md: MessageReadOrNot) {
-    // console.log(md);
-    let obj = new Messageread(0, md.message, this.user.employee)
-
-    if (!md.isread) {
-
-      const confirm = this.db.open(ConfirmComponent, {
-        width: '500px',
-        data: {
-          heading: "Confirmation - Mark Message as Read",
-          message: "Are you sure to Mark this message as Read? <br> <br>"
-        }
-      });
-
-      let addstatus: boolean = false;
-      let addmessage: string = "Server Not Found";
-
-      confirm.afterClosed().subscribe(async result => {
-        if (result) {
-          try {
-            const response = await this.mrs.add(obj);
-
-            let addmessage = "Successful";
-            let addstatus = true;
-
-            if (response !== undefined) {
-              // @ts-ignore
-              addstatus = response['errors'] === "";
-              if (!addstatus) {
-                // @ts-ignore
-                addmessage = response['errors'];
-              }
-            } else {
-              addstatus = false;
-              addmessage = "Content Not Found";
-            }
-
-            // Show message box
-            const stsmsg = this.db.open(MessageComponent, {
-              width: '500px',
-              data: {heading: "Status - Message mark as Read :", message: addmessage}
-            });
-
-            if (addstatus) {
-              this.cs.refreshNotifications();
-            }
-
-            stsmsg.afterClosed().subscribe(result => {
-              if (!result) return;
-            });
-
-          } catch (err) {
-            // API failed
-            const stsmsg = this.db.open(MessageComponent, {
-              width: '500px',
-              data: {heading: "Status - Message mark as Read :", message: "Server Error"}
-            });
-          }
-        }
-      });
-
-
-    } else {
-
-      const confirm = this.db.open(ConfirmComponent, {
-        width: '500px',
-        data: {
-          heading: "Confirmation - Mark Message as UnRead",
-          message: "Are you sure to Mark this message as UnRead? <br> <br>"
-        }
-      });
-
-      let addstatus: boolean = false;
-      let addmessage: string = "Server Not Found";
-
-      confirm.afterClosed().subscribe(async result => {
-        if (result) {
-          let addmessage = "Server Not Found";
-          let addstatus = false;
-
-          try {
-            const response = await this.mrs.delete('?message=' + md.message.id + '&employee=' + this.user.employee.id);
-
-            if (response !== undefined) {
-              // @ts-ignore
-              addstatus = response['errors'] === "";
-              if (!addstatus) {
-                // @ts-ignore
-                addmessage = response['errors'];
-              } else {
-                addmessage = "Successful";
-              }
-            } else {
-              addmessage = "Content Not Found";
-            }
-
-          } catch (err) {
-            addmessage = "Server Error";
-          }
-
-          if (addstatus) {
-            this.cs.refreshNotifications();
-          }
-
-          const stsmsg = this.db.open(MessageComponent, {
-            width: '500px',
-            data: {heading: "Status - Message mark as UnRead :", message: addmessage}
-          });
-
-          stsmsg.afterClosed().subscribe(result => {
-            if (!result) return;
-          });
-        }
-      });
-
-
-    }
-
-  }
 
 }

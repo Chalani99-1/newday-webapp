@@ -22,20 +22,6 @@
         </div>
 
 
-        <div id="msg" (click)="openModal2()" matTooltip="Messages">
-          <i
-            class="fa-solid fa-envelope"
-            *ngIf="!isMsgsLoading"
-            [matBadge]="count$ | async"
-            matBadgeColor="warn"
-            [matBadgeHidden]="(count$ | async) === 0"
-            matBadgeOverlap="false"
-          ></i>
-
-          <i class="fa-solid fa-spinner" *ngIf="isMsgsLoading"></i>
-        </div>
-
-
 
         <label class="lbl-user ">{{ authService.getUsername() }}</label>
         <img src="assets/user.png" class="img-user"/>

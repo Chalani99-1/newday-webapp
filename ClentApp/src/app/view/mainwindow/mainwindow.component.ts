@@ -68,12 +68,9 @@ export class MainwindowComponent implements OnInit {
 
   ngOnInit() {
     // this.loadUserMSgs();
-    // this.ns.getMessages().then(() => {
-    //   this.isLoading = false;
-    // });
-    // this.cs.getMessages().then(() => {
-    //   this.isLoading = false;
-    // });
+    this.ns.getMessages().then(() => {
+      this.isLoading = false;
+    });
 
   }
 

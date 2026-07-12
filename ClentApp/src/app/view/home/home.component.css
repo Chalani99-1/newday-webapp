@@ -70,6 +70,7 @@ mat-card #headImg {
     margin: 0 20px 0 20px;
     transition: transform 0.3s ease;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
   }
 }
@@ -129,7 +130,7 @@ mat-card #headImg {
   background-color: var(--color-accent);
   display: flex;
   justify-content: flex-start;
-  font-size: 14px;
+  font-size: 16px;
   color: black;
 }
 
@@ -154,7 +155,7 @@ mat-card #headImg {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
-  color: var(--color-primary) ;
+  color: var(--color-primary);
   margin-top: 20px;
 }
 
@@ -171,21 +172,62 @@ mat-card #headImg {
 
 mat-list-item {
   background-color: var(--color-accent);
-  margin-bottom: 5px;
   border-radius: 12px;
+  font-size: 17px !important;
   border: none;
   overflow-y: auto !important;
 }
 
-#listbox2 {
-  padding-top: 5px;
+#listbox {
+  /*background-color: #4ccf42;*/
+  padding: 20px;
 }
 
 .mat-list-item-title {
-  font-size: 15px !important;
-
-  margin-top: -4px !important;
+  font-size: 16px !important;
+  margin-top: 10px !important;
 }
+
+#hpContainer mat-card-content {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+/* Make the list a row-based flex container */
+#hpContainer mat-list {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  gap: 16px;
+}
+
+/* Each item takes half the row width */
+#hpContainer mat-list #listbox.mat-mdc-list-item {
+  flex: 0 0 calc(50% - 8px);
+  max-width: calc(50% - 8px);
+  box-sizing: border-box;
+  height: auto;
+  white-space: normal;
+}
+
+/* Mat list items are usually single-line height by default, so allow it to grow */
+#hpContainer mat-list #listbox .mdc-list-item__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  white-space: normal;
+}
+
+.task {
+  white-space: normal;
+  word-break: break-word;
+  margin-bottom: 10px;
+}
+
 
 /*responsiveness*/
 @media screen and (max-width: 1366px) {
@@ -275,13 +317,13 @@ mat-list-item {
     margin-bottom: 3px;
   }
 
-  #listbox2 {
+  #listbox {
     padding-top: 2px;
   }
 
   .mat-list-item-title {
     font-size: 12px !important;
-    margin-top: -5px !important;
+    /*margin-top: -5px !important;*/
   }
 }
 

@@ -1,6 +1,7 @@
 package lk.newdayproducts.controller;
 
 import lk.newdayproducts.dao.RawmaterialDao;
+import lk.newdayproducts.dto.NotifyResponse;
 import lk.newdayproducts.entity.Materialcategory;
 import lk.newdayproducts.entity.Rawmaterial;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,6 +30,22 @@ public class RawmaterialController {
         return ResponseEntity.ok().body(maxid);
     }
 
+    //for notifications
+    @GetMapping(path = "/restocklist", produces = "application/json")
+    public List<NotifyResponse> getRestockList(@RequestParam HashMap<String, String> params) {
+        List<Rawmaterial> outOfStock = this.rawmaterialdao.findOutOfStock();
+        List<NotifyResponse> rawmaterialList = new ArrayList<>();
+        for (Rawmaterial rm : outOfStock) {
+            String data= "Please Restock the Raw Material : "+ rm.getName() + " as only "+ rm.getQoh()+
+                         " of them left and the Re Order Point is : " +rm.getRop() ;
+
+            rawmaterialList.add(new NotifyResponse(data));
+        }
+        if (params.isEmpty()) return rawmaterialList;
+        Stream<NotifyResponse> stream = rawmaterialList.stream();
+        return stream.collect(Collectors.toList());
+    }
+
     @GetMapping(produces = "application/json")
     public List<Rawmaterial> get(@RequestParam HashMap<String, String> params) {
 
@@ -44,7 +62,8 @@ public class RawmaterialController {
         Stream<Rawmaterial> stream = rawmaterialList.stream();
         if (rawmaterialname != null) stream = stream.filter(s -> s.getName().toLowerCase().contains(rawmaterialname));
         if (rawmaterialcode != null) stream = stream.filter(s -> s.getCode().toLowerCase().contains(rawmaterialcode));
-        if (materialtype != null) stream = stream.filter(s -> s.getMaterialtype().getId().toString().equals(materialtype));
+        if (materialtype != null)
+            stream = stream.filter(s -> s.getMaterialtype().getId().toString().equals(materialtype));
         if (materialcategory != null)
             stream = stream.filter(s -> s.getMaterialcategory().getId().toString().equals(materialcategory));
         if (materialstatus != null)
