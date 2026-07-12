@@ -46,13 +46,19 @@
         <mat-card-footer>Client</mat-card-footer>
       </mat-card>
     </a>
-
+    <a routerLink="clientorder" *ngIf="role === 'Admin' || role === 'Production Supervisor'">
+      <mat-card>
+        <mat-card-content><img src="assets/production-order.png"></mat-card-content>
+        <mat-card-footer>Client Order</mat-card-footer>
+      </mat-card>
+    </a>
     <a routerLink="purchaseorder" *ngIf="role === 'Admin' || role === 'Store Keeper'">
       <mat-card>
         <mat-card-content><img src="assets/payments.png"></mat-card-content>
         <mat-card-footer>Purchase Order</mat-card-footer>
       </mat-card>
     </a>
+
 
 
   </mat-grid-tile>
@@ -72,10 +78,11 @@
             color="primary"
             [diameter]="70"
             style="margin: 30px auto; display: block;">
+            <div *ngIf="taskLoading" class="loading-text">
+              <p>Loading Tasks, Please Wait...</p>
+            </div>
           </mat-progress-spinner>
-          <div *ngIf="taskLoading" class="loading-text">
-            <p>Loading Tasks, Please Wait...</p>
-          </div>
+
 
           <mat-list-item style="padding-top: 5px" id="listbox" *ngFor="let message of userspecmessages$ | async">
             <img matListItemIcon [src]="'assets/task.png'" alt="task gif"

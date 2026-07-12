@@ -2,6 +2,8 @@ package lk.newdayproducts.controller;
 
 import lk.newdayproducts.dao.PurchaseorderDao;
 import lk.newdayproducts.dao.RawmaterialDao;
+import lk.newdayproducts.dto.NotifyResponse;
+import lk.newdayproducts.entity.Clientorder;
 import lk.newdayproducts.entity.Poitem;
 import lk.newdayproducts.entity.Purchaseorder;
 import lk.newdayproducts.entity.Rawmaterial;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,24 @@ public class PurchaseorderController {
         response.put("number", ""+maxid);
         return ResponseEntity.ok().body(response);
     }
+
+    @GetMapping(path = "/incomplete", produces = "application/json")
+    public List<NotifyResponse> getIncomplete(@RequestParam HashMap<String, String> params) {
+
+        List<Purchaseorder> incomplete = this.purchaseorderdao.findIncomplete();
+        List<NotifyResponse> porders = new ArrayList<>();
+        for (Purchaseorder s : incomplete) {
+            porders.add(
+                    new NotifyResponse(
+                            "Purchase Order  : " +  s.getNumber() +
+                            " is not fully received yet " ) );
+
+        }
+        if (params.isEmpty()) return porders;
+        Stream<NotifyResponse> postream = porders.stream();
+        return postream.collect(Collectors.toList());
+    }
+
 
     @GetMapping(produces = "application/json")
     public List<Purchaseorder> get(@RequestParam HashMap<String, String> params){

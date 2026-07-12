@@ -93,72 +93,40 @@ mat-sidenav-content {
   margin-bottom: 10px;
 }
 
-#butpanel-add {
+#butpanel-add,#butpanel-clear,#butpanel-update,#butpanel-delete {
   width: 80px;
   margin: 3px;
-  background-color: #0d6efd;
+  background-color: var(--color-dark);
   color: white;
   font-size: 12px;
   border-radius: 12px;
   max-height: 30px;
 }
 
-#butpanel-clear {
-  width: 80px;
-  margin: 3px;
-  background-color: #ffe600;
-  color: white;
-  font-size: 12px;
-  border-radius: 12px;
-  max-height: 30px;
-}
-
-#butpanel-update {
-  width: 80px;
-  margin: 3px;
-  background-color: var(--color-add);
-  color: white;
-  font-size: 12px;
-  border-radius: 12px;
-  max-height: 30px;
-}
-
-#butpanel-delete {
-  width: 80px;
-  margin: 3px;
-  background-color: var(--color-delete);
-  color: white;
-  font-size: 12px;
-  border-radius: 12px;
-  max-height: 30px;
-}
 
 mat-card-header {
   padding-bottom: 10px !important;
 }
 
-#ssearch-btn {
+#ssearch-btn,#ssearch-clearbtn {
   max-height: 30px;
   border-radius: 12px;
   font-size: 12px;
   width: 155px;
   margin-left: 10px;
   margin-top: 5px;
-  background-color: var(--color-add);
-  color: white;
 
+  color:  var(--color-add);
+  border: 1px solid #8a8a8a;
+  text-align: center;
+
+  &:hover {
+    background-color: var(--color-add);
+    color: white;
+
+  }
 }
 
-#ssearch-clearbtn {
-  max-height: 30px;
-  border-radius: 12px;
-  font-size: 12px;
-  width: 155px;
-  margin-left: 10px;
-  margin-top: 5px;
-  background-color: var(--color-delete);
-  color: white
-}
 
 .csearch {
   height: 40px;
@@ -212,7 +180,7 @@ mat-card-header {
   width: 90px;
 }
 
-#selectbutton {
+#selectbutton,#clearbutton {
   margin-top: -100px;
   width: 150px;
   display: block;
@@ -223,39 +191,19 @@ mat-card-header {
   padding: 4px;
   max-height: 30px;
   background-color: white;
-  color: #8a8a8a;
-  border: 1px solid #8a8a8a;
+  color:  var(--color-add);
+
   text-align: center;
 
   &:hover {
     background-color: var(--color-add);
     color: white;
-    border: #104b30;
+
   }
 }
 
-#clearbutton {
-  width: 150px;
-  display: block;
-  margin-left: 150px;
-  margin-bottom: 5px;
-  font-size: 12px;
-  padding: 4px;
-  max-height: 30px;
-  background-color: white;
-  color: #8a8a8a;
-  border: 1px solid #8a8a8a;
-  border-radius: 12px;
-  text-align: center;
 
-  &:hover {
-    background-color: var(--color-delete);
-    color: white;
-    border: 2px solid rgba(243, 47, 47, 0.8);
-  }
-}
-
-#btnAdd {
+#btnAdd,#btnDelete,#btnUpdate,#removeBtn {
   width: 120px;
   margin-left: 10px;
   margin-bottom: 15px;
@@ -271,66 +219,7 @@ mat-card-header {
   &:hover {
     background-color: var(--color-add);
     color: white;
-    border: #104b30;
-  }
-}
 
-#btnDelete {
-  width: 120px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  font-size: 12px;
-  padding: 4px;
-  max-height: 30px;
-  background-color: white;
-  color: #8a8a8a;
-  border: 1px solid #8a8a8a;
-  border-radius: 12px;
-  text-align: center;
-
-  &:hover {
-    background-color: var(--color-delete);
-    color: white;
-    border: 2px solid rgba(243, 47, 47, 0.8);
-  }
-}
-
-#btnUpdate {
-  width: 120px;
-  margin-left: 10px;
-  margin-bottom: 15px;
-  font-size: 12px;
-  padding: 4px;
-  max-height: 30px;
-  background-color: white;
-  color: #8a8a8a;
-  border: 1px solid #8a8a8a;
-  border-radius: 12px;
-  text-align: center;
-
-  &:hover {
-    background-color: var(--color-update);
-    color: white;
-    border: 2px solid rgb(195, 166, 20);
-  }
-}
-
-#removeBtn {
-  display: block;
-  margin-bottom: 2px;
-  font-size: 12px;
-  padding: 4px;
-  max-height: 30px;
-  background-color: white;
-  color: #8a8a8a;
-  border: 1px solid #8a8a8a;
-  border-radius: 12px;
-  text-align: center;
-
-  &:hover {
-    background-color: var(--color-delete);
-    color: white;
-    border: 2px solid rgba(243, 47, 47, 0.8);
   }
 }
 
@@ -348,12 +237,12 @@ mat-card-header {
     border-radius: 12px;
     padding: 4px;
     max-height: 30px;
-    background-color: var(--color-dark);
-    color: white;
+
     border: #00338c;
     text-align: center;
     align-self: flex-end;
-
+    background-color: var(--color-dark);
+    color: white;
     &:hover {
       cursor: pointer;
     }
@@ -410,18 +299,18 @@ mat-card-header {
 
 :root {
   --color-light: #FFFFFF;         /* matches Apple’s white */
-  --color-dark:  #1D1D1F;         /* Apple uses about this for dark text/background :contentReference[oaicite:1]{index=1} */
-  --color-primary: #0066CC;       /* Apple “Science Blue” brand colour from Mobbin list :contentReference[oaicite:2]{index=2} */
-  --color-secondary: #555555;     /* a neutral grey Apple uses :contentReference[oaicite:3]{index=3} */
+  --color-dark: #0079A4;         /* Apple uses about this for dark text/background :contentReference[oaicite:1]{index=1} */
+  --color-primary: #0a9acd;       /* Apple “Science Blue” brand colour from Mobbin list :contentReference[oaicite:2]{index=2} */
+  --color-secondary: rgba(39, 39, 39, 0.84);     /* a neutral grey Apple uses :contentReference[oaicite:3]{index=3} */
   --color-ternary: #F5F5F7;       /* light grey background from Apple palette :contentReference[oaicite:4]{index=4} */
-  --color-accent: #b5dcf6;        /* example accent to pair with Science Blue (you may adjust) */
+  --color-accent: #c9f0fd;        /* example accent to pair with Science Blue (you may adjust) */
 
 
-  --color-close: #2b2f33;
-  --color-add: #2eae60;
-  --color-update: #f4bc00;
-  --color-clear: #6e7e87;
-  --color-delete: #e02b42;
+  --color-close: #0079A4;
+  --color-add: #0079A4;
+  --color-update: #0079A4;
+  --color-clear: #0079A4;
+  --color-delete: #da1313;
 }
 /*//report cards*/
 .first-card{
@@ -556,7 +445,7 @@ mat-card-header {
     &:hover {
       background-color: var(--color-add);
       color: white;
-      border: #104b30;
+
     }
   }
 

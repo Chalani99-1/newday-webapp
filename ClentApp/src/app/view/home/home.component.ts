@@ -20,6 +20,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {ConfirmComponent} from "../../util/dialog/confirm/confirm.component";
 import {MessageComponent} from "../../util/dialog/message/message.component";
 import {BreakpointObserver} from '@angular/cdk/layout';
+import {Purchaseorderservice} from "../../service/purchaseorderservice";
 
 @Component({
   selector: 'app-home',
@@ -39,12 +40,11 @@ export class HomeComponent {
 
   rowHeight = '1rem';
   row0 = 2;
-  row1 = 15;
-  row2 = 22;
+  row1 = 14;
+  row2 = 23;
 
   constructor(private authService: AuthorizationManager,
               private us: UserService,
-              private cs: CommunicationService,
               private router: Router,
               private db: MatDialog,
               private ns: NotificationsService,

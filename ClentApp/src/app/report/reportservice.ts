@@ -164,10 +164,11 @@ export class ReportService {
 
    async productionordercompletion(): Promise<Array<Productionordercompletion>> {
 
-    const pocompletion = await this.http.get<Array<Productionordercompletion>>('http://localhost:8080/reports/productionordercompletion').toPromise();
+    const pocompletion = await this.http.get<Array<Productionordercompletion>>('http://localhost:8080/reports/clientordercompletion').toPromise();
     if(pocompletion == undefined){
       return [];
     }
+     // console.log(pocompletion);
     return pocompletion;
   }
 

@@ -39,6 +39,14 @@ export class ProductionOrderService {
     return productionorders;
   }
 
+  async getIncompleteCos(): Promise<Array<NotifyResponse>> {
+    const productionorders = await this.http.get<Array<NotifyResponse>>('http://localhost:8080/productionorders/incompletecos' ).toPromise();
+    if (productionorders == undefined) {
+      return [];
+    }
+    return productionorders;
+  }
+
   async getMaxNumber(): Promise<number> {
     const number1 = await this.http.get<number>('http://localhost:8080/productionorders/number').toPromise();
         if (number1 == undefined) {

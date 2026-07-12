@@ -1,5 +1,5 @@
 <mat-grid-list [cols]="12" class="component-background" [rowHeight]="rowHeight" gutterSize="5px">
-  <mat-grid-tile [colspan]="4" [rowspan]="30">
+  <mat-grid-tile [colspan]="4" [rowspan]="35">
 
     <mat-card>
       <mat-card-header>
@@ -9,7 +9,7 @@
 
         <form #myForm [formGroup]="form">
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" style="margin-top: 10px !important;">
             <mat-label>Supplier</mat-label>
             <mat-select formControlName="supplier">
               <mat-option [value]="null" selected>Not Selected</mat-option>
@@ -152,7 +152,7 @@
     </mat-card>
   </mat-grid-tile>
 
-  <mat-grid-tile [colspan]="8" [rowspan]="13">
+  <mat-grid-tile [colspan]="8" [rowspan]="17">
     <mat-card>
       <mat-card-header>
         Out Of Stock Raw Materials
@@ -196,7 +196,7 @@ padding: 5px">No Out Of Stock Raw Materials </p>
   </mat-grid-tile>
 
 
-  <mat-grid-tile [colspan]="8" [rowspan]="17">
+  <mat-grid-tile [colspan]="8" [rowspan]="18">
     <mat-card>
       <mat-card-header>
         Purchase Order Table

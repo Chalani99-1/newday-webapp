@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Purchaseorder} from "../entity/purchaseorder";
 import {Rawmaterial} from "../entity/rawmaterial";
+import {NotifyResponse} from "../util/notifications/NotifyResponse";
 
 
 @Injectable({
@@ -51,6 +52,14 @@ export class Purchaseorderservice {
   async delete(id: number): Promise<[] | undefined> {
     // @ts-ignore
     return this.http.delete('http://localhost:8080/purchaseorders/' + id).toPromise();
+  }
+
+  async getIncomplete(): Promise<Array<NotifyResponse>> {
+    const productionorders = await this.http.get<Array<NotifyResponse>>('http://localhost:8080/purchaseorders/incomplete' ).toPromise();
+    if (productionorders == undefined) {
+      return [];
+    }
+    return productionorders;
   }
 
 }

@@ -23,7 +23,7 @@ export class Dashboardservice {
   }
  async rawmatcount(): Promise<Array<Rawmatcount>> {
 
-    const matcounts = await this.http.get<Array<Rawmatcount>>('http://localhost:8080/dashboard/rawmatcount').toPromise();
+    const matcounts = await this.http.get<Array<Rawmatcount>>('http://localhost:8080/reports/rawmatcount').toPromise();
     if(matcounts == undefined){
       return [];
     }

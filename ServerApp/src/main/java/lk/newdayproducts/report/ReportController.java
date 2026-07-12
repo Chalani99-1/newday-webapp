@@ -3,10 +3,8 @@ package lk.newdayproducts.report;
 import lk.newdayproducts.dao.ClientorderDao;
 import lk.newdayproducts.dao.ProductionorderDao;
 import lk.newdayproducts.dao.PurchaseorderDao;
-import lk.newdayproducts.entity.Charge;
-import lk.newdayproducts.entity.Clientorder;
-import lk.newdayproducts.entity.Orderproduct;
-import lk.newdayproducts.entity.Purchaseorder;
+import lk.newdayproducts.dao.RawmaterialDao;
+import lk.newdayproducts.entity.*;
 import lk.newdayproducts.report.dao.*;
 import lk.newdayproducts.report.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,9 +50,80 @@ public class ReportController {
     @Autowired
     private ClientorderDao clientorderdao;
     @Autowired
+    private RawmaterialDao rmdao;
+    @Autowired
     private ClientOrderVsProductDao clientordervsproductdao;
     @Autowired
     private PurchaseOrderVsRawmaterialDao purchaseOrderVsRawmaterialdao;
+
+    @GetMapping(path = "/clientordercompletion", produces = "application/json")
+    public List<ClientOrderCompletion> getClientOrderCompletion() {
+        List<ClientOrderCompletion> coc = clientorderdao.clientOrderCompletion();
+        return coc;
+    }
+
+    @GetMapping(path = "/rawmaterialusage", produces = "application/json")
+    public List<RawmaterialUsage>
+    getRawMaterialUsage(@RequestParam(required = false) String startDate,
+                        @RequestParam(required = false) String endDate) {
+        Timestamp startTimestamp;
+        Timestamp endTimestamp;
+        List<Productionorder> porders;
+
+        if (startDate == null || startDate.trim().isEmpty() ||
+            endDate == null || endDate.trim().isEmpty()) {
+            //all dates
+            porders = productionorderdao.findAll();
+        } else {
+            //filter by dates
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                Date start = dateFormat.parse(startDate);
+                Date end = dateFormat.parse(endDate);
+
+                startTimestamp = new Timestamp(start.getTime());
+                endTimestamp = new Timestamp(end.getTime());
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return null;
+            }
+            porders = productionorderdao.getProductionOrdersByDate(startTimestamp, endTimestamp);
+
+        }
+
+
+        Map<Integer, RawmaterialUsage> rawMaterialUsageMap = new HashMap<>();
+        for (Productionorder po : porders) {
+            BigDecimal productCount = BigDecimal.valueOf(po.getAmount());
+            for (Productrawmaterial prm : po.getProduct().getProductrawmaterials()) {
+                BigDecimal rmQuantity = prm.getQuantity();
+                Rawmaterial rawMaterial = prm.getRawmaterial();
+                BigDecimal totalUsage = productCount.multiply(rmQuantity);
+                // Check if this raw material already exists in the map
+                RawmaterialUsage usage = rawMaterialUsageMap.get(rawMaterial.getId());
+                if (usage == null) {
+                    // Create new usage record
+                    usage = new RawmaterialUsage(rawMaterial.getId(), rawMaterial.getName(), rawMaterial.getPhoto(), totalUsage);
+                    rawMaterialUsageMap.put(rawMaterial.getId(), usage);
+                } else {
+                    // Accumulate usage
+                    usage.setCount(usage.getCount().add(totalUsage));
+                }
+            }
+
+        }
+
+        List<RawmaterialUsage> rawmatusages = new ArrayList<>(rawMaterialUsageMap.values());
+
+        return rawmatusages;
+    }
+
+    @GetMapping(path = "/rawmatcount", produces = "application/json")
+    public List<RawMatCount> getRawMatCount() {
+        return this.rmdao.rawMatCount();
+    }
+
 
     @GetMapping(path = "/countbymaterialcategory", produces = "application/json")
     public List<CountByMaterialCategory> get() {
@@ -379,7 +448,7 @@ public class ReportController {
     @GetMapping(path = "/productionvsamount", produces = "application/json")
     public List<ProductionVsAmount> getProductionVsAmount() {
 
-      List<ProductionVsAmount> expenses = productionvsamountdao.productionVsAmount();
+        List<ProductionVsAmount> expenses = productionvsamountdao.productionVsAmount();
 
         return null;
     }
@@ -415,6 +484,7 @@ public class ReportController {
 
         return pbobdates;
     }
+
     @GetMapping(path = "/profitbydateall", produces = "application/json")
     public List<ProfitByOrderByDate> getProfitByOrderByDate() {
 
@@ -446,7 +516,7 @@ public class ReportController {
         for (ClientOrderVsProducts countbymc : expenses) {
             long amntreq = countbymc.getAmount();
             long amntcom = countbymc.getCompleted();
-            double percentage = (double) amntcom/ amntreq * 100;
+            double percentage = (double) amntcom / amntreq * 100;
             percentage = Math.round(percentage * 100.00) / 100;
             countbymc.setPercentage(percentage);
         }

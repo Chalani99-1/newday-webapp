@@ -51,11 +51,11 @@ export class ProductordercompletionComponent {
     catData.addColumn({type: 'string', role: 'style'}); // Style column for colors
 
     this.productionordercompletions.forEach((poc: Productionordercompletion) => {
-      const percentageValue = parseFloat(poc.completepercentage); // Ensure it's a number
+      const percentageValue = parseFloat(poc.percentage); // Ensure it's a number
       const annotationText = `${percentageValue.toFixed(2)}%`; // Format annotation to 2 decimal points
       const color = percentageValue === 100 ? '#36A2EB' : '#FF6384'; // Set to green if 100%
 
-      catData.addRow([poc.ordernumber, percentageValue, annotationText, color]);
+      catData.addRow([poc.number, percentageValue, annotationText, color]);
     });
 
     const catOptions = {

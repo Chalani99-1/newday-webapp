@@ -93,6 +93,23 @@ public class ProductionorderController {
         return postream.collect(Collectors.toList());
     }
 
+    @GetMapping(path = "/incompletecos", produces = "application/json")
+    public List<NotifyResponse> getIncompleteCos(@RequestParam HashMap<String, String> params) {
+
+        List<Clientorder> incomplete = this.podao.findIncompleteCos();
+        List<NotifyResponse> porders = new ArrayList<>();
+        for (Clientorder s : incomplete) {
+            porders.add(
+                    new NotifyResponse(
+                            "Please Complete the Client order  : " +  s.getNumber() +
+                            " as it expected before "+ s.getDoexpected().toString() ) );
+
+        }
+        if (params.isEmpty()) return porders;
+        Stream<NotifyResponse> postream = porders.stream();
+        return postream.collect(Collectors.toList());
+    }
+
     @GetMapping(produces = "application/json")
     public List<Productionorder> get(@RequestParam HashMap<String, String> params) {
 

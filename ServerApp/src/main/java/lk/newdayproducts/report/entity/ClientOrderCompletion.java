@@ -2,6 +2,7 @@ package lk.newdayproducts.report.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -10,16 +11,15 @@ public class ClientOrderCompletion {
     @Id
     private Integer id;
     private String number;
-    private String clientName;
-    private Integer datediff;
+   private String percentage;
 
     public ClientOrderCompletion() {
     }
 
-    public ClientOrderCompletion(String number, String clientName, Integer datediff) {
+    public ClientOrderCompletion(Integer id, String number, String percentage) {
+        this.id = id;
         this.number = number;
-        this.clientName = clientName;
-        this.datediff = datediff;
+        this.percentage = percentage;
     }
 
     public Integer getId() {
@@ -38,19 +38,11 @@ public class ClientOrderCompletion {
         this.number = number;
     }
 
-    public String getClientName() {
-        return clientName;
+    public String getPercentage() {
+        return percentage;
     }
 
-    public void setClientName(String clientName) {
-        this.clientName = clientName;
-    }
-
-    public Integer getDatediff() {
-        return datediff;
-    }
-
-    public void setDatediff(Integer datediff) {
-        this.datediff = datediff;
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
     }
 }

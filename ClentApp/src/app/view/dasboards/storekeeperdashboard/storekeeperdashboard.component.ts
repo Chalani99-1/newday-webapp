@@ -140,7 +140,7 @@ export class StorekeeperdashboardComponent {
   rowHeight = '1rem'
   row0 = 3;
   row01 = 5;
-  row1 = 18;
+  row1 =28;
   row2 = 30;
   row3 = 16;
   row4 = 16;
@@ -192,7 +192,7 @@ export class StorekeeperdashboardComponent {
 
         } else {
           this.rowHeight = '1.5rem'; // fallback for larger screens
-          this.row1 = 7;
+          // this.row1 = 7;
         }
       });
   }
@@ -259,7 +259,7 @@ export class StorekeeperdashboardComponent {
           }
         })
       })
-      this.loadPieChart();
+
     })
 
   }
@@ -272,53 +272,6 @@ export class StorekeeperdashboardComponent {
     }
   }
 
-  // Pie Chart:
-  loadPieChart() {
-    const labels = this.porawmats.map(pt => `${pt.rawmaterial.name}`);
-    const counts = this.porawmats.map(pt => pt.count);
-
-    if (this.pieChartInstance) this.pieChartInstance.destroy();
-
-    this.pieChartInstance = new Chart(this.piechart.nativeElement.getContext('2d'), {
-      type: 'doughnut',
-      data: {
-        labels: labels,
-
-        datasets: [{
-          data: counts,
-          backgroundColor: [
-            '#FF6384',
-            '#36A2EB',
-            '#FFCE56',
-            '#4BC0C0',
-            '#9966FF',
-            '#FF9F40',
-            '#C9CBCF',
-            '#8BC34A',
-            '#F44336',
-            '#00ACC1'
-          ]
-
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          datalabels: {
-            display: false,
-            color: 'black',
-            formatter: (value, context) => {
-              // @ts-ignore
-              return context.chart.data.labels[context.dataIndex];
-            }
-          },
-          title: {display: true, text: 'Incoming Shipments'},
-          legend: {display: true, position: 'bottom'}
-        },
-        cutout: '40%' // makes it donut
-      }
-    });
-  }
 
 //bar chart
   loadBarChart(): void {

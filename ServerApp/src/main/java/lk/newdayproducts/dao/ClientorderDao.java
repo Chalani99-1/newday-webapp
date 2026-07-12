@@ -2,6 +2,7 @@ package lk.newdayproducts.dao;
 
 import lk.newdayproducts.entity.Clientorder;
 import lk.newdayproducts.entity.Product;
+import lk.newdayproducts.report.entity.ClientOrderCompletion;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -65,6 +66,10 @@ public interface ClientorderDao extends JpaRepository<Clientorder,Integer> {
     @Query("select po.completepercentage from Clientorder po where po.id =:id")
     BigDecimal getComletedPercentage(@Param("id")int id);
 
+
+//for dashboard
+    @Query("SELECT new ClientOrderCompletion (co.id,co.number,co.completepercentage) FROM Clientorder co " )
+    List<ClientOrderCompletion> clientOrderCompletion();
 
 }
 

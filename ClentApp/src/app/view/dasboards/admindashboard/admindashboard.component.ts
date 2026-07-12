@@ -62,7 +62,7 @@ export class AdmindashboardComponent {
   row2 = 20; //
   row3 = 28;
   row4 = 19;
-  row5 = 18;
+  row5 = 14.5;
 
   constructor(private cos: Clientorderservice,
               private rs: ReportService,

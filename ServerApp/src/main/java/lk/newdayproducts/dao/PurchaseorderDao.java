@@ -1,6 +1,8 @@
 package lk.newdayproducts.dao;
 
+import lk.newdayproducts.entity.Clientorder;
 import lk.newdayproducts.entity.Grn;
+import lk.newdayproducts.entity.Productionorder;
 import lk.newdayproducts.entity.Purchaseorder;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -55,5 +57,9 @@ public interface PurchaseorderDao extends JpaRepository<Purchaseorder,Integer> {
     @Modifying
     @Query("update Purchaseorder i set i.postatus.id=:id where i.id=:pid")
     void updatePOStatus(@Param("id") Integer id, @Param("pid") Integer pid);
+
+    @Query("select i from Purchaseorder i where i.postatus.id!=3")
+    List<Purchaseorder> findIncomplete();
+
 }
 

@@ -120,6 +120,7 @@ export class ProductionorderComponent {
     private pos: ProductionOrderService,
     private poss: ProductionOrderStatusService,
     private rs: ReportService,
+    private ns: NotificationsService,
     private dp: DatePipe,
     private emps: EmployeeService,
     public authService: AuthorizationManager,
@@ -715,6 +716,7 @@ export class ProductionorderComponent {
 
   resetForms() {
     this.areaHiddenFix();
+    this.ns.refreshNotifications();
     this.pos.getAllList().then((poss: ProductionOrder[]) => {
       this.oldproductionorders = poss
       this.productionorders = poss

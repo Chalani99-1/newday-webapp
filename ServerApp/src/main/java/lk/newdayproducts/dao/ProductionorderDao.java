@@ -1,5 +1,6 @@
 package lk.newdayproducts.dao;
 
+import lk.newdayproducts.entity.Clientorder;
 import lk.newdayproducts.entity.Product;
 import lk.newdayproducts.entity.Productionorder;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,6 +25,10 @@ public interface ProductionorderDao extends JpaRepository<Productionorder,Intege
 
     @Query("select i from Productionorder i where i.productionorderstatus.id!=2")
     List<Productionorder> findIncomplete();
+
+    @Query("select i from Clientorder i where i.clientorderstatus.id!=2")
+    List<Clientorder> findIncompleteCos();
+
 //
 //    @Query("select sum(i.completed) from Productionorderproduct i where i.productionorder.id=:poid ")
 //    Integer findPopCompleted(@Param("poid") Integer poid);

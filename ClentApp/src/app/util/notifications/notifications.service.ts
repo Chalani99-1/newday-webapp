@@ -7,6 +7,7 @@ import {User} from "../../entity/user";
 import {UserService} from "../../service/userservice";
 import {AuthorizationManager} from "../../service/authorizationmanager";
 import {BehaviorSubject} from 'rxjs';
+import {Purchaseorderservice} from "../../service/purchaseorderservice";
 
 @Injectable({
   providedIn: 'root'
@@ -27,6 +28,7 @@ export class NotificationsService {
   rawmaterialsNRses: Array<NotifyResponse> = [];
   productionordersNRses: Array<NotifyResponse> = [];
   clientordersNRses: Array<NotifyResponse> = [];
+  purchaseordersNRses: Array<NotifyResponse> = [];
   user!: User;
   role!: string;
   name!: string;
@@ -34,7 +36,7 @@ export class NotificationsService {
   constructor(
     private rms: Rawmaterialservice,
     private pos: ProductionOrderService,
-    private cos: Clientorderservice,
+    private puos: Purchaseorderservice,
     private us: UserService,
     private authService: AuthorizationManager
   ) {
@@ -86,12 +88,17 @@ export class NotificationsService {
       case 'Admin':
         await this.storeKeeper();
         await this.productionSupervisor();
+        await this.storeKeeperexplicit();
+        await this.productionSupervisorexplicit();
         break;
       case 'Store Keeper':
         await this.storeKeeper();
+        await this.storeKeeperexplicit();
         break;
       case 'Production Supervisor':
         await this.productionSupervisor();
+        await this.productionSupervisorexplicit();
+
         break;
       }
   }
@@ -116,6 +123,25 @@ export class NotificationsService {
     }
   }
 
+  private async storeKeeperexplicit(): Promise<void> {
+    const rm = await this.puos.getIncomplete();
+    this.purchaseordersNRses = rm;
+    if (this.purchaseordersNRses.length === 0) {
+      this.userspecmessages.push({
+        name: 'No New Messages for Store Keeper',
+        detail: [{name: 'check later'}],
+        updated: new Date(),
+      });
+    } else {
+      // console.log(this.purchaseordersNRses);
+      this.userspecmessages.push({
+        name: 'Below Purchase Orders Yet to Receive',
+        detail: this.purchaseordersNRses  ,
+        updated: new Date(),
+      });
+    }
+  }
+
   // Fetch production supervisor notifications
   private async productionSupervisor(): Promise<void> {
     // console.log( this.userspecmessages);
@@ -133,18 +159,16 @@ export class NotificationsService {
         detail: this.productionordersNRses,
         updated: new Date(),
       });
-
     }
   }
 
-  // Fetch general manager notifications
-  private async generalmanager(): Promise<void> {
-    //edited to get all incomplete instead lessthanweek
-    const co = await this.cos.getLessThanWeek();
-    this.clientordersNRses = co;
+  private async productionSupervisorexplicit(): Promise<void> {
+    // console.log( this.userspecmessages);
+    const po = await this.pos.getIncompleteCos();
+    this.clientordersNRses = po;
     if (this.clientordersNRses.length === 0) {
       this.userspecmessages.push({
-        name: 'No New Messages for General Manager',
+        name: 'No New Messages for Production Supervisor',
         detail: [{name: 'check later'}],
         updated: new Date(),
       });

@@ -31,7 +31,7 @@ button:disabled {
 
 #rawmaterialform mat-form-field .ng-valid,
 .ng-valid.required {
-  background-color: var(--color-accent) FF;
+  background-color: var(--color-accent) ;
 }
 
 #h-row {
@@ -59,10 +59,10 @@ button:disabled {
   max-width: 200px;
   cursor: pointer;
   flex: 1 1 210px;
-  background-color: #c7e5fb;
+  background-color: var(--color-accent);
   justify-content: center; /* Horizontal center */
   align-items: center;
-  border: 2px lightsteelblue;
+  border: 2px var(--color-accent);
   border-radius: 20px;
   padding: 2px;
   margin-bottom: 10px;
@@ -93,18 +93,16 @@ button:disabled {
 
 #descrp-title {
   font-size: 12px !important;
-  width: 100%;
+  width: 100% ;
   height: 46px;
   padding: 4px;
   text-align: center;
   font-weight: bold;
-  background-color: black;
+  background-color: #59bde1;
   border-radius: 12px;
   color: white;
 }
-#descrp-title:hover{
-  background-color: black;
-}
+
 
 #p-img {
   height: 70px;

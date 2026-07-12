@@ -146,19 +146,6 @@
           </ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel *ngIf="isMenuVisible('Communication')">
-          <mat-expansion-panel-header>
-            <mat-list-item><a>
-              <i class="fa-solid fa-envelope-circle-check"></i>
-              Communication</a></mat-list-item>
-          </mat-expansion-panel-header>
-          <ng-container *ngFor="let menuItem of comMenuItems">
-            <div *ngIf="menuItem.accessFlag">
-              <mat-list-item class="item" [routerLink]="menuItem.accessFlag ? menuItem.routerLink : null">
-                <a>{{ menuItem.name }}</a></mat-list-item>
-            </div>
-          </ng-container>
-        </mat-expansion-panel>
 
         <mat-expansion-panel *ngIf="isMenuVisible('Reports')">
           <mat-expansion-panel-header>

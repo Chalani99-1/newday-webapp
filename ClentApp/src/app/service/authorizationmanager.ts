@@ -36,7 +36,6 @@ export class AuthorizationManager {
   utilMenuItems = [
     { name: 'Material Category', accessFlag: true, routerLink: 'materialcategory' },
     { name: 'Product Category', accessFlag: true, routerLink: 'productcategory' },
-    { name: 'Product Type', accessFlag: true, routerLink: 'producttype' },
 
   ];
 
@@ -55,8 +54,6 @@ export class AuthorizationManager {
 
   productionMenuItems = [
     { name: 'Production Order', accessFlag: true, routerLink: 'productionorder' },
-    { name: 'Production', accessFlag: true, routerLink: 'production' }
-
   ];
   paymentMenuItems = [
     { name: 'Supplier Payment', accessFlag: true, routerLink: 'supplierpayment' },

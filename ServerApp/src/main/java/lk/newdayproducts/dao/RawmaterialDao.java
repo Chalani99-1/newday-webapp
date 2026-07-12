@@ -2,6 +2,7 @@ package lk.newdayproducts.dao;
 
 import lk.newdayproducts.entity.Employee;
 import lk.newdayproducts.entity.Rawmaterial;
+import lk.newdayproducts.report.entity.RawMatCount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -66,5 +67,10 @@ public interface RawmaterialDao extends JpaRepository<Rawmaterial,Integer> {
     @Query("update Rawmaterial r set r.qoh =r.qoh+:quantity where r.id = :id")
     void updateRawMaterialQuantityAfterDelete(@Param("quantity") BigDecimal quantity, @Param("id") Integer id);
 
+
+    //dashboard
+    @Query("SELECT new RawMatCount (r.name, r.qoh,r.rop) " +
+           "FROM Rawmaterial r")
+    List<RawMatCount> rawMatCount();
 }
 

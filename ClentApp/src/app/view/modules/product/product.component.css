@@ -201,14 +201,11 @@ button:disabled {
   padding: 2px;
   text-align: center;
   font-weight: bold;
-  background-color: black;
+  background-color: #59bde1;
   border-radius: 10px;
   color: white;
 }
 
-#descrp-title:hover {
-  background-color: black;
-}
 
 #p-img {
   text-align: center;
