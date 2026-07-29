@@ -24,12 +24,25 @@ button:disabled {
 
 #clientform mat-form-field .ng-valid,
 .ng-valid.required {
-  background-color: var(--color-accent)FF;
+  background-color: var(--color-accent) FF;
 }
 
 
+#chalani-div  {
+  background-color: #3f7483 !important;
+  color: white;
+  padding: 10px;
+  /*margin-left: 20px !important;*/
+}
 
 
+.chalani-class {
+  border: solid 4px black;
+  margin-top: 10px !important;
+  background-color: #00ff14 !important;
+  color: white;
+  padding: 10px;
+}
 
 
 

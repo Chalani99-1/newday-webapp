@@ -2,6 +2,7 @@ package lk.newdayproducts.controller;
 
 
 import lk.newdayproducts.dao.SupplierDao;
+import lk.newdayproducts.dto.SupAndMatCatCount;
 import lk.newdayproducts.entity.Supplier;
 import lk.newdayproducts.entity.Suppliermaterialcategory;
 import org.springframework.beans.BeanUtils;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -56,6 +58,12 @@ public class SupplierController {
         }
         return estream.collect(Collectors.toList());
 
+    }
+
+    @GetMapping(path = "/getSupAndMatCatCount", produces = "application/json")
+    public List<SupAndMatCatCount> findSupAndMatCatCount() {
+        List<SupAndMatCatCount> list = this.supplierDao.findSupAndMatCatCount();
+        return list;
     }
 
     @PostMapping

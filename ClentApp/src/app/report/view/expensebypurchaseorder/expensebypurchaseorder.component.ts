@@ -11,6 +11,10 @@ import * as html2pdf from 'html2pdf.js';
 import {ChartData, ChartOptions} from "chart.js";
 import {Expensebyporderbydate} from "../../entity/expensebyporderbydate";
 import {BreakpointObserver} from "@angular/cdk/layout";
+import {Purchaseorderservice} from "../../../service/purchaseorderservice";
+import {Supplierservice} from "../../../service/supplierservice";
+import {Supplier} from "../../../entity/supplier";
+import {Purchaseorder} from "../../../entity/purchaseorder";
 
 @Component({
   selector: 'app-expensebypurchaseorder',
@@ -20,9 +24,13 @@ import {BreakpointObserver} from "@angular/cdk/layout";
 export class ExpensebypurchaseorderComponent {
 
   maxDate: Date = new Date();  // Today's date
-  minDate = new Date(new Date(this.maxDate).setDate(this.maxDate.getDate()+1));
+  minDate = new Date(new Date(this.maxDate).setDate(this.maxDate.getDate() + 1));
 
   pbobdates!: Expensebyporderbydate[];
+  dataAfter!: Expensebyporderbydate[];
+
+  suppliers!: Supplier[];
+  porders!: Purchaseorder[];
   tbldata!: MatTableDataSource<Expensebyporderbydate>;
 
   public clsearch!: FormGroup;
@@ -92,23 +100,23 @@ export class ExpensebypurchaseorderComponent {
 
   constructor(private rs: ReportService,
               private fb: FormBuilder,
-              private dp: DatePipe,
+                      private dp: DatePipe,
               private db: MatDialog,
               private breakpointObserver: BreakpointObserver) {
     this.breakpointObserver
       .observe([
         '(max-width: 1366px)',
-    '(min-width: 1367px) and (max-width: 1680px)',
-    '(min-width: 1681px) and (max-width: 1920px)'
+        '(min-width: 1367px) and (max-width: 1680px)',
+        '(min-width: 1681px) and (max-width: 1920px)'
       ])
       .subscribe(result => {
         if (result.breakpoints['(max-width: 1366px)']) {
           this.rowHeight = '0.85rem'
-        }else if (result.breakpoints['(min-width: 1367px) and (max-width: 1680px)']
+        } else if (result.breakpoints['(min-width: 1367px) and (max-width: 1680px)']
         ) {
           this.rowHeight = '1.05rem';
-        }  else if (result.breakpoints['(min-width: 1681px) and (max-width: 1920px)']
-) {
+        } else if (result.breakpoints['(min-width: 1681px) and (max-width: 1920px)']
+        ) {
           this.rowHeight = '1.35rem';
         } else {
           this.rowHeight = '1.5rem'; // fallback for larger screens
@@ -122,9 +130,11 @@ export class ExpensebypurchaseorderComponent {
   }
 
   ngOnInit(): void {
+
     this.loadCliTableInit("");
 
   }
+
 
   loadCliTableInit(query: string) {
     this.rs.expensebyporderall()
@@ -160,7 +170,7 @@ export class ExpensebypurchaseorderComponent {
     this.barChartLabels = this.pbobdates.map(c => c.purchaseOrderNumber);
 
     this.barChartData = {
-      labels:this.barChartLabels,
+      labels: this.barChartLabels,
       datasets: [
         {
           label: 'Expense',
@@ -296,6 +306,7 @@ export class ExpensebypurchaseorderComponent {
       .set(opt)
       .save();
   }
+
 
 
 }

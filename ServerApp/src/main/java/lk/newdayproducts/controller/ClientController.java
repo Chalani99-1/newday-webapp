@@ -1,6 +1,8 @@
 package lk.newdayproducts.controller;
 
+import lk.newdayproducts.dao.ChargeDao;
 import lk.newdayproducts.dao.ClientDao;
+import lk.newdayproducts.dto.COcount;
 import lk.newdayproducts.entity.Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,8 +19,13 @@ import java.util.stream.Stream;
 public class ClientController {
 
     @Autowired
-    private ClientDao clientdao;
+    private ClientDao clientdao; @Autowired
+    private ChargeDao chdao;
 
+    @GetMapping("/morethan2orders")
+    public List<COcount> getClients() {
+        return chdao.getClientByOrders();
+    }
 
     @GetMapping(produces = "application/json")
     public List<Client> get(@RequestParam HashMap<String, String> params) {
@@ -57,7 +64,7 @@ public class ClientController {
             errors = errors+"<br> Existing Name";
 
         if(errors=="")
-            clientdao.save(client);
+           clientdao.save(client);
         else errors = "Server Validation Errors : <br> "+errors;
 
 

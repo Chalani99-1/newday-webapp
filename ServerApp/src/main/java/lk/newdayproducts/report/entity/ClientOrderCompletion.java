@@ -11,7 +11,7 @@ public class ClientOrderCompletion {
     @Id
     private Integer id;
     private String number;
-   private String percentage;
+    private String percentage;
 
     public ClientOrderCompletion() {
     }

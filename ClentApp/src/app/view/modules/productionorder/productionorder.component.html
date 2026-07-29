@@ -121,7 +121,7 @@ padding: 5px">No Incomplete Client Orders </p>
                 </mat-form-field>
               </form>
             </mat-header-cell>
-            <mat-cell style="background-color: #fad8d8" *matCellDef="let element"> {{ element[cobinders[i]] }}
+            <mat-cell style="background-color: #bcbcbc" *matCellDef="let element"> {{ element[cobinders[i]] }}
             </mat-cell>
           </ng-container>
 
@@ -168,8 +168,8 @@ padding: 5px">No Incomplete Client Orders </p>
           <mat-header-row *matHeaderRowDef="cscolumns"></mat-header-row>
           <mat-row
             *matRowDef="let row; columns: columns;" (click)="fillForm(row)"
-            [ngStyle]="row.productionorderstatus.name !== 'Completed' ? {'background-color': '#fad8d8'} :
-             {'background-color': '#c2ffbf'}"
+            [ngStyle]="row.productionorderstatus.name !== 'Completed' ? {'background-color': '#0a9acd'} :
+             {'background-color': '#c9f0fd'}"
             [ngClass]="{'selected-row': row === selectedrow}"></mat-row>
 
         </mat-table>

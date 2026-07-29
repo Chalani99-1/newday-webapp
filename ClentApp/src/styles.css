@@ -180,7 +180,28 @@ mat-card-header {
   width: 90px;
 }
 
-#selectbutton,#clearbutton {
+/*#selectbutton,#clearbutton {*/
+/*  margin-top: -100px;*/
+/*  width: 150px;*/
+/*  display: block;*/
+/*  margin-left: 150px;*/
+/*  margin-bottom: 5px;*/
+/*  font-size: 12px;*/
+/*  border-radius: 12px;*/
+/*  padding: 4px;*/
+/*  max-height: 30px;*/
+/*  background-color: white;*/
+/*  color:  var(--color-add);*/
+
+/*  text-align: center;*/
+
+/*  &:hover {*/
+/*    background-color: var(--color-add);*/
+/*    color: white;*/
+
+/*  }*/
+/*}*/
+#selectbutton {
   margin-top: -100px;
   width: 150px;
   display: block;
@@ -191,8 +212,29 @@ mat-card-header {
   padding: 4px;
   max-height: 30px;
   background-color: white;
-  color:  var(--color-add);
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  text-align: center;
 
+  &:hover {
+    background-color: var(--color-add);
+    color: white;
+
+  }
+}
+
+#clearbutton {
+  width: 150px;
+  display: block;
+  margin-left: 150px;
+  margin-bottom: 5px;
+  font-size: 12px;
+  padding: 4px;
+  max-height: 30px;
+  background-color: white;
+  color: #8a8a8a;
+  border: 1px solid #8a8a8a;
+  border-radius: 12px;
   text-align: center;
 
   &:hover {
