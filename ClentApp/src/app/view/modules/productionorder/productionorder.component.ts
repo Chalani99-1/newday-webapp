@@ -448,9 +448,31 @@ export class ProductionorderComponent {
     return updates;
   }
 
+  findDateError(poDate: string, coDate: string): number {
+    const required = new Date(poDate);
+    const expected = new Date(coDate);
+
+    // Ignore time component
+    required.setHours(0, 0, 0, 0);
+    expected.setHours(0, 0, 0, 0);
+
+    const diffMs = required.getTime() - expected.getTime();
+
+    // console.log(required ,expected ,Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  }
+
   add() {
     this.areaHiddenFix();
     let errors = this.getErrors();
+    this.productionorder = this.form?.getRawValue();
+    // @ts-ignore
+    const dayDiff =this.findDateError(this.dp.transform(this.productionorder.dorequired, "yyyy-MM-dd"),
+      this.dp.transform(this.productionorder.clientorder.doexpected, "yyyy-MM-dd"));
+
+    if(dayDiff>0){
+      errors ="Production Order Expected date must be smaller than Client Order expected date"
+    }
 
     if (errors != "") {
       const errmsg = this.db.open(MessageComponent, {
@@ -533,6 +555,15 @@ export class ProductionorderComponent {
   update() {
     this.areaHiddenFix();
     let errors = this.getErrors();
+
+    // @ts-ignore
+    const dayDiff =this.findDateError(this.dp.transform(this.productionorder.dorequired, "yyyy-MM-dd"),
+      this.dp.transform(this.productionorder.clientorder.doexpected, "yyyy-MM-dd"));
+
+    if(dayDiff>0){
+      errors ="Production Order Expected date must be smaller than Client Order expected date"
+    }
+
     if (errors != "") {
 
       const errmsg = this.db.open(MessageComponent, {
