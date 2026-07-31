@@ -449,14 +449,14 @@ export class ProductionorderComponent {
   }
 
   findDateError(poDate: string, coDate: string): number {
-    const required = new Date(poDate);
-    const expected = new Date(coDate);
+    const poDateIn = new Date(poDate);
+    const coDateIn = new Date(coDate);
 
     // Ignore time component
-    required.setHours(0, 0, 0, 0);
-    expected.setHours(0, 0, 0, 0);
+    poDateIn.setHours(0, 0, 0, 0);
+    coDateIn.setHours(0, 0, 0, 0);
 
-    const diffMs = required.getTime() - expected.getTime();
+    const diffMs = poDateIn.getTime() - coDateIn.getTime();
 
     // console.log(required ,expected ,Math.floor(diffMs / (1000 * 60 * 60 * 24)));
     return Math.floor(diffMs / (1000 * 60 * 60 * 24));
@@ -466,6 +466,7 @@ export class ProductionorderComponent {
     this.areaHiddenFix();
     let errors = this.getErrors();
     this.productionorder = this.form?.getRawValue();
+
     // @ts-ignore
     const dayDiff =this.findDateError(this.dp.transform(this.productionorder.dorequired, "yyyy-MM-dd"),
       this.dp.transform(this.productionorder.clientorder.doexpected, "yyyy-MM-dd"));

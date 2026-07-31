@@ -27,6 +27,8 @@ export class Clientorder{
   public doplaced !: string;
   public orderproducts!: Array<Orderproduct>;
 
+  public datediff !: string;
+
   constructor() {
   }
 

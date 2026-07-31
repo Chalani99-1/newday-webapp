@@ -10,15 +10,18 @@ export class Orderproduct {
   public amount !: number;
   public completed !: number;
   public expectedlinecost !: number;
+  public test !: number;
 
 
-  constructor(id: number, clientorder: Clientorder, product: Product, amount: number, completed: number, expectedlinecost: number) {
+
+  constructor(id: number, clientorder: Clientorder, product: Product, amount: number, completed: number, expectedlinecost: number,test:number) {
     this.id = id;
     this.clientorder = clientorder;
     this.product = product;
     this.amount = amount;
     this.completed = completed;
     this.expectedlinecost = expectedlinecost;
+    this.test=test
   }
 }
 

@@ -11,12 +11,12 @@ export class Client {
   public address !: string;
   public telephone !: string;
   public email !: string;
-  public contactperson !: string;
-  public contactmobile !: string;
+
   public clientstatus !: Clientstatus;
   public doregister !: string;
   public employee!: Employee;
 
+  public test !: string;
 
   constructor() {
   }

@@ -41,16 +41,16 @@ export class ClientorderComponent {
   public form!: FormGroup;
   public innerform!: FormGroup;
 
-  columns: string[] = ['number', 'client', 'doexpected', 'clientorderstatus'];
-  headers: string[] = ['Order NO', 'Client', 'Do Expected',  'Order Status'];
-  binders: string[] = ['number', 'client.name', 'doexpected', 'clientorderstatus.name'];
+  columns: string[] = ['number', 'client', 'doexpected', 'clientorderstatus', 'datediff'];
+  headers: string[] = ['Order NO', 'Client', 'Do Expected', 'Order Status', 'Date diff'];
+  binders: string[] = ['number', 'client.name', 'doexpected', 'clientorderstatus.name', 'datediff'];
 
-  cscolumns: string[] = ['csnumber', 'csclient', 'csdoexpected',  'csclientorderstatus'];
-  csprompts: string[] = ['Search by Order No', 'Search by Client', 'Search by Do Requested',  'Search by Order Status'];
+  cscolumns: string[] = ['csnumber', 'csclient', 'csdoexpected', 'csclientorderstatus'];
+  csprompts: string[] = ['Search by Order No', 'Search by Client', 'Search by Do Requested', 'Search by Order Status'];
 
-  incolumns: string[] = ['name', 'amount',  'unitprice', 'expectedlinecost', 'remove'];
-  inheaders: string[] = ['Name', 'Amount', 'Product Cost', 'Expected Line Cost', 'Remove'];
-  inbinders: string[] = ['product.name', 'amount', 'product.totalcost', 'expectedlinecost', 'getBtn()'];
+  incolumns: string[] = ['name', 'amount', 'unitprice', 'expectedlinecost','test', 'remove'];
+  inheaders: string[] = ['Name', 'Amount', 'Product Cost', 'Expected Line Cost', 'After Discount','Remove'];
+  inbinders: string[] = ['product.name', 'amount', 'product.totalcost', 'expectedlinecost','test','getBtn()'];
 
   data!: MatTableDataSource<Clientorder>;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -101,7 +101,7 @@ export class ClientorderComponent {
   maxDate: Date = new Date();  // Today's date
   minDate = new Date(new Date(this.maxDate).setDate(this.maxDate.getDate() + 1));
 
-  rowHeight='1rem'
+  rowHeight = '1rem'
 
   constructor(
     private cos: Clientorderservice,
@@ -278,6 +278,19 @@ export class ClientorderComponent {
 
   id = 0;
 
+  findDateError(poDate: string, coDate: string): number {
+    const poDateIn = new Date(poDate);
+    const coDateIn = new Date(coDate);
+
+    // Ignore time component
+    poDateIn.setHours(0, 0, 0, 0);
+    coDateIn.setHours(0, 0, 0, 0);
+
+    const diffMs = poDateIn.getTime() - coDateIn.getTime();
+
+    // console.log(required ,expected ,Math.floor(diffMs / (1000 * 60 * 60 * 24)));
+    return Math.floor(diffMs / (1000 * 60 * 60 * 24));
+  }
 
   loadTable(query: string) {
 
@@ -292,6 +305,13 @@ export class ClientorderComponent {
         this.imageurl = 'assets/rejected.png';
       })
       .finally(() => {
+        this.clientorders.forEach((co: Clientorder) => {
+          // @ts-ignore
+          const dayDiff = this.findDateError(this.dp.transform(co.doexpected, "yyyy-MM-dd"),
+            this.dp.transform(co.doplaced, "yyyy-MM-dd"));
+          co.datediff = dayDiff+"";
+        })
+
         this.data = new MatTableDataSource(this.clientorders);
         this.data.paginator = this.paginator;
       });
@@ -361,6 +381,7 @@ export class ClientorderComponent {
     this.calculateGrandTotal();
 
   }
+
   calculateGrandTotal() {
     // Ensure grandtotal is calculated from the correct source
     this.grandtotal = this.orderproducts.reduce((acc, item) => acc + item.expectedlinecost, 0);
@@ -416,6 +437,7 @@ export class ClientorderComponent {
     this.innerform.patchValue(this.orderproduct);
 
   }
+
   filterTable(): void {
 
     const cserchdata = this.csearch.getRawValue();
@@ -501,6 +523,9 @@ export class ClientorderComponent {
 
     this.enableButtons(false, true, true);
     this.orderproducts = clientOrder.orderproducts;
+    this.orderproducts.forEach((op:Orderproduct)=>{
+      op.test=op.expectedlinecost*0.9
+    })
 
     this.products = Array.from(this.oldproducts);
     if (clientOrder) {
@@ -528,6 +553,7 @@ export class ClientorderComponent {
     }
 
   }
+
   updateFormValues() {
     // @ts-ignore
     this.clientOrder.employee = this.employees.find(e => e.id === this.clientOrder.employee.id);
@@ -660,10 +686,10 @@ export class ClientorderComponent {
         // Calculate the line total
         const expectedlinecost = Number((innerdata?.product.totalcost * innerdata.amount).toFixed(2));
         //deficincy amount after calculating full cost
-        innerdata.amount = Number(innerdata.amount) ;
+        innerdata.amount = Number(innerdata.amount);
         // Create a new Orderproduct
         const orderitem = new Orderproduct
-        (this.id, innerdata.clientOrder, innerdata.product, Number(innerdata.amount), 0, expectedlinecost);
+        (this.id, innerdata.clientOrder, innerdata.product, Number(innerdata.amount), 0, expectedlinecost, expectedlinecost*0.9);
 
         // Add the new item to the existing list
         const existing = this.orderproducts.find(op => op.product.id === orderitem.product.id);
@@ -739,7 +765,7 @@ export class ClientorderComponent {
             innerdata.product,
             innerdata.amount,
             completed,
-            expectedlinecost
+            expectedlinecost ,Number((expectedlinecost * 0.9).toFixed(2))
           );
 
           // Replace the old order item with the updated one

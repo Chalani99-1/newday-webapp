@@ -39,12 +39,12 @@ export class ClientComponent {
   enaupd: boolean = false;
   enadel: boolean = false;
 
-  columns: string[] = ['name', 'state', 'status','telephone'];
-  headers: string[] = ['Name', 'State', 'Client Status','Contact Number'];
-  binders: string[] = ['name', 'state.name', 'clientstatus.name','telephone'];
+  columns: string[] = ['name', 'state', 'status','telephone','test'];
+  headers: string[] = ['Name', 'State', 'Client Status','Contact Number','Test'];
+  binders: string[] = ['name', 'state.name', 'clientstatus.name','telephone','test'];
 
-  cscolumns: string[] = ['csname', 'csstate', 'csstatus','cstelephone'];
-  csprompts: string[] = ['Search by Name', 'Search by State', 'Search by Status','Search by Contact Number'];
+  cscolumns: string[] = ['csname', 'csstate', 'csstatus','cstelephone','cstest'];
+  csprompts: string[] = ['Search by Name', 'Search by State', 'Search by Status','Search by Contact Number','Test'];
 
   public csearch!: FormGroup;
   public form!: FormGroup;
@@ -171,6 +171,9 @@ export class ClientComponent {
         this.imageurl = 'assets/fullfilled.png';
       })
       .finally(() => {
+       this.clients.forEach((c:Client)=>{
+          c.test=c.name +" from : "+c.state.name
+        })
         this.data = new MatTableDataSource(this.clients);
         // console.log(this.data);
         this.data.paginator = this.paginator;
